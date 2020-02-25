@@ -4,7 +4,7 @@ on: [push,pull_request]
 
 jobs:
   test:
-    name: Test on ${{ matrix.os }}
+    name: CI-CD from ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -32,14 +32,6 @@ jobs:
 #          credential: ${{ secrets.CREDENTIAL_JSON }}
 #          flutter_package: false
 #          skip_test: true
-
-        # this publication method first checks whether the versions are different
-      - name: Publish to pub.dev
-        uses: k-paxian/dart-package-publisher@master
-        with:
-          accessToken: ${{ secrets.OAUTH_ACCESS_TOKEN }}
-          refreshToken: ${{ secrets.OAUTH_REFRESH_TOKEN }}
-          skipTests: true
 
       - run: pushd example&&flutter build web
       - name: Deploy web
@@ -74,3 +66,11 @@ jobs:
 #          username: ${{ secrets.jodsshuser }}
 #          password: ${{ secrets.jodsshpassword }}
 #          recursive: true
+
+        # this publication method first checks whether the versions are different
+      - name: Publish to pub.dev if newer version number
+        uses: k-paxian/dart-package-publisher@master
+        with:
+          accessToken: ${{ secrets.OAUTH_ACCESS_TOKEN }}
+          refreshToken: ${{ secrets.OAUTH_REFRESH_TOKEN }}
+          skipTests: true
