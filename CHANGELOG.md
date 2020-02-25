@@ -1,3 +1,8 @@
+## 1.0.4
+
+* minor changes to CI/CD
+* git cleanups
+
 ## 1.0.3
 
 * minor improvements to README
