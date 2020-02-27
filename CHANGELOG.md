@@ -1,3 +1,10 @@
+## 1.0.5
+
+* added demonstration for disabled and readOnly
+* test formatted
+* added readOnly and menuBackgroundColor parameters
+* clear icon disabled when Widget is disabled
+
 ## 1.0.4
 
 * minor changes to CI/CD

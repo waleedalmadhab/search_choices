@@ -450,6 +450,41 @@ class _MyAppState extends State<MyApp> {
         dialogBox: true,
         isExpanded: true,
       ),
+      "Single dialog readOnly": SearchChoices.single(
+        items: [
+          DropdownMenuItem(
+            child: Text("one item"),
+            value: "one item",
+          )
+        ],
+        value: "one item",
+        hint: "Select one",
+        searchHint: "Select one",
+        disabledHint: "Disabled",
+        onChanged: (value) {
+          setState(() {
+            selectedValue = value;
+          });
+        },
+        dialogBox: true,
+        isExpanded: true,
+        readOnly: true,
+      ),
+      "Single dialog disabled": SearchChoices.single(
+        items: [
+          DropdownMenuItem(
+            child: Text("one item"),
+            value: "one item",
+          )
+        ],
+        value: "one item",
+        hint: "Select one",
+        searchHint: "Select one",
+        disabledHint: "Disabled",
+        onChanged: null,
+        dialogBox: true,
+        isExpanded: true,
+      ),
     };
 
     return MaterialApp(
