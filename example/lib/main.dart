@@ -45,6 +45,8 @@ class ExampleNumber {
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
+  static final navKey = new GlobalKey<NavigatorState>();
+  const MyApp({Key navKey}) : super(key: navKey);
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -54,7 +56,11 @@ class _MyAppState extends State<MyApp> {
   String selectedValue;
   ExampleNumber selectedNumber;
   List<int> selectedItems;
-  final List<DropdownMenuItem> items = [];
+  List<DropdownMenuItem> items = [];
+  List<DropdownMenuItem> editableItems = [];
+  final _formKey = GlobalKey<FormState>();
+  String inputString = "";
+  TextFormField input;
 
   static const String appTitle = "Search Choices demo";
   final String loremIpsum =
@@ -85,6 +91,16 @@ class _MyAppState extends State<MyApp> {
         wordPair = "";
       }
     });
+    input = TextFormField(
+      validator: (value) {
+        return (value.length < 6 ? "must be at least 6 characters long" : null);
+      },
+      initialValue: inputString,
+      onChanged: (value) {
+        inputString = value;
+      },
+      autofocus: true,
+    );
     super.initState();
   }
 
@@ -101,6 +117,46 @@ class _MyAppState extends State<MyApp> {
         },
       )
     ]);
+  }
+
+  addItemDialog() async {
+    return await showDialog(
+      context: MyApp.navKey.currentState.overlay.context,
+      builder: (BuildContext alertContext) {
+        return (AlertDialog(
+          title: Text("Add an item"),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                input,
+                FlatButton(
+                  onPressed: () {
+                    if (_formKey.currentState.validate()) {
+                      setState(() {
+                        editableItems.add(DropdownMenuItem(
+                          child: Text(inputString),
+                          value: inputString,
+                        ));
+                      });
+                      Navigator.pop(alertContext, inputString);
+                    }
+                  },
+                  child: Text("Ok"),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pop(alertContext, null);
+                  },
+                  child: Text("Cancel"),
+                ),
+              ],
+            ),
+          ),
+        ));
+      },
+    );
   }
 
   @override
@@ -286,8 +342,8 @@ class _MyAppState extends State<MyApp> {
                     },
               child: Text("Save")));
         },
-        closeButton: (selectedItems) {
-          return (selectedItems.length == 3 ? "Ok" : null);
+        closeButton: (selectedItemsClose) {
+          return (selectedItemsClose.length == 3 ? "Ok" : null);
         },
         isExpanded: true,
       ),
@@ -485,9 +541,84 @@ class _MyAppState extends State<MyApp> {
         dialogBox: true,
         isExpanded: true,
       ),
+      "Single dialog editable items": SearchChoices.single(
+        items: editableItems,
+        value: selectedValue,
+        hint: "Select one",
+        searchHint: "Select one",
+        disabledHint: (Function updateParent) {
+          return (FlatButton(
+            onPressed: () {
+              addItemDialog().then((value) async {
+                updateParent(value);
+              });
+            },
+            child: Text("No choice, click to add one"),
+          ));
+        },
+        closeButton:
+            (String value, BuildContext closeContext, Function updateParent) {
+          return (editableItems.length >= 100
+              ? "Close"
+              : FlatButton(
+                  onPressed: () {
+                    addItemDialog().then((value) async {
+                      if (value != null &&
+                          editableItems.indexWhere(
+                                  (element) => element.value == value) !=
+                              -1) {
+                        Navigator.pop(
+                            MyApp.navKey.currentState.overlay.context);
+                        updateParent(value);
+                      }
+                    });
+                  },
+                  child: Text("Add and select item"),
+                ));
+        },
+        onChanged: (value) {
+          setState(() {
+            if (!(value is NotGiven)) {
+              selectedValue = value;
+            }
+          });
+        },
+        displayItem: (item, selected, Function updateParent) {
+          return (Row(children: [
+            selected
+                ? Icon(
+                    Icons.check,
+                    color: Colors.green,
+                  )
+                : Icon(
+                    Icons.check_box_outline_blank,
+                    color: Colors.transparent,
+                  ),
+            SizedBox(width: 7),
+            Expanded(
+              child: item,
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
+              onPressed: () {
+                editableItems.removeWhere((element) => item == element);
+                updateParent(null);
+                setState(() {});
+              },
+            ),
+          ]));
+        },
+        dialogBox: true,
+        isExpanded: true,
+        doneButton: "Done",
+      ),
     };
 
     return MaterialApp(
+      navigatorKey: MyApp.navKey,
       home: asTabs
           ? DefaultTabController(
               length: widgets.length,

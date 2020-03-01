@@ -1,3 +1,7 @@
+## 1.0.6
+
+* selectable items can be added and removed by the user
+
 ## 1.0.5
 
 * added demonstration for disabled and readOnly

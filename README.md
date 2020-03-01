@@ -30,12 +30,10 @@ See code below.
 | [Single dialog overflow](#Single-dialog-overflow) | ![Single dialog overflow](https://searchchoices.jod.li/Single%20dialog%20overflow.gif) |
 | [Single dialog readOnly](#Single-dialog-readOnly) | ![Single dialog readOnly](https://searchchoices.jod.li/Single%20dialog%20readOnly.png) |
 | [Single dialog disabled](#Single-dialog-disabled) | ![Single dialog disabled](https://searchchoices.jod.li/Single%20dialog%20disabled.png) |
+| [Single dialog<br>editable items](#Single-dialog-editable-items) | ![Single dialog editable items](https://searchchoices.jod.li/Single%20dialog%20editable%20items.gif) |
 
 
 ### Demonstration
-
-A web demonstration is available here for Chrome:
-https://searchchoices.jod.li/
 
 An Android demonstration is available here:
 https://searchchoices.jod.li/app-release.apk
@@ -700,6 +698,135 @@ wouldn't want to go right now",
         onChanged: null,
         dialogBox: true,
         isExpanded: true,
+      ),
+```
+#### Single dialog editable items
+This example lets the user add items to the list of choices. This leads to a growing list of choices.
+```dart
+    input = TextFormField(
+      validator: (value) {
+        return (value.length < 6 ? "must be at least 6 characters long" : null);
+      },
+      initialValue: inputString,
+      onChanged: (value) {
+        inputString = value;
+      },
+      autofocus: true,
+    );
+...
+  addItemDialog() async {
+    return await showDialog(
+      context: MyApp.navKey.currentState.overlay.context,
+      builder: (BuildContext alertContext) {
+        return (AlertDialog(
+          title: Text("Add an item"),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                input,
+                FlatButton(
+                  onPressed: () {
+                    if (_formKey.currentState.validate()) {
+                      setState(() {
+                        editableItems.add(DropdownMenuItem(
+                          child: Text(inputString),
+                          value: inputString,
+                        ));
+                      });
+                      Navigator.pop(alertContext, inputString);
+                    }
+                  },
+                  child: Text("Ok"),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pop(alertContext, null);
+                  },
+                  child: Text("Cancel"),
+                ),
+              ],
+            ),
+          ),
+        ));
+      },
+    );
+  }
+...
+      SearchChoices.single(
+        items: editableItems,
+        value: selectedValue,
+        hint: "Select one",
+        searchHint: "Select one",
+        disabledHint: (Function updateParent) {
+          return (FlatButton(
+            onPressed: () {
+              addItemDialog().then((value) async {
+                updateParent(value);
+              });
+            },
+            child: Text("No choice, click to add one"),
+          ));
+        },
+        closeButton:
+            (String value, BuildContext closeContext, Function updateParent) {
+          return (editableItems.length >= 100
+              ? "Close"
+              : FlatButton(
+                  onPressed: () {
+                    addItemDialog().then((value) async {
+                      if (value != null &&
+                          editableItems.indexWhere(
+                                  (element) => element.value == value) !=
+                              -1) {
+                        Navigator.pop(
+                            MyApp.navKey.currentState.overlay.context);
+                        updateParent(value);
+                      }
+                    });
+                  },
+                  child: Text("Add and select item"),
+                ));
+        },
+        onChanged: (value) {
+          setState(() {
+            if (!(value is NotGiven)) {
+              selectedValue = value;
+            }
+          });
+        },
+        displayItem: (item, selected, Function updateParent) {
+          return (Row(children: [
+            selected
+                ? Icon(
+                    Icons.check,
+                    color: Colors.green,
+                  )
+                : Icon(
+                    Icons.check_box_outline_blank,
+                    color: Colors.transparent,
+                  ),
+            SizedBox(width: 7),
+            Expanded(
+              child: item,
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
+              onPressed: () {
+                editableItems.removeWhere((element) => item == element);
+                updateParent(null);
+                setState(() {});
+              },
+            ),
+          ]));
+        },
+        dialogBox: true,
+        isExpanded: true,
+        doneButton: "Done",
       ),
 ```
 

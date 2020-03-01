@@ -11,6 +11,7 @@ class NotGiven {
 
 Widget prepareWidget(dynamic object,
     {dynamic parameter = const NotGiven(),
+    Function updateParent,
     BuildContext context,
     Function stringToWidgetFunction}) {
   if (object == null) {
@@ -27,23 +28,77 @@ Widget prepareWidget(dynamic object,
     }
   }
   if (object is Function) {
-    if (parameter is NotGiven) {
-      if (context == null) {
-        return (prepareWidget(object(),
-            stringToWidgetFunction: stringToWidgetFunction));
-      } else {
-        return (prepareWidget(object(context),
-            stringToWidgetFunction: stringToWidgetFunction));
+    dynamic objectResult = NotGiven();
+    if (!(parameter is NotGiven) && context != null && updateParent != null) {
+      try {
+        objectResult = object(parameter, context, updateParent);
+      } on NoSuchMethodError {
+        objectResult = NotGiven();
       }
     }
-    if (context == null) {
-      return (prepareWidget(object(parameter),
-          stringToWidgetFunction: stringToWidgetFunction));
+    if (objectResult is NotGiven &&
+        !(parameter is NotGiven) &&
+        context != null) {
+      try {
+        objectResult = object(parameter, context);
+      } on NoSuchMethodError {
+        objectResult = NotGiven();
+      }
     }
-    return (prepareWidget(object(parameter, context),
+    if (objectResult is NotGiven &&
+        !(parameter is NotGiven) &&
+        updateParent != null) {
+      try {
+        objectResult = object(parameter, updateParent);
+      } on NoSuchMethodError {
+        objectResult = NotGiven();
+      }
+    }
+    if (objectResult is NotGiven && context != null && updateParent != null) {
+      try {
+        objectResult = object(context, updateParent);
+      } on NoSuchMethodError {
+        objectResult = NotGiven();
+      }
+    }
+    if (objectResult is NotGiven && !(parameter is NotGiven)) {
+      try {
+        objectResult = object(parameter);
+      } on NoSuchMethodError {
+        objectResult = NotGiven();
+      }
+    }
+    if (objectResult is NotGiven && context != null) {
+      try {
+        objectResult = object(context);
+      } on NoSuchMethodError {
+        objectResult = NotGiven();
+      }
+    }
+    if (objectResult is NotGiven && updateParent != null) {
+      try {
+        objectResult = object(updateParent);
+      } on NoSuchMethodError {
+        objectResult = NotGiven();
+      }
+    }
+    if (objectResult is NotGiven) {
+      try {
+        objectResult = object();
+      } on NoSuchMethodError {
+        objectResult = Text(
+          "Call failed",
+          style: TextStyle(color: Colors.red),
+        );
+      }
+    }
+    return (prepareWidget(objectResult,
         stringToWidgetFunction: stringToWidgetFunction));
   }
-  return (Text("Unknown type: ${object.runtimeType.toString()}"));
+  return (Text(
+    "Unknown type: ${object.runtimeType.toString()}",
+    style: TextStyle(color: Colors.red),
+  ));
 }
 
 class SearchChoices<T> extends StatefulWidget {
@@ -318,12 +373,13 @@ class SearchChoices<T> extends StatefulWidget {
         super(key: key);
 
   @override
-  _SearchChoicesState<T> createState() => new _SearchChoicesState();
+  _SearchChoicesState<T> createState() => _SearchChoicesState();
 }
 
 class _SearchChoicesState<T> extends State<SearchChoices<T>> {
   List<int> selectedItems;
   List<bool> displayMenu = [false];
+  Function updateParent;
 
   TextStyle get _textStyle =>
       widget.style ??
@@ -336,7 +392,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
   bool get _enabled =>
       widget.items != null &&
       widget.items.isNotEmpty &&
-      widget.onChanged != null;
+      (widget.onChanged != null || widget.onChanged is Function);
 
   Color get _enabledIconColor {
     if (widget.iconEnabledColor != null) {
@@ -390,6 +446,27 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
             : null);
   }
 
+  updateSelectedItems({dynamic sel = const NotGiven()}) {
+    if (widget.multipleSelection) {
+      if (!(sel is NotGiven)) {
+        selectedItems = sel as List<int>;
+      } else {
+        selectedItems = List<int>.from(widget.selectedItems ?? []);
+      }
+    } else {
+      T val = !(sel is NotGiven) ? sel as T : widget.value;
+      if (val != null) {
+        int i = indexFromValue(val);
+        if (i != null && i != -1) {
+          selectedItems = [i];
+        }
+      } else {
+        selectedItems = null;
+      }
+      if (selectedItems == null) selectedItems = [];
+    }
+  }
+
   int indexFromValue(T value) {
     return (widget.items.indexWhere((item) {
       return (item.value == value);
@@ -398,15 +475,13 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
 
   @override
   void initState() {
-    if (widget.multipleSelection) {
-      selectedItems = List<int>.from(widget.selectedItems ?? []);
-    } else if (widget.value != null) {
-      int i = indexFromValue(widget.value);
-      if (i != null && i != -1) {
-        selectedItems = [i];
+    updateParent = (sel) {
+      if (!(sel is NotGiven)) {
+        widget.onChanged(sel);
+        updateSelectedItems(sel: sel);
       }
-    }
-    if (selectedItems == null) selectedItems = [];
+    };
+    updateSelectedItems();
     super.initState();
   }
 
@@ -440,6 +515,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         }
         setState(() {});
       },
+      updateParent: updateParent,
     ));
   }
 
@@ -449,12 +525,15 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         _enabled ? List<Widget>.from(widget.items) : <Widget>[];
     int hintIndex;
     if (widget.hint != null ||
-        (!_enabled && prepareWidget(widget.disabledHint) != null)) {
+        (!_enabled &&
+            prepareWidget(widget.disabledHint, parameter: updateParent) !=
+                null)) {
       final Widget emplacedHint = _enabled
           ? prepareWidget(widget.hint)
           : DropdownMenuItem<Widget>(
-              child: prepareWidget(widget.disabledHint) ??
-                  prepareWidget(widget.hint));
+              child:
+                  prepareWidget(widget.disabledHint, parameter: updateParent) ??
+                      prepareWidget(widget.hint));
       hintIndex = items.length;
       items.add(DefaultTextStyle(
         style: _textStyle.copyWith(color: Theme.of(context).hintColor),
@@ -481,43 +560,46 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
     final EdgeInsetsGeometry padding = ButtonTheme.of(context).alignedDropdown
         ? _kAlignedButtonPadding
         : _kUnalignedButtonPadding;
-
-    Widget clickable = InkWell(
-        key: Key(
-            "clickableResultPlaceHolder"), //this key is used for running automated tests
-        onTap: widget.readOnly || !_enabled
-            ? null
-            : () async {
-                if (widget.dialogBox) {
-                  await showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (context) {
-                        return (menuWidget);
-                      });
-                  if (widget.onChanged != null && selectedItems != null) {
-                    widget.onChanged(selectedResult);
-                  }
-                } else {
-                  displayMenu.first = true;
-                }
-                setState(() {});
-              },
-        child: Row(
-          children: <Widget>[
-            widget.isExpanded
-                ? Expanded(child: innerItemsWidget)
-                : innerItemsWidget,
-            IconTheme(
-              data: IconThemeData(
-                color: _iconColor,
-                size: widget.iconSize,
-              ),
-              child: prepareWidget(widget.icon, parameter: selectedResult) ??
-                  SizedBox.shrink(),
-            ),
-          ],
-        ));
+    Widget clickable = !_enabled &&
+            prepareWidget(widget.disabledHint, parameter: updateParent) != null
+        ? prepareWidget(widget.disabledHint, parameter: updateParent)
+        : InkWell(
+            key: Key(
+                "clickableResultPlaceHolder"), //this key is used for running automated tests
+            onTap: widget.readOnly || !_enabled
+                ? null
+                : () async {
+                    if (widget.dialogBox) {
+                      await showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (context) {
+                            return (menuWidget);
+                          });
+                      if (widget.onChanged != null && selectedItems != null) {
+                        widget.onChanged(selectedResult);
+                      }
+                    } else {
+                      displayMenu.first = true;
+                    }
+                    setState(() {});
+                  },
+            child: Row(
+              children: <Widget>[
+                widget.isExpanded
+                    ? Expanded(child: innerItemsWidget)
+                    : innerItemsWidget,
+                IconTheme(
+                  data: IconThemeData(
+                    color: _iconColor,
+                    size: widget.iconSize,
+                  ),
+                  child:
+                      prepareWidget(widget.icon, parameter: selectedResult) ??
+                          SizedBox.shrink(),
+                ),
+              ],
+            ));
 
     Widget result = DefaultTextStyle(
       style: _textStyle,
@@ -644,6 +726,7 @@ class DropdownDialog<T> extends StatefulWidget {
   final BoxConstraints menuConstraints;
   final Function callOnPop;
   final Color menuBackgroundColor;
+  final Function updateParent;
 
   DropdownDialog({
     Key key,
@@ -663,18 +746,20 @@ class DropdownDialog<T> extends StatefulWidget {
     this.menuConstraints,
     this.callOnPop,
     this.menuBackgroundColor,
+    this.updateParent,
   })  : assert(items != null),
         super(key: key);
 
-  _DropdownDialogState<T> createState() => new _DropdownDialogState<T>();
+  _DropdownDialogState<T> createState() => _DropdownDialogState<T>();
 }
 
 class _DropdownDialogState<T> extends State<DropdownDialog> {
-  TextEditingController txtSearch = new TextEditingController();
+  TextEditingController txtSearch = TextEditingController();
   TextStyle defaultButtonStyle =
-      new TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
+      TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
   List<int> shownIndexes = [];
   Function searchFn;
+  String latestKeyword;
 
   _DropdownDialogState();
 
@@ -687,7 +772,12 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   }
 
   void _updateShownIndexes(String keyword) {
-    shownIndexes = searchFn(keyword, widget.items);
+    if (keyword != null) {
+      latestKeyword = keyword;
+    }
+    if (latestKeyword != null) {
+      shownIndexes = searchFn(latestKeyword, widget.items);
+    }
   }
 
   @override
@@ -730,15 +820,15 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     return AnimatedContainer(
       padding: MediaQuery.of(context).viewInsets,
       duration: const Duration(milliseconds: 300),
-      child: new Card(
+      child: Card(
         color: widget.menuBackgroundColor,
         margin: EdgeInsets.symmetric(
             vertical: widget.dialogBox ? 10 : 5,
             horizontal: widget.dialogBox ? 10 : 4),
-        child: new Container(
+        child: Container(
           constraints: widget.menuConstraints,
           padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-          child: new Column(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -780,7 +870,9 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
         widget.multipleSelection || widget.doneButton != null
             ? prepareWidget(widget.doneButton,
                 parameter: selectedResult,
-                context: context, stringToWidgetFunction: (string) {
+                context: context,
+                updateParent: widget.updateParent,
+                stringToWidgetFunction: (string) {
                 return (FlatButton.icon(
                     onPressed: !valid
                         ? null
@@ -793,7 +885,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
               })
             : SizedBox.shrink();
     return widget.hint != null
-        ? new Container(
+        ? Container(
             margin: EdgeInsets.only(bottom: 8),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -804,7 +896,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                   ),
                 ]),
           )
-        : new Container(
+        : Container(
             child: Column(
               children: <Widget>[doneButtonWidget, validatorOutputWidget],
             ),
@@ -812,10 +904,10 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   }
 
   Widget searchBar() {
-    return new Container(
-      child: new Stack(
+    return Container(
+      child: Stack(
         children: <Widget>[
-          new TextField(
+          TextField(
             controller: txtSearch,
             decoration: InputDecoration(
                 contentPadding:
@@ -827,24 +919,24 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             },
             keyboardType: widget.keyboardType,
           ),
-          new Positioned(
+          Positioned(
             left: 0,
             top: 0,
             bottom: 0,
-            child: new Center(
-              child: new Icon(
+            child: Center(
+              child: Icon(
                 Icons.search,
                 size: 24,
               ),
             ),
           ),
           txtSearch.text.isNotEmpty
-              ? new Positioned(
+              ? Positioned(
                   right: 0,
                   top: 0,
                   bottom: 0,
-                  child: new Center(
-                    child: new InkWell(
+                  child: Center(
+                    child: InkWell(
                       onTap: () {
                         _updateShownIndexes('');
                         setState(() {
@@ -852,11 +944,11 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                         });
                       },
                       borderRadius: BorderRadius.all(Radius.circular(32)),
-                      child: new Container(
+                      child: Container(
                         width: 32,
                         height: 32,
-                        child: new Center(
-                          child: new Icon(
+                        child: Center(
+                          child: Icon(
                             Icons.close,
                             size: 24,
                           ),
@@ -865,7 +957,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                     ),
                   ),
                 )
-              : new Container(),
+              : Container(),
         ],
       ),
     );
@@ -883,12 +975,25 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   }
 
   Widget list() {
-    return new Expanded(
+    return Expanded(
       child: Scrollbar(
-        child: new ListView.builder(
+        child: ListView.builder(
           itemBuilder: (context, index) {
             DropdownMenuItem item = widget.items[shownIndexes[index]];
-            return new InkWell(
+            Widget displayItemResult;
+            if (widget.displayItem != null) {
+              try {
+                displayItemResult =
+                    widget.displayItem(item, item.value == selectedResult);
+              } on NoSuchMethodError {
+                displayItemResult = widget
+                    .displayItem(item, item.value == selectedResult, (value) {
+                  widget.updateParent(value);
+                  _updateShownIndexes(null);
+                });
+              }
+            }
+            return InkWell(
               onTap: () {
                 if (widget.multipleSelection) {
                   setState(() {
@@ -923,9 +1028,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                         ]))
                       : widget.displayItem(item,
                           widget.selectedItems.contains(shownIndexes[index]))
-                  : widget.displayItem == null
-                      ? item
-                      : widget.displayItem(item, item.value == selectedResult),
+                  : widget.displayItem == null ? item : displayItemResult,
             );
           },
           itemCount: shownIndexes.length,
@@ -935,7 +1038,10 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   }
 
   Widget closeButtonWrapper() {
-    return (prepareWidget(widget.closeButton, parameter: selectedResult,
+    return (prepareWidget(widget.closeButton,
+            parameter: selectedResult,
+            context: context,
+            updateParent: widget.updateParent,
             stringToWidgetFunction: (string) {
           return (Container(
             child: Row(
