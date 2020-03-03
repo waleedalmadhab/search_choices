@@ -1,3 +1,9 @@
+## 1.0.7
+
+* made it possible to make a dark mode without changing the theme with an example
+* added an example for ellipsis text overflow handling
+* made it possible to support right to left languages with an example
+
 ## 1.0.6
 
 * selectable items can be added and removed by the user

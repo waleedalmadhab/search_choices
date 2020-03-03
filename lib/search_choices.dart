@@ -22,7 +22,9 @@ Widget prepareWidget(dynamic object,
   }
   if (object is String) {
     if (stringToWidgetFunction == null) {
-      return (Text(object));
+      return (Text(
+        object,
+      ));
     } else {
       return (stringToWidgetFunction(object));
     }
@@ -133,6 +135,7 @@ class SearchChoices<T> extends StatefulWidget {
   final BoxConstraints menuConstraints;
   final bool readOnly;
   final Color menuBackgroundColor;
+  final bool rightToLeft;
 
   /// Search choices Widget with a single choice that opens a dialog or a menu to let the user do the selection conveniently with a search.
   ///
@@ -166,6 +169,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// @param menuConstraints [BoxConstraints] used to define the zone where to display the search menu. Example: BoxConstraints.tight(Size.fromHeight(250)) . Not to be used for dialogBox = true.
   /// @param readOnly [bool] whether to let the user choose the value to select or just present the selected value if any.
   /// @param menuBackgroundColor [Color] background color of the menu whether in dialog box or menu mode.
+  /// @param rightToLeft [bool] mirrors the widgets display for right to left languages defaulted to false.
   factory SearchChoices.single({
     Key key,
     @required List<DropdownMenuItem<T>> items,
@@ -198,6 +202,7 @@ class SearchChoices<T> extends StatefulWidget {
     BoxConstraints menuConstraints,
     bool readOnly = false,
     Color menuBackgroundColor,
+    bool rightToLeft = false,
   }) {
     return (SearchChoices._(
       key: key,
@@ -231,6 +236,7 @@ class SearchChoices<T> extends StatefulWidget {
       menuConstraints: menuConstraints,
       readOnly: readOnly,
       menuBackgroundColor: menuBackgroundColor,
+      rightToLeft: rightToLeft,
     ));
   }
 
@@ -265,6 +271,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// @param menuConstraints [BoxConstraints] used to define the zone where to display the search menu. Example: BoxConstraints.tight(Size.fromHeight(250)) . Not to be used for dialogBox = true.
   /// @param readOnly [bool] whether to let the user choose the value to select or just present the selected value if any.
   /// @param menuBackgroundColor [Color] background color of the menu whether in dialog box or menu mode.
+  /// @param rightToLeft [bool] mirrors the widgets display for right to left languages defaulted to false.
   factory SearchChoices.multiple({
     Key key,
     @required List<DropdownMenuItem<T>> items,
@@ -296,6 +303,7 @@ class SearchChoices<T> extends StatefulWidget {
     BoxConstraints menuConstraints,
     bool readOnly = false,
     Color menuBackgroundColor,
+    bool rightToLeft = false,
   }) {
     return (SearchChoices._(
       key: key,
@@ -329,6 +337,7 @@ class SearchChoices<T> extends StatefulWidget {
       menuConstraints: menuConstraints,
       readOnly: readOnly,
       menuBackgroundColor: menuBackgroundColor,
+      rightToLeft: rightToLeft,
     ));
   }
 
@@ -365,6 +374,7 @@ class SearchChoices<T> extends StatefulWidget {
     this.menuConstraints,
     this.readOnly,
     this.menuBackgroundColor,
+    this.rightToLeft,
   })  : assert(items != null),
         assert(iconSize != null),
         assert(isExpanded != null),
@@ -507,6 +517,9 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
       displayMenu: displayMenu,
       menuConstraints: widget.menuConstraints,
       menuBackgroundColor: widget.menuBackgroundColor,
+      style: widget.style,
+      iconEnabledColor: widget.iconEnabledColor,
+      iconDisabledColor: widget.iconDisabledColor,
       callOnPop: () {
         if (!widget.dialogBox &&
             widget.onChanged != null &&
@@ -516,6 +529,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         setState(() {});
       },
       updateParent: updateParent,
+      rightToLeft: widget.rightToLeft,
     ));
   }
 
@@ -585,6 +599,8 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
                     setState(() {});
                   },
             child: Row(
+              textDirection:
+                  widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
               children: <Widget>[
                 widget.isExpanded
                     ? Expanded(child: innerItemsWidget)
@@ -606,6 +622,8 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
       child: Container(
         padding: padding.resolve(Directionality.of(context)),
         child: Row(
+          textDirection:
+              widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -621,6 +639,9 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
                     child: Container(
                       padding: padding.resolve(Directionality.of(context)),
                       child: Row(
+                        textDirection: widget.rightToLeft
+                            ? TextDirection.rtl
+                            : TextDirection.ltr,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
@@ -651,6 +672,8 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
     var labelOutput = prepareWidget(widget.label, parameter: selectedResult,
         stringToWidgetFunction: (string) {
       return (Text(string,
+          textDirection:
+              widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
           style: TextStyle(color: Colors.blueAccent, fontSize: 13)));
     });
     return Column(
@@ -689,6 +712,9 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
             : validatorOutput is String
                 ? Text(
                     validatorOutput,
+                    textDirection: widget.rightToLeft
+                        ? TextDirection.rtl
+                        : TextDirection.ltr,
                     style: TextStyle(color: Colors.red, fontSize: 13),
                   )
                 : validatorOutput,
@@ -727,6 +753,10 @@ class DropdownDialog<T> extends StatefulWidget {
   final Function callOnPop;
   final Color menuBackgroundColor;
   final Function updateParent;
+  final TextStyle style;
+  final Color iconEnabledColor;
+  final Color iconDisabledColor;
+  final bool rightToLeft;
 
   DropdownDialog({
     Key key,
@@ -747,6 +777,10 @@ class DropdownDialog<T> extends StatefulWidget {
     this.callOnPop,
     this.menuBackgroundColor,
     this.updateParent,
+    this.style,
+    this.iconEnabledColor,
+    this.iconDisabledColor,
+    this.rightToLeft,
   })  : assert(items != null),
         super(key: key);
 
@@ -755,8 +789,10 @@ class DropdownDialog<T> extends StatefulWidget {
 
 class _DropdownDialogState<T> extends State<DropdownDialog> {
   TextEditingController txtSearch = TextEditingController();
-  TextStyle defaultButtonStyle =
-      TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
+  TextStyle defaultButtonStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+  );
   List<int> shownIndexes = [];
   Function searchFn;
   String latestKeyword;
@@ -862,6 +898,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
         : validatorOutput is String
             ? Text(
                 validatorOutput,
+                textDirection:
+                    widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
                 style: TextStyle(color: Colors.red, fontSize: 13),
               )
             : validatorOutput;
@@ -881,13 +919,20 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                             setState(() {});
                           },
                     icon: Icon(Icons.close),
-                    label: Text(string)));
+                    label: Text(
+                      string,
+                      textDirection: widget.rightToLeft
+                          ? TextDirection.rtl
+                          : TextDirection.ltr,
+                    )));
               })
             : SizedBox.shrink();
     return widget.hint != null
         ? Container(
             margin: EdgeInsets.only(bottom: 8),
             child: Row(
+                textDirection:
+                    widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   prepareWidget(widget.hint),
@@ -908,10 +953,13 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       child: Stack(
         children: <Widget>[
           TextField(
+            textDirection:
+                widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
             controller: txtSearch,
             decoration: InputDecoration(
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 32, vertical: 12)),
+            style: widget.style,
             autofocus: true,
             onChanged: (value) {
               _updateShownIndexes(value);
@@ -920,19 +968,22 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             keyboardType: widget.keyboardType,
           ),
           Positioned(
-            left: 0,
+            left: widget.rightToLeft ? null : 0,
+            right: widget.rightToLeft ? 0 : null,
             top: 0,
             bottom: 0,
             child: Center(
               child: Icon(
                 Icons.search,
                 size: 24,
+                color: widget.iconDisabledColor,
               ),
             ),
           ),
           txtSearch.text.isNotEmpty
               ? Positioned(
-                  right: 0,
+                  right: widget.rightToLeft ? null : 0,
+                  left: widget.rightToLeft ? 0 : null,
                   top: 0,
                   bottom: 0,
                   child: Center(
@@ -951,6 +1002,9 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                           child: Icon(
                             Icons.close,
                             size: 24,
+                            color: txtSearch.text.isEmpty
+                                ? widget.iconDisabledColor
+                                : widget.iconEnabledColor,
                           ),
                         ),
                       ),
@@ -1015,17 +1069,22 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
               },
               child: widget.multipleSelection
                   ? widget.displayItem == null
-                      ? (Row(children: [
-                          Icon(
-                            widget.selectedItems.contains(shownIndexes[index])
-                                ? Icons.check_box
-                                : Icons.check_box_outline_blank,
-                          ),
-                          SizedBox(
-                            width: 7,
-                          ),
-                          Flexible(child: item),
-                        ]))
+                      ? (Row(
+                          textDirection: widget.rightToLeft
+                              ? TextDirection.rtl
+                              : TextDirection.ltr,
+                          children: [
+                              Icon(
+                                widget.selectedItems
+                                        .contains(shownIndexes[index])
+                                    ? Icons.check_box
+                                    : Icons.check_box_outline_blank,
+                              ),
+                              SizedBox(
+                                width: 7,
+                              ),
+                              Flexible(child: item),
+                            ]))
                       : widget.displayItem(item,
                           widget.selectedItems.contains(shownIndexes[index]))
                   : widget.displayItem == null ? item : displayItemResult,
@@ -1045,6 +1104,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             stringToWidgetFunction: (string) {
           return (Container(
             child: Row(
+              textDirection:
+                  widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -1057,6 +1118,9 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                           maxWidth: MediaQuery.of(context).size.width / 2),
                       child: Text(
                         string,
+                        textDirection: widget.rightToLeft
+                            ? TextDirection.rtl
+                            : TextDirection.ltr,
                         style: defaultButtonStyle,
                         overflow: TextOverflow.ellipsis,
                       )),

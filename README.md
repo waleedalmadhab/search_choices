@@ -31,6 +31,9 @@ See code below.
 | [Single dialog readOnly](#Single-dialog-readOnly) | ![Single dialog readOnly](https://searchchoices.jod.li/Single%20dialog%20readOnly.png) |
 | [Single dialog disabled](#Single-dialog-disabled) | ![Single dialog disabled](https://searchchoices.jod.li/Single%20dialog%20disabled.png) |
 | [Single dialog<br>editable items](#Single-dialog-editable-items) | ![Single dialog editable items](https://searchchoices.jod.li/Single%20dialog%20editable%20items.gif) |
+| [Single dialog dark<br>mode](#Single-dialog-dark-mode) | ![Single dialog dark mode](https://searchchoices.jod.li/Single%20dialog%20dark%20mode.gif) |
+| [Single dialog ellipsis](#Single-dialog-ellipsis) | ![Single dialog ellipsis](https://searchchoices.jod.li/Single%20dialog%20ellipsis.gif) |
+| [Single dialog right<br>to left](#Single-dialog-right-to-left) | ![Single dialog right to left](https://searchchoices.jod.li/Single%20dialog%20right%20to%20left.gif) |
 
 
 ### Demonstration
@@ -828,6 +831,151 @@ This example lets the user add items to the list of choices. This leads to a gro
         isExpanded: true,
         doneButton: "Done",
       ),
+```
+### Single dialog dark mode
+```dart
+          Card(
+            color: Colors.black,
+            child: SearchChoices.single(
+              items: items.map((item) {
+                return (DropdownMenuItem(
+                  child: Text(
+                    item.value,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  value: item.value,
+                ));
+              }).toList(),
+              value: selectedValue,
+              hint: Text(
+                "Select one",
+                style: TextStyle(color: Colors.white),
+              ),
+              searchHint: Text(
+                "Select one",
+                style: TextStyle(color: Colors.white),
+              ),
+              style: TextStyle(color: Colors.white, backgroundColor: Colors.black),
+              closeButton: FlatButton(
+                onPressed: () {
+                  Navigator.pop(MyApp.navKey.currentState.overlay.context);
+                },
+                child: Text(
+                  "Close",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              menuBackgroundColor: Colors.black,
+              iconEnabledColor: Colors.white,
+              iconDisabledColor: Colors.grey,
+              onChanged: (value) {
+                setState(() {
+                  selectedValue = value;
+                });
+              },
+              isExpanded: true,
+            ),
+          ),
+```
+### Single dialog ellipsis
+```dart
+          SearchChoices.single(
+            items: [
+              DropdownMenuItem(
+                child: Text(
+                  "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I wouldn't want to go right now",
+                  overflow: TextOverflow.ellipsis,
+                ),
+                value:
+                    "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I wouldn't want to go right now",
+              )
+            ],
+            value: "",
+            hint: "Select one",
+            searchHint: "Select one",
+            onChanged: (value) {
+              setState(() {
+                selectedValue = value;
+              });
+            },
+            selectedValueWidgetFn: (item) {
+              return (Text(
+                item,
+                overflow: TextOverflow.ellipsis,
+              ));
+            },
+            dialogBox: true,
+            isExpanded: true,
+          ),
+```
+### Single dialog right to left
+```dart
+          SearchChoices.single(
+            items: ["طنجة", "فاس‎", "أكادير‎", "تزنيت‎", "آكــلــو", "سيدي بيبي"]
+                .map<DropdownMenuItem<String>>((string) {
+              return (DropdownMenuItem<String>(
+                child: Text(
+                  string,
+                  textDirection: TextDirection.rtl,
+                ),
+                value: string,
+              ));
+            }).toList(),
+            value: selectedValue,
+            hint: Text(
+              "ختار",
+              textDirection: TextDirection.rtl,
+            ),
+            searchHint: Text(
+              "ختار",
+              textDirection: TextDirection.rtl,
+            ),
+            closeButton: FlatButton(
+              onPressed: () {
+                Navigator.pop(MyApp.navKey.currentState.overlay.context);
+              },
+              child: Text(
+                "سدّ",
+                textDirection: TextDirection.rtl,
+              ),
+            ),
+            onChanged: (value) {
+              setState(() {
+                selectedValue = value;
+              });
+            },
+            isExpanded: true,
+            rightToLeft: true,
+            displayItem: (item, selected) {
+              return (Row(textDirection: TextDirection.rtl, children: [
+                selected
+                    ? Icon(
+                        Icons.radio_button_checked,
+                        color: Colors.grey,
+                      )
+                    : Icon(
+                        Icons.radio_button_unchecked,
+                        color: Colors.grey,
+                      ),
+                SizedBox(width: 7),
+                item,
+                Expanded(
+                  child: SizedBox.shrink(),
+                ),
+              ]));
+            },
+            selectedValueWidgetFn: (item) {
+              return Row(
+                textDirection: TextDirection.rtl,
+                children: <Widget>[
+                  (Text(
+                    item,
+                    textDirection: TextDirection.rtl,
+                  )),
+                ],
+              );
+            },
+          ),
 ```
 
 ## Feature requests/comments/questions/bugs
