@@ -1,3 +1,7 @@
+## 1.0.8
+
+* added rightToLeft parameter to README
+
 ## 1.0.7
 
 * made it possible to make a dark mode without changing the theme with an example

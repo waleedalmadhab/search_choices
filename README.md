@@ -99,6 +99,7 @@ factory SearchChoices.single({
     BoxConstraints menuConstraints,
     bool readOnly: false,
     Color menuBackgroundColor,
+    bool rightToLeft,
 }
 )
 ```
@@ -133,7 +134,7 @@ factory SearchChoices.single({
 * menuConstraints BoxConstraints used to define the zone where to display the search menu. Example: BoxConstraints.tight(Size.fromHeight(250)) . Not to be used for dialogBox = true.
 * readOnly bool whether to let the user choose the value to select or just present the selected value if any.
 * menuBackgroundColor Color background color of the menu whether in dialog box or menu mode.
-
+* rightToLeft bool mirrors the widgets display for right to left languages defaulted to false.
 
 #### Multiple choice constructor
 
@@ -172,6 +173,7 @@ SearchChoices<T>.multiple(
     BoxConstraints menuConstraints,
     bool readOnly: false,
     Color menuBackgroundColor,
+    bool rightToLeft,
 }
 )
 ```
@@ -205,6 +207,7 @@ SearchChoices<T>.multiple(
 * menuConstraints BoxConstraints used to define the zone where to display the search menu. Example: BoxConstraints.tight(Size.fromHeight(250)) . Not to be used for dialogBox = true.
 * readOnly bool whether to let the user choose the value to select or just present the selected value if any.
 * menuBackgroundColor Color background color of the menu whether in dialog box or menu mode.
+* rightToLeft bool mirrors the widgets display for right to left languages defaulted to false.
 
 #### Example app usage
 
