@@ -1036,12 +1036,14 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             DropdownMenuItem item = widget.items[shownIndexes[index]];
             Widget displayItemResult;
             if (widget.displayItem != null) {
+              bool itemSelected = widget.multipleSelection
+                  ? widget.selectedItems.contains(shownIndexes[index])
+                  : item.value == selectedResult;
               try {
-                displayItemResult =
-                    widget.displayItem(item, item.value == selectedResult);
+                displayItemResult = widget.displayItem(item, itemSelected);
               } on NoSuchMethodError {
-                displayItemResult = widget
-                    .displayItem(item, item.value == selectedResult, (value) {
+                displayItemResult =
+                    widget.displayItem(item, itemSelected, (value) {
                   widget.updateParent(value);
                   _updateShownIndexes(null);
                 });
@@ -1085,8 +1087,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                               ),
                               Flexible(child: item),
                             ]))
-                      : widget.displayItem(item,
-                          widget.selectedItems.contains(shownIndexes[index]))
+                      : displayItemResult
                   : widget.displayItem == null ? item : displayItemResult,
             );
           },

@@ -31,6 +31,7 @@ See code below.
 | [Single dialog readOnly](#Single-dialog-readOnly) | ![Single dialog readOnly](https://searchchoices.jod.li/Single%20dialog%20readOnly.png) |
 | [Single dialog disabled](#Single-dialog-disabled) | ![Single dialog disabled](https://searchchoices.jod.li/Single%20dialog%20disabled.png) |
 | [Single dialog<br>editable items](#Single-dialog-editable-items) | ![Single dialog editable items](https://searchchoices.jod.li/Single%20dialog%20editable%20items.gif) |
+| [Multi dialog<br>editable items](#Multi-dialog-editable-items) | ![Multi dialog editable items](https://searchchoices.jod.li/Multi%20dialog%20editable%20items.gif) |
 | [Single dialog dark<br>mode](#Single-dialog-dark-mode) | ![Single dialog dark mode](https://searchchoices.jod.li/Single%20dialog%20dark%20mode.gif) |
 | [Single dialog ellipsis](#Single-dialog-ellipsis) | ![Single dialog ellipsis](https://searchchoices.jod.li/Single%20dialog%20ellipsis.gif) |
 | [Single dialog right<br>to left](#Single-dialog-right-to-left) | ![Single dialog right to left](https://searchchoices.jod.li/Single%20dialog%20right%20to%20left.gif) |
@@ -707,7 +708,7 @@ wouldn't want to go right now",
       ),
 ```
 #### Single dialog editable items
-This example lets the user add items to the list of choices. This leads to a growing list of choices.
+This example lets the user add and remove items to and from the list of choices. One can limit the number of items that can be added (100 here).
 ```dart
     input = TextFormField(
       validator: (value) {
@@ -835,6 +836,147 @@ This example lets the user add items to the list of choices. This leads to a gro
         doneButton: "Done",
       ),
 ```
+#### Multi dialog editable items
+Same example as previously but with multiple selection.
+```dart
+    input = TextFormField(
+      validator: (value) {
+        return (value.length < 6 ? "must be at least 6 characters long" : null);
+      },
+      initialValue: inputString,
+      onChanged: (value) {
+        inputString = value;
+      },
+      autofocus: true,
+    );
+...
+  addItemDialog() async {
+    return await showDialog(
+      context: MyApp.navKey.currentState.overlay.context,
+      builder: (BuildContext alertContext) {
+        return (AlertDialog(
+          title: Text("Add an item"),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                input,
+                FlatButton(
+                  onPressed: () {
+                    if (_formKey.currentState.validate()) {
+                      setState(() {
+                        editableItems.add(DropdownMenuItem(
+                          child: Text(inputString),
+                          value: inputString,
+                        ));
+                      });
+                      Navigator.pop(alertContext, inputString);
+                    }
+                  },
+                  child: Text("Ok"),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pop(alertContext, null);
+                  },
+                  child: Text("Cancel"),
+                ),
+              ],
+            ),
+          ),
+        ));
+      },
+    );
+  }
+...
+      SearchChoices.multiple(
+        items: editableItems,
+        selectedItems: selectedItems,
+        hint: "Select any",
+        searchHint: "Select any",
+        disabledHint: (Function updateParent) {
+          return (FlatButton(
+            onPressed: () {
+              addItemDialog().then((value) async {
+                if (value != null) {
+                  selectedItems = [0];
+                  updateParent(selectedItems);
+                }
+              });
+            },
+            child: Text("No choice, click to add one"),
+          ));
+        },
+        closeButton: (List<int> values, BuildContext closeContext,
+            Function updateParent) {
+          return (editableItems.length >= 100
+              ? "Close"
+              : FlatButton(
+                  onPressed: () {
+                    addItemDialog().then((value) async {
+                      if (value != null) {
+                        int itemIndex = editableItems
+                            .indexWhere((element) => element.value == value);
+                        if (itemIndex != -1) {
+                          selectedItems.add(itemIndex);
+                          Navigator.pop(
+                              MyApp.navKey.currentState.overlay.context);
+                          updateParent(selectedItems);
+                        }
+                      }
+                    });
+                  },
+                  child: Text("Add and select item"),
+                ));
+        },
+        onChanged: (values) {
+          setState(() {
+            if (!(values is NotGiven)) {
+              selectedItems = values;
+            }
+          });
+        },
+        displayItem: (item, selected, Function updateParent) {
+          return (Row(children: [
+            selected
+                ? Icon(
+                    Icons.check_box,
+                    color: Colors.black,
+                  )
+                : Icon(
+                    Icons.check_box_outline_blank,
+                    color: Colors.black,
+                  ),
+            SizedBox(width: 7),
+            Expanded(
+              child: item,
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
+              onPressed: () {
+                int indexOfItem = editableItems.indexOf(item);
+                editableItems.removeWhere((element) => item == element);
+                selectedItems.removeWhere((element) => element == indexOfItem);
+                for (int i = 0; i < selectedItems.length; i++) {
+                  if (selectedItems[i] > indexOfItem) {
+                    selectedItems[i]--;
+                  }
+                }
+                updateParent(selectedItems);
+                setState(() {});
+              },
+            ),
+          ]));
+        },
+        dialogBox: true,
+        isExpanded: true,
+        doneButton: "Done",
+      ),
+```
 ### Single dialog dark mode
 ```dart
           Card(
@@ -912,6 +1054,7 @@ This example lets the user add items to the list of choices. This leads to a gro
           ),
 ```
 ### Single dialog right to left
+In support for Arabic and Hebrew languages.
 ```dart
           SearchChoices.single(
             items: ["طنجة", "فاس‎", "أكادير‎", "تزنيت‎", "آكــلــو", "سيدي بيبي"]

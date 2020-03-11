@@ -1,3 +1,8 @@
+## 1.0.9
+
+* adapted dropdown list display to support multiple selection editable list
+* added an example of multiple selection editable list
+
 ## 1.0.8
 
 * added rightToLeft parameter to README

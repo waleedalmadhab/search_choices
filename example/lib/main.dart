@@ -615,6 +615,92 @@ class _MyAppState extends State<MyApp> {
         isExpanded: true,
         doneButton: "Done",
       ),
+      "Multi dialog editable items": SearchChoices.multiple(
+        items: editableItems,
+        selectedItems: selectedItems,
+        hint: "Select any",
+        searchHint: "Select any",
+        disabledHint: (Function updateParent) {
+          return (FlatButton(
+            onPressed: () {
+              addItemDialog().then((value) async {
+                if (value != null) {
+                  selectedItems = [0];
+                  updateParent(selectedItems);
+                }
+              });
+            },
+            child: Text("No choice, click to add one"),
+          ));
+        },
+        closeButton: (List<int> values, BuildContext closeContext,
+            Function updateParent) {
+          return (editableItems.length >= 100
+              ? "Close"
+              : FlatButton(
+                  onPressed: () {
+                    addItemDialog().then((value) async {
+                      if (value != null) {
+                        int itemIndex = editableItems
+                            .indexWhere((element) => element.value == value);
+                        if (itemIndex != -1) {
+                          selectedItems.add(itemIndex);
+                          Navigator.pop(
+                              MyApp.navKey.currentState.overlay.context);
+                          updateParent(selectedItems);
+                        }
+                      }
+                    });
+                  },
+                  child: Text("Add and select item"),
+                ));
+        },
+        onChanged: (values) {
+          setState(() {
+            if (!(values is NotGiven)) {
+              selectedItems = values;
+            }
+          });
+        },
+        displayItem: (item, selected, Function updateParent) {
+          return (Row(children: [
+            selected
+                ? Icon(
+                    Icons.check_box,
+                    color: Colors.black,
+                  )
+                : Icon(
+                    Icons.check_box_outline_blank,
+                    color: Colors.black,
+                  ),
+            SizedBox(width: 7),
+            Expanded(
+              child: item,
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
+              onPressed: () {
+                int indexOfItem = editableItems.indexOf(item);
+                editableItems.removeWhere((element) => item == element);
+                selectedItems.removeWhere((element) => element == indexOfItem);
+                for (int i = 0; i < selectedItems.length; i++) {
+                  if (selectedItems[i] > indexOfItem) {
+                    selectedItems[i]--;
+                  }
+                }
+                updateParent(selectedItems);
+                setState(() {});
+              },
+            ),
+          ]));
+        },
+        dialogBox: true,
+        isExpanded: true,
+        doneButton: "Done",
+      ),
       "Single dialog dark mode": Card(
         color: Colors.black,
         child: SearchChoices.single(
