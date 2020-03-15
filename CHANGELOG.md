@@ -1,3 +1,7 @@
+## 1.0.11
+
+* bug: allow multiselection dialog select all to update when outside a tab bar: https://github.com/icemanbsi/searchable_dropdown/issues/21#issuecomment-599198943 thanks to @ettiennelr
+
 ## 1.0.10
 
 * bug: allow selection update from outside the plugin: https://github.com/icemanbsi/searchable_dropdown/issues/21 (thanks to @ettiennelr and @lechuk)

@@ -1100,10 +1100,10 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
 
   Widget closeButtonWrapper() {
     return (prepareWidget(widget.closeButton,
-            parameter: selectedResult,
-            context: context,
-            updateParent: widget.updateParent,
-            stringToWidgetFunction: (string) {
+            parameter: selectedResult, context: context, updateParent: (sel) {
+          widget.updateParent(sel);
+          setState(() {});
+        }, stringToWidgetFunction: (string) {
           return (Container(
             child: Row(
               textDirection:

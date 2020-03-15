@@ -516,83 +516,87 @@ flutter build ios
 #### Multi menu select all/none
 ```dart
       SearchChoices.multiple(
-        items: items,
-        selectedItems: selectedItems,
-        hint: "Select any",
-        searchHint: "Select any",
-        onChanged: (value) {
-          setState(() {
-            selectedItems = value;
-          });
-        },
-        dialogBox: false,
-        closeButton: (selectedItemsClose) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              RaisedButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedItemsClose.clear();
-                      selectedItemsClose.addAll(
-                          Iterable<int>.generate(items.length).toList());
-                    });
-                  },
-                  child: Text("Select all")),
-              RaisedButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedItemsClose.clear();
-                    });
-                  },
-                  child: Text("Select none")),
-            ],
-          );
-        },
-        isExpanded: true,
-        menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
-      ),
+              items: items,
+              selectedItems: selectedItems,
+              hint: "Select any",
+              searchHint: "Select any",
+              onChanged: (value) {
+                setState(() {
+                  selectedItems = value;
+                });
+              },
+              dialogBox: false,
+              closeButton: (selectedItemsClose, closeContext, Function updateParent) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    RaisedButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedItemsClose.clear();
+                            selectedItemsClose.addAll(
+                                Iterable<int>.generate(items.length).toList());
+                          });
+                          updateParent(selectedItemsClose);
+                        },
+                        child: Text("Select all")),
+                    RaisedButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedItemsClose.clear();
+                          });
+                          updateParent(selectedItemsClose);
+                        },
+                        child: Text("Select none")),
+                  ],
+                );
+              },
+              isExpanded: true,
+              menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
+            ),
 ```
 
 #### Multi dialog select all/none without clear
 ```dart
       SearchChoices.multiple(
-        items: items,
-        selectedItems: selectedItems,
-        hint: "Select any",
-        searchHint: "Select any",
-        displayClearIcon: false,
-        onChanged: (value) {
-          setState(() {
-            selectedItems = value;
-          });
-        },
-        dialogBox: true,
-        closeButton: (selectedItemsClose) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              RaisedButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedItemsClose.clear();
-                      selectedItemsClose.addAll(
-                          Iterable<int>.generate(items.length).toList());
-                    });
-                  },
-                  child: Text("Select all")),
-              RaisedButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedItemsClose.clear();
-                    });
-                  },
-                  child: Text("Select none")),
-            ],
-          );
-        },
-        isExpanded: true,
-      ),
+              items: items,
+              selectedItems: selectedItems,
+              hint: "Select any",
+              searchHint: "Select any",
+              displayClearIcon: false,
+              onChanged: (value) {
+                setState(() {
+                  selectedItems = value;
+                });
+              },
+              dialogBox: true,
+              closeButton: (selectedItemsClose, closeContext, Function updateParent) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    RaisedButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedItemsClose.clear();
+                            selectedItemsClose.addAll(
+                                Iterable<int>.generate(items.length).toList());
+                          });
+                          updateParent(selectedItemsClose);
+                        },
+                        child: Text("Select all")),
+                    RaisedButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedItemsClose.clear();
+                          });
+                          updateParent(selectedItemsClose);
+                        },
+                        child: Text("Select none")),
+                  ],
+                );
+              },
+              isExpanded: true,
+            ),
 ```
 
 #### Single dialog custom keyboard

@@ -389,24 +389,26 @@ class _MyAppState extends State<MyApp> {
           });
         },
         dialogBox: false,
-        closeButton: (selectedItemsClose) {
+        closeButton: (selectedItemsClose, closeContext, Function updateParent) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               RaisedButton(
                   onPressed: () {
                     setState(() {
-                      selectedItems.clear();
-                      selectedItems.addAll(
+                      selectedItemsClose.clear();
+                      selectedItemsClose.addAll(
                           Iterable<int>.generate(items.length).toList());
                     });
+                    updateParent(selectedItemsClose);
                   },
                   child: Text("Select all")),
               RaisedButton(
                   onPressed: () {
                     setState(() {
-                      selectedItems.clear();
+                      selectedItemsClose.clear();
                     });
+                    updateParent(selectedItemsClose);
                   },
                   child: Text("Select none")),
             ],
@@ -427,24 +429,26 @@ class _MyAppState extends State<MyApp> {
           });
         },
         dialogBox: true,
-        closeButton: (selectedItemsClose) {
+        closeButton: (selectedItemsClose, closeContext, Function updateParent) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               RaisedButton(
                   onPressed: () {
                     setState(() {
-                      selectedItems.clear();
-                      selectedItems.addAll(
+                      selectedItemsClose.clear();
+                      selectedItemsClose.addAll(
                           Iterable<int>.generate(items.length).toList());
                     });
+                    updateParent(selectedItemsClose);
                   },
                   child: Text("Select all")),
               RaisedButton(
                   onPressed: () {
                     setState(() {
-                      selectedItems.clear();
+                      selectedItemsClose.clear();
                     });
+                    updateParent(selectedItemsClose);
                   },
                   child: Text("Select none")),
             ],
