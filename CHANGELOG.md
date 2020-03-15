@@ -1,3 +1,7 @@
+## 1.0.10
+
+* bug: allow selection update from outside the plugin: https://github.com/icemanbsi/searchable_dropdown/issues/21 (thanks to @ettiennelr and @lechuk)
+
 ## 1.0.9
 
 * adapted dropdown list display to support multiple selection editable list
