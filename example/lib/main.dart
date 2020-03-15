@@ -55,7 +55,8 @@ class _MyAppState extends State<MyApp> {
   bool asTabs = false;
   String selectedValue;
   ExampleNumber selectedNumber;
-  List<int> selectedItems;
+  List<int> selectedItems = [];
+  List<int> editableSelectedItems = [];
   List<DropdownMenuItem> items = [];
   List<DropdownMenuItem> editableItems = [];
   final _formKey = GlobalKey<FormState>();
@@ -395,8 +396,8 @@ class _MyAppState extends State<MyApp> {
               RaisedButton(
                   onPressed: () {
                     setState(() {
-                      selectedItemsClose.clear();
-                      selectedItemsClose.addAll(
+                      selectedItems.clear();
+                      selectedItems.addAll(
                           Iterable<int>.generate(items.length).toList());
                     });
                   },
@@ -404,7 +405,7 @@ class _MyAppState extends State<MyApp> {
               RaisedButton(
                   onPressed: () {
                     setState(() {
-                      selectedItemsClose.clear();
+                      selectedItems.clear();
                     });
                   },
                   child: Text("Select none")),
@@ -433,8 +434,8 @@ class _MyAppState extends State<MyApp> {
               RaisedButton(
                   onPressed: () {
                     setState(() {
-                      selectedItemsClose.clear();
-                      selectedItemsClose.addAll(
+                      selectedItems.clear();
+                      selectedItems.addAll(
                           Iterable<int>.generate(items.length).toList());
                     });
                   },
@@ -442,7 +443,7 @@ class _MyAppState extends State<MyApp> {
               RaisedButton(
                   onPressed: () {
                     setState(() {
-                      selectedItemsClose.clear();
+                      selectedItems.clear();
                     });
                   },
                   child: Text("Select none")),
@@ -617,7 +618,7 @@ class _MyAppState extends State<MyApp> {
       ),
       "Multi dialog editable items": SearchChoices.multiple(
         items: editableItems,
-        selectedItems: selectedItems,
+        selectedItems: editableSelectedItems,
         hint: "Select any",
         searchHint: "Select any",
         disabledHint: (Function updateParent) {
@@ -625,8 +626,8 @@ class _MyAppState extends State<MyApp> {
             onPressed: () {
               addItemDialog().then((value) async {
                 if (value != null) {
-                  selectedItems = [0];
-                  updateParent(selectedItems);
+                  editableSelectedItems = [0];
+                  updateParent(editableSelectedItems);
                 }
               });
             },
@@ -644,10 +645,10 @@ class _MyAppState extends State<MyApp> {
                         int itemIndex = editableItems
                             .indexWhere((element) => element.value == value);
                         if (itemIndex != -1) {
-                          selectedItems.add(itemIndex);
+                          editableSelectedItems.add(itemIndex);
                           Navigator.pop(
                               MyApp.navKey.currentState.overlay.context);
-                          updateParent(selectedItems);
+                          updateParent(editableSelectedItems);
                         }
                       }
                     });
@@ -658,7 +659,7 @@ class _MyAppState extends State<MyApp> {
         onChanged: (values) {
           setState(() {
             if (!(values is NotGiven)) {
-              selectedItems = values;
+              editableSelectedItems = values;
             }
           });
         },
@@ -685,13 +686,14 @@ class _MyAppState extends State<MyApp> {
               onPressed: () {
                 int indexOfItem = editableItems.indexOf(item);
                 editableItems.removeWhere((element) => item == element);
-                selectedItems.removeWhere((element) => element == indexOfItem);
-                for (int i = 0; i < selectedItems.length; i++) {
-                  if (selectedItems[i] > indexOfItem) {
-                    selectedItems[i]--;
+                editableSelectedItems
+                    .removeWhere((element) => element == indexOfItem);
+                for (int i = 0; i < editableSelectedItems.length; i++) {
+                  if (editableSelectedItems[i] > indexOfItem) {
+                    editableSelectedItems[i]--;
                   }
                 }
-                updateParent(selectedItems);
+                updateParent(editableSelectedItems);
                 setState(() {});
               },
             ),
@@ -836,6 +838,33 @@ class _MyAppState extends State<MyApp> {
             ],
           );
         },
+      ),
+      "Update value from outside the plugin": Column(
+        children: [
+          SearchChoices.single(
+            items: items,
+            value: selectedValue,
+            hint: Text('Select One'),
+            searchHint: new Text(
+              'Select One',
+              style: new TextStyle(fontSize: 20),
+            ),
+            onChanged: (value) {
+              setState(() {
+                selectedValue = value;
+              });
+            },
+            isExpanded: true,
+          ),
+          FlatButton(
+            child: Text("Select dolor sit"),
+            onPressed: () {
+              setState(() {
+                selectedValue = "dolor sit";
+              });
+            },
+          ),
+        ],
       ),
     };
 

@@ -498,6 +498,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
   @override
   void didUpdateWidget(SearchChoices oldWidget) {
     super.didUpdateWidget(oldWidget);
+    updateSelectedItems();
   }
 
   Widget get menuWidget {
