@@ -53,15 +53,33 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool asTabs = false;
-  String selectedValue;
+  String selectedValueSingleDialog;
+  String selectedValueSingleDoneButtonDialog;
+  String selectedValueSingleMenu;
+  String selectedValueSingleDialogCustomKeyboard;
+  String selectedValueSingleDialogOverflow;
+  String selectedValueSingleDialogEditableItems;
+  String selectedValueSingleDialogDarkMode;
+  String selectedValueSingleDialogEllipsis;
+  String selectedValueSingleDialogRightToLeft;
+  String selectedValueUpdateFromOutsideThePlugin;
   ExampleNumber selectedNumber;
-  List<int> selectedItems = [];
+  List<int> selectedItemsMultiDialog = [];
+  List<int> selectedItemsMultiCustomDisplayDialog = [];
+  List<int> selectedItemsMultiSelect3Dialog = [];
+  List<int> selectedItemsMultiMenu = [];
+  List<int> selectedItemsMultiMenuSelectAllNone = [];
+  List<int> selectedItemsMultiDialogSelectAllNoneWoClear = [];
   List<int> editableSelectedItems = [];
   List<DropdownMenuItem> items = [];
   List<DropdownMenuItem> editableItems = [];
   final _formKey = GlobalKey<FormState>();
   String inputString = "";
   TextFormField input;
+  List<DropdownMenuItem<ExampleNumber>> numberItems =
+      ExampleNumber.list.map((exNum) {
+    return (DropdownMenuItem(child: Text(exNum.numberString), value: exNum));
+  }).toList();
 
   static const String appTitle = "Search Choices demo";
   final String loremIpsum =
@@ -166,19 +184,19 @@ class _MyAppState extends State<MyApp> {
     widgets = {
       "Single dialog": SearchChoices.single(
         items: items,
-        value: selectedValue,
+        value: selectedValueSingleDialog,
         hint: "Select one",
         searchHint: "Select one",
         onChanged: (value) {
           setState(() {
-            selectedValue = value;
+            selectedValueSingleDialog = value;
           });
         },
         isExpanded: true,
       ),
       "Multi dialog": SearchChoices.multiple(
         items: items,
-        selectedItems: selectedItems,
+        selectedItems: selectedItemsMultiDialog,
         hint: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Text("Select any"),
@@ -186,7 +204,7 @@ class _MyAppState extends State<MyApp> {
         searchHint: "Select any",
         onChanged: (value) {
           setState(() {
-            selectedItems = value;
+            selectedItemsMultiDialog = value;
           });
         },
         closeButton: (selectedItems) {
@@ -198,12 +216,12 @@ class _MyAppState extends State<MyApp> {
       ),
       "Single done button dialog": SearchChoices.single(
         items: items,
-        value: selectedValue,
+        value: selectedValueSingleDoneButtonDialog,
         hint: "Select one",
         searchHint: "Select one",
         onChanged: (value) {
           setState(() {
-            selectedValue = value;
+            selectedValueSingleDoneButtonDialog = value;
           });
         },
         doneButton: "Done",
@@ -228,7 +246,7 @@ class _MyAppState extends State<MyApp> {
       ),
       "Multi custom display dialog": SearchChoices.multiple(
         items: items,
-        selectedItems: selectedItems,
+        selectedItems: selectedItemsMultiCustomDisplayDialog,
         hint: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Text("Select any"),
@@ -236,7 +254,7 @@ class _MyAppState extends State<MyApp> {
         searchHint: "Select any",
         onChanged: (value) {
           setState(() {
-            selectedItems = value;
+            selectedItemsMultiCustomDisplayDialog = value;
           });
         },
         displayItem: (item, selected) {
@@ -319,7 +337,7 @@ class _MyAppState extends State<MyApp> {
       ),
       "Multi select 3 dialog": SearchChoices.multiple(
         items: items,
-        selectedItems: selectedItems,
+        selectedItems: selectedItemsMultiSelect3Dialog,
         hint: "Select 3 items",
         searchHint: "Select 3",
         validator: (selectedItemsForValidator) {
@@ -330,7 +348,7 @@ class _MyAppState extends State<MyApp> {
         },
         onChanged: (value) {
           setState(() {
-            selectedItems = value;
+            selectedItemsMultiSelect3Dialog = value;
           });
         },
         doneButton: (selectedItemsDone, doneContext) {
@@ -350,12 +368,12 @@ class _MyAppState extends State<MyApp> {
       ),
       "Single menu": SearchChoices.single(
         items: items,
-        value: selectedValue,
+        value: selectedValueSingleMenu,
         hint: "Select one",
         searchHint: null,
         onChanged: (value) {
           setState(() {
-            selectedValue = value;
+            selectedValueSingleMenu = value;
           });
         },
         dialogBox: false,
@@ -364,14 +382,14 @@ class _MyAppState extends State<MyApp> {
       ),
       "Multi menu": SearchChoices.multiple(
         items: items,
-        selectedItems: selectedItems,
+        selectedItems: selectedItemsMultiMenu,
         hint: "Select any",
         searchHint: "",
         doneButton: "Close",
         closeButton: SizedBox.shrink(),
         onChanged: (value) {
           setState(() {
-            selectedItems = value;
+            selectedItemsMultiMenu = value;
           });
         },
         dialogBox: false,
@@ -380,12 +398,12 @@ class _MyAppState extends State<MyApp> {
       ),
       "Multi menu select all/none": SearchChoices.multiple(
         items: items,
-        selectedItems: selectedItems,
+        selectedItems: selectedItemsMultiMenuSelectAllNone,
         hint: "Select any",
         searchHint: "Select any",
         onChanged: (value) {
           setState(() {
-            selectedItems = value;
+            selectedItemsMultiMenuSelectAllNone = value;
           });
         },
         dialogBox: false,
@@ -419,13 +437,13 @@ class _MyAppState extends State<MyApp> {
       ),
       "Multi dialog select all/none without clear": SearchChoices.multiple(
         items: items,
-        selectedItems: selectedItems,
+        selectedItems: selectedItemsMultiDialogSelectAllNoneWoClear,
         hint: "Select any",
         searchHint: "Select any",
         displayClearIcon: false,
         onChanged: (value) {
           setState(() {
-            selectedItems = value;
+            selectedItemsMultiDialogSelectAllNoneWoClear = value;
           });
         },
         dialogBox: true,
@@ -463,12 +481,12 @@ class _MyAppState extends State<MyApp> {
             value: i.toString(),
           ));
         }).toList(),
-        value: selectedValue,
+        value: selectedValueSingleDialogCustomKeyboard,
         hint: "Select one number",
         searchHint: "Select one number",
         onChanged: (value) {
           setState(() {
-            selectedValue = value;
+            selectedValueSingleDialogCustomKeyboard = value;
           });
         },
         dialogBox: true,
@@ -476,10 +494,7 @@ class _MyAppState extends State<MyApp> {
         isExpanded: true,
       ),
       "Single dialog object": SearchChoices.single(
-        items: ExampleNumber.list.map((exNum) {
-          return (DropdownMenuItem(
-              child: Text(exNum.numberString), value: exNum));
-        }).toList(),
+        items: numberItems,
         value: selectedNumber,
         hint: "Select one number",
         searchHint: "Select one number",
@@ -500,12 +515,12 @@ class _MyAppState extends State<MyApp> {
                 "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I wouldn't want to go right now",
           )
         ],
-        value: "",
+        value: selectedValueSingleDialogOverflow,
         hint: "Select one",
         searchHint: "Select one",
         onChanged: (value) {
           setState(() {
-            selectedValue = value;
+            selectedValueSingleDialogOverflow = value;
           });
         },
         dialogBox: true,
@@ -523,9 +538,7 @@ class _MyAppState extends State<MyApp> {
         searchHint: "Select one",
         disabledHint: "Disabled",
         onChanged: (value) {
-          setState(() {
-            selectedValue = value;
-          });
+          setState(() {});
         },
         dialogBox: true,
         isExpanded: true,
@@ -548,7 +561,7 @@ class _MyAppState extends State<MyApp> {
       ),
       "Single dialog editable items": SearchChoices.single(
         items: editableItems,
-        value: selectedValue,
+        value: selectedValueSingleDialogEditableItems,
         hint: "Select one",
         searchHint: "Select one",
         disabledHint: (Function updateParent) {
@@ -584,7 +597,7 @@ class _MyAppState extends State<MyApp> {
         onChanged: (value) {
           setState(() {
             if (!(value is NotGiven)) {
-              selectedValue = value;
+              selectedValueSingleDialogEditableItems = value;
             }
           });
         },
@@ -719,7 +732,7 @@ class _MyAppState extends State<MyApp> {
               value: item.value,
             ));
           }).toList(),
-          value: selectedValue,
+          value: selectedValueSingleDialogDarkMode,
           hint: Text(
             "Select one",
             style: TextStyle(color: Colors.white),
@@ -743,7 +756,7 @@ class _MyAppState extends State<MyApp> {
           iconDisabledColor: Colors.grey,
           onChanged: (value) {
             setState(() {
-              selectedValue = value;
+              selectedValueSingleDialogDarkMode = value;
             });
           },
           isExpanded: true,
@@ -760,12 +773,12 @@ class _MyAppState extends State<MyApp> {
                 "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I wouldn't want to go right now",
           )
         ],
-        value: "",
+        value: selectedValueSingleDialogEllipsis,
         hint: "Select one",
         searchHint: "Select one",
         onChanged: (value) {
           setState(() {
-            selectedValue = value;
+            selectedValueSingleDialogEllipsis = value;
           });
         },
         selectedValueWidgetFn: (item) {
@@ -788,7 +801,7 @@ class _MyAppState extends State<MyApp> {
             value: string,
           ));
         }).toList(),
-        value: selectedValue,
+        value: selectedValueSingleDialogRightToLeft,
         hint: Text(
           "ختار",
           textDirection: TextDirection.rtl,
@@ -808,7 +821,7 @@ class _MyAppState extends State<MyApp> {
         ),
         onChanged: (value) {
           setState(() {
-            selectedValue = value;
+            selectedValueSingleDialogRightToLeft = value;
           });
         },
         isExpanded: true,
@@ -847,7 +860,7 @@ class _MyAppState extends State<MyApp> {
         children: [
           SearchChoices.single(
             items: items,
-            value: selectedValue,
+            value: selectedValueUpdateFromOutsideThePlugin,
             hint: Text('Select One'),
             searchHint: new Text(
               'Select One',
@@ -855,7 +868,7 @@ class _MyAppState extends State<MyApp> {
             ),
             onChanged: (value) {
               setState(() {
-                selectedValue = value;
+                selectedValueUpdateFromOutsideThePlugin = value;
               });
             },
             isExpanded: true,
@@ -864,7 +877,7 @@ class _MyAppState extends State<MyApp> {
             child: Text("Select dolor sit"),
             onPressed: () {
               setState(() {
-                selectedValue = "dolor sit";
+                selectedValueUpdateFromOutsideThePlugin = "dolor sit";
               });
             },
           ),

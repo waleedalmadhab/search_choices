@@ -457,24 +457,33 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
   }
 
   updateSelectedItems({dynamic sel = const NotGiven()}) {
+    List<int> updatedSelectedItems;
     if (widget.multipleSelection) {
       if (!(sel is NotGiven)) {
-        selectedItems = sel as List<int>;
+        updatedSelectedItems = sel as List<int>;
       } else {
-        selectedItems = List<int>.from(widget.selectedItems ?? []);
+        updatedSelectedItems =
+            List<int>.from(widget.selectedItems ?? List<int>());
       }
     } else {
       T val = !(sel is NotGiven) ? sel as T : widget.value;
       if (val != null) {
         int i = indexFromValue(val);
         if (i != null && i != -1) {
-          selectedItems = [i];
+          updatedSelectedItems = [i];
         }
       } else {
-        selectedItems = null;
+        updatedSelectedItems = null;
       }
-      if (selectedItems == null) selectedItems = [];
+      if (updatedSelectedItems == null) updatedSelectedItems = List<int>();
     }
+    selectedItems.retainWhere((element) =>
+        updatedSelectedItems.any((selected) => selected == element));
+    updatedSelectedItems.forEach((selected) {
+      if (!selectedItems.any((element) => selected == element)) {
+        selectedItems.add(selected);
+      }
+    });
   }
 
   int indexFromValue(T value) {
@@ -485,6 +494,11 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
 
   @override
   void initState() {
+    selectedItems = List<int>();
+    if (widget.selectedItems != null) {
+      selectedItems.addAll(widget.selectedItems);
+    }
+    super.initState();
     updateParent = (sel) {
       if (!(sel is NotGiven)) {
         widget.onChanged(sel);

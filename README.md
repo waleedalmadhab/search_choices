@@ -275,441 +275,430 @@ flutter build ios
 
 #### Single dialog
 ```dart
-      SearchChoices.single(
-        items: items,
-        value: selectedValue,
-        hint: "Select one",
-        searchHint: "Select one",
-        onChanged: (value) {
-          setState(() {
-            selectedValue = value;
-          });
-        },
-        isExpanded: true,
-      ),
+SearchChoices.single(
+  items: items,
+  value: selectedValueSingleDialog,
+  hint: "Select one",
+  searchHint: "Select one",
+  onChanged: (value) {
+    setState(() {
+      selectedValueSingleDialog = value;
+    });
+  },
+  isExpanded: true,
+)
 ```
 #### Multi dialog
 ```dart
-      SearchChoices.multiple(
-        items: items,
-        selectedItems: selectedItems,
-        hint: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Text("Select any"),
-        ),
-        searchHint: "Select any",
-        onChanged: (value) {
-          setState(() {
-            selectedItems = value;
-          });
-        },
-        closeButton: (selectedItems) {
-          return (selectedItems.isNotEmpty
-              ? "Save ${selectedItems.length == 1 ? '"' + items[selectedItems.first].value.toString() + '"' : '(' + selectedItems.length.toString() + ')'}"
-              : "Save without selection");
-        },
-        isExpanded: true,
-      ),
+SearchChoices.multiple(
+    items: items,
+    selectedItems: selectedItemsMultiDialog,
+    hint: Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Text("Select any"),
+    ),
+    searchHint: "Select any",
+    onChanged: (value) {
+      setState(() {
+        selectedItemsMultiDialog = value;
+      });
+    },
+    closeButton: (selectedItems) {
+      return (selectedItems.isNotEmpty
+          ? "Save ${selectedItems.length == 1 ? '"' + items[selectedItems.first].value.toString() + '"' : '(' + selectedItems.length.toString() + ')'}"
+          : "Save without selection");
+    },
+    isExpanded: true,
+)
 ```
 
 #### Single done button dialog
 ```dart
-      SearchChoices.single(
-        items: items,
-        value: selectedValue,
-        hint: "Select one",
-        searchHint: "Select one",
-        onChanged: (value) {
-          setState(() {
-            selectedValue = value;
-          });
-        },
-        doneButton: "Done",
-        displayItem: (item, selected) {
-          return (Row(children: [
-            selected
-                ? Icon(
-                    Icons.radio_button_checked,
-                    color: Colors.grey,
-                  )
-                : Icon(
-                    Icons.radio_button_unchecked,
-                    color: Colors.grey,
-                  ),
-            SizedBox(width: 7),
-            Expanded(
-              child: item,
-            ),
-          ]));
-        },
-        isExpanded: true,
-      ),
+SearchChoices.single(
+    items: items,
+    value: selectedValueSingleDoneButtonDialog,
+    hint: "Select one",
+    searchHint: "Select one",
+    onChanged: (value) {
+      setState(() {
+        selectedValueSingleDoneButtonDialog = value;
+      });
+    },
+    doneButton: "Done",
+    displayItem: (item, selected) {
+      return (Row(children: [
+        selected
+            ? Icon(
+                Icons.radio_button_checked,
+                color: Colors.grey,
+              )
+            : Icon(
+                Icons.radio_button_unchecked,
+                color: Colors.grey,
+              ),
+        SizedBox(width: 7),
+        Expanded(
+          child: item,
+        ),
+      ]));
+    },
+    isExpanded: true,
+)
 ```
 #### Multi custom display dialog
 ```dart
-      SearchChoices.multiple(
-        items: items,
-        selectedItems: selectedItems,
-        hint: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Text("Select any"),
-        ),
-        searchHint: "Select any",
-        onChanged: (value) {
-          setState(() {
-            selectedItems = value;
-          });
-        },
-        displayItem: (item, selected) {
-          return (Row(children: [
-            selected
-                ? Icon(
-                    Icons.check,
-                    color: Colors.green,
-                  )
-                : Icon(
-                    Icons.check_box_outline_blank,
-                    color: Colors.grey,
-                  ),
-            SizedBox(width: 7),
-            Expanded(
-              child: item,
+SearchChoices.multiple(
+  items: items,
+  selectedItems: selectedItemsMultiCustomDisplayDialog,
+  hint: Padding(
+    padding: const EdgeInsets.all(12.0),
+    child: Text("Select any"),
+  ),
+  searchHint: "Select any",
+  onChanged: (value) {
+    setState(() {
+      selectedItemsMultiCustomDisplayDialog = value;
+    });
+  },
+  displayItem: (item, selected) {
+    return (Row(children: [
+      selected
+          ? Icon(
+              Icons.check,
+              color: Colors.green,
+            )
+          : Icon(
+              Icons.check_box_outline_blank,
+              color: Colors.grey,
             ),
-          ]));
-        },
-        selectedValueWidgetFn: (item) {
-          return (Center(
-              child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    side: BorderSide(
-                      color: Colors.brown,
-                      width: 0.5,
-                    ),
-                  ),
-                  margin: EdgeInsets.all(12),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Text(item.toString()),
-                  ))));
-        },
-        doneButton: (selectedItemsDone, doneContext) {
-          return (RaisedButton(
-              onPressed: () {
-                Navigator.pop(doneContext);
-                setState(() {});
-              },
-              child: Text("Save")));
-        },
-        closeButton: null,
-        style: TextStyle(fontStyle: FontStyle.italic),
-        searchFn: (String keyword, items) {
-          List<int> ret = List<int>();
-          if (keyword != null && items != null && keyword.isNotEmpty) {
-            keyword.split(" ").forEach((k) {
-              int i = 0;
-              items.forEach((item) {
-                if (k.isNotEmpty &&
-                    (item.value
-                        .toString()
-                        .toLowerCase()
-                        .contains(k.toLowerCase()))) {
-                  ret.add(i);
-                }
-                i++;
-              });
-            });
-          }
-          if (keyword.isEmpty) {
-            ret = Iterable<int>.generate(items.length).toList();
-          }
-          return (ret);
-        },
-        clearIcon: Icon(Icons.clear_all),
-        icon: Icon(Icons.arrow_drop_down_circle),
-        label: "Label for multi",
-        underline: Container(
-          height: 1.0,
-          decoration: BoxDecoration(
-              border:
-                  Border(bottom: BorderSide(color: Colors.teal, width: 3.0))),
-        ),
-        iconDisabledColor: Colors.brown,
-        iconEnabledColor: Colors.indigo,
-        isExpanded: true,
+      SizedBox(width: 7),
+      Expanded(
+        child: item,
       ),
+    ]));
+  },
+  selectedValueWidgetFn: (item) {
+    return (Center(
+        child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: BorderSide(
+                color: Colors.brown,
+                width: 0.5,
+              ),
+            ),
+            margin: EdgeInsets.all(12),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(item.toString()),
+            ))));
+  },
+  doneButton: (selectedItemsDone, doneContext) {
+    return (RaisedButton(
+        onPressed: () {
+          Navigator.pop(doneContext);
+          setState(() {});
+        },
+        child: Text("Save")));
+  },
+  closeButton: null,
+  style: TextStyle(fontStyle: FontStyle.italic),
+  searchFn: (String keyword, items) {
+    List<int> ret = List<int>();
+    if (keyword != null && items != null && keyword.isNotEmpty) {
+      keyword.split(" ").forEach((k) {
+        int i = 0;
+        items.forEach((item) {
+          if (k.isNotEmpty &&
+              (item.value
+                  .toString()
+                  .toLowerCase()
+                  .contains(k.toLowerCase()))) {
+            ret.add(i);
+          }
+          i++;
+        });
+      });
+    }
+    if (keyword.isEmpty) {
+      ret = Iterable<int>.generate(items.length).toList();
+    }
+    return (ret);
+  },
+  clearIcon: Icon(Icons.clear_all),
+  icon: Icon(Icons.arrow_drop_down_circle),
+  label: "Label for multi",
+  underline: Container(
+    height: 1.0,
+    decoration: BoxDecoration(
+        border:
+            Border(bottom: BorderSide(color: Colors.teal, width: 3.0))),
+  ),
+  iconDisabledColor: Colors.brown,
+  iconEnabledColor: Colors.indigo,
+  isExpanded: true,
+)
 ```
 
 #### Multi select 3 dialog
 ```dart
-      SearchChoices.multiple(
-        items: items,
-        selectedItems: selectedItems,
-        hint: "Select 3 items",
-        searchHint: "Select 3",
-        validator: (selectedItemsForValidator) {
-          if (selectedItemsForValidator.length != 3) {
-            return ("Must select 3");
-          }
-          return (null);
-        },
-        onChanged: (value) {
-          setState(() {
-            selectedItems = value;
-          });
-        },
-        doneButton: (selectedItemsDone, doneContext) {
-          return (RaisedButton(
-              onPressed: selectedItemsDone.length != 3
-                  ? null
-                  : () {
-                      Navigator.pop(doneContext);
-                      setState(() {});
-                    },
-              child: Text("Save")));
-        },
-        closeButton: (selectedItems) {
-          return (selectedItems.length == 3 ? "Ok" : null);
-        },
-        isExpanded: true,
-      ),
+SearchChoices.multiple(
+    items: items,
+    selectedItems: selectedItemsMultiSelect3Dialog,
+    hint: "Select 3 items",
+    searchHint: "Select 3",
+    validator: (selectedItemsForValidator) {
+      if (selectedItemsForValidator.length != 3) {
+        return ("Must select 3");
+      }
+      return (null);
+    },
+    onChanged: (value) {
+      setState(() {
+        selectedItemsMultiSelect3Dialog = value;
+      });
+    },
+    doneButton: (selectedItemsDone, doneContext) {
+      return (RaisedButton(
+          onPressed: selectedItemsDone.length != 3
+              ? null
+              : () {
+                  Navigator.pop(doneContext);
+                  setState(() {});
+                },
+          child: Text("Save")));
+    },
+    closeButton: (selectedItemsClose) {
+      return (selectedItemsClose.length == 3 ? "Ok" : null);
+    },
+    isExpanded: true,
+)
 ```
 
 #### Single menu
 ```dart
-      SearchChoices.single(
-        items: items,
-        value: selectedValue,
-        hint: "Select one",
-        searchHint: null,
-        onChanged: (value) {
-          setState(() {
-            selectedValue = value;
-          });
-        },
-        dialogBox: false,
-        isExpanded: true,
-        menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
-      ),
+SearchChoices.single(
+    items: items,
+    value: selectedValueSingleMenu,
+    hint: "Select one",
+    searchHint: null,
+    onChanged: (value) {
+      setState(() {
+        selectedValueSingleMenu = value;
+      });
+    },
+    dialogBox: false,
+    isExpanded: true,
+    menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
+)
 ```
 
 #### Multi menu
 ```dart
-      SearchChoices.multiple(
-        items: items,
-        selectedItems: selectedItems,
-        hint: "Select any",
-        searchHint: "",
-        doneButton: "Close",
-        closeButton: SizedBox.shrink(),
-        onChanged: (value) {
-          setState(() {
-            selectedItems = value;
-          });
-        },
-        dialogBox: false,
-        isExpanded: true,
-        menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
-      ),
+SearchChoices.multiple(
+    items: items,
+    selectedItems: selectedItemsMultiMenu,
+    hint: "Select any",
+    searchHint: "",
+    doneButton: "Close",
+    closeButton: SizedBox.shrink(),
+    onChanged: (value) {
+      setState(() {
+        selectedItemsMultiMenu = value;
+      });
+    },
+    dialogBox: false,
+    isExpanded: true,
+    menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
+)
 ```
 
 #### Multi menu select all/none
 ```dart
-      SearchChoices.multiple(
-              items: items,
-              selectedItems: selectedItems,
-              hint: "Select any",
-              searchHint: "Select any",
-              onChanged: (value) {
+SearchChoices.multiple(
+    items: items,
+    selectedItems: selectedItemsMultiMenuSelectAllNone,
+    hint: "Select any",
+    searchHint: "Select any",
+    onChanged: (value) {
+      setState(() {
+        selectedItemsMultiMenuSelectAllNone = value;
+      });
+    },
+    dialogBox: false,
+    closeButton: (selectedItemsClose, closeContext, Function updateParent) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          RaisedButton(
+              onPressed: () {
                 setState(() {
-                  selectedItems = value;
+                  selectedItemsClose.clear();
+                  selectedItemsClose.addAll(
+                      Iterable<int>.generate(items.length).toList());
                 });
+                updateParent(selectedItemsClose);
               },
-              dialogBox: false,
-              closeButton: (selectedItemsClose, closeContext, Function updateParent) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    RaisedButton(
-                        onPressed: () {
-                          setState(() {
-                            selectedItemsClose.clear();
-                            selectedItemsClose.addAll(
-                                Iterable<int>.generate(items.length).toList());
-                          });
-                          updateParent(selectedItemsClose);
-                        },
-                        child: Text("Select all")),
-                    RaisedButton(
-                        onPressed: () {
-                          setState(() {
-                            selectedItemsClose.clear();
-                          });
-                          updateParent(selectedItemsClose);
-                        },
-                        child: Text("Select none")),
-                  ],
-                );
+              child: Text("Select all")),
+          RaisedButton(
+              onPressed: () {
+                setState(() {
+                  selectedItemsClose.clear();
+                });
+                updateParent(selectedItemsClose);
               },
-              isExpanded: true,
-              menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
-            ),
+              child: Text("Select none")),
+        ],
+      );
+    },
+    isExpanded: true,
+    menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
+)
 ```
 
 #### Multi dialog select all/none without clear
 ```dart
-      SearchChoices.multiple(
-              items: items,
-              selectedItems: selectedItems,
-              hint: "Select any",
-              searchHint: "Select any",
-              displayClearIcon: false,
-              onChanged: (value) {
+SearchChoices.multiple(
+    items: items,
+    selectedItems: selectedItemsMultiDialogSelectAllNoneWoClear,
+    hint: "Select any",
+    searchHint: "Select any",
+    displayClearIcon: false,
+    onChanged: (value) {
+      setState(() {
+        selectedItemsMultiDialogSelectAllNoneWoClear = value;
+      });
+    },
+    dialogBox: true,
+    closeButton: (selectedItemsClose, closeContext, Function updateParent) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          RaisedButton(
+              onPressed: () {
                 setState(() {
-                  selectedItems = value;
+                  selectedItemsClose.clear();
+                  selectedItemsClose.addAll(
+                      Iterable<int>.generate(items.length).toList());
                 });
+                updateParent(selectedItemsClose);
               },
-              dialogBox: true,
-              closeButton: (selectedItemsClose, closeContext, Function updateParent) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    RaisedButton(
-                        onPressed: () {
-                          setState(() {
-                            selectedItemsClose.clear();
-                            selectedItemsClose.addAll(
-                                Iterable<int>.generate(items.length).toList());
-                          });
-                          updateParent(selectedItemsClose);
-                        },
-                        child: Text("Select all")),
-                    RaisedButton(
-                        onPressed: () {
-                          setState(() {
-                            selectedItemsClose.clear();
-                          });
-                          updateParent(selectedItemsClose);
-                        },
-                        child: Text("Select none")),
-                  ],
-                );
+              child: Text("Select all")),
+          RaisedButton(
+              onPressed: () {
+                setState(() {
+                  selectedItemsClose.clear();
+                });
+                updateParent(selectedItemsClose);
               },
-              isExpanded: true,
-            ),
+              child: Text("Select none")),
+        ],
+      );
+    },
+    isExpanded: true,
+)
 ```
 
 #### Single dialog custom keyboard
 ```dart
-      SearchChoices.single(
-        items: Iterable<int>.generate(20).toList().map((i) {
-          return (DropdownMenuItem(
-            child: Text(i.toString()),
-            value: i.toString(),
-          ));
-        }).toList(),
-        value: selectedValue,
-        hint: "Select one number",
-        searchHint: "Select one number",
-        onChanged: (value) {
-          setState(() {
-            selectedValue = value;
-          });
-        },
-        dialogBox: true,
-        keyboardType: TextInputType.number,
-        isExpanded: true,
-      ),
+SearchChoices.single(
+    items: Iterable<int>.generate(20).toList().map((i) {
+      return (DropdownMenuItem(
+        child: Text(i.toString()),
+        value: i.toString(),
+      ));
+    }).toList(),
+    value: selectedValueSingleDialogCustomKeyboard,
+    hint: "Select one number",
+    searchHint: "Select one number",
+    onChanged: (value) {
+      setState(() {
+        selectedValueSingleDialogCustomKeyboard = value;
+      });
+    },
+    dialogBox: true,
+    keyboardType: TextInputType.number,
+    isExpanded: true,
+)
 ```
 
 #### Single dialog object
 ```dart
-      SearchChoices.single(
-        items: ExampleNumber.list.map((exNum) {
-          return (DropdownMenuItem(
-              child: Text(exNum.numberString), value: exNum));
-        }).toList(),
-        value: selectedNumber,
-        hint: "Select one number",
-        searchHint: "Select one number",
-        onChanged: (value) {
-          setState(() {
-            selectedNumber = value;
-          });
-        },
-        dialogBox: true,
-        isExpanded: true,
-      ),
+SearchChoices.single(
+    items: numberItems,
+    value: selectedNumber,
+    hint: "Select one number",
+    searchHint: "Select one number",
+    onChanged: (value) {
+      setState(() {
+        selectedNumber = value;
+      });
+    },
+    dialogBox: true,
+    isExpanded: true,
+)
 ```
 #### Single dialog overflow
 ```dart
-      SearchChoices.single(
-        items: [
-          DropdownMenuItem(
-            child: Text(
-                "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I 
-wouldn't want to go right now"),
-            value:
-                "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I 
-wouldn't want to go right now",
-          )
-        ],
-        value: "",
-        hint: "Select one",
-        searchHint: "Select one",
-        onChanged: (value) {
-          setState(() {
-            selectedValue = value;
-          });
-        },
-        dialogBox: true,
-        isExpanded: true,
-      ),
+SearchChoices.single(
+    items: [
+      DropdownMenuItem(
+        child: Text(
+            "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I wouldn't want to go right now"),
+        value:
+            "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I wouldn't want to go right now",
+      )
+    ],
+    value: selectedValueSingleDialogOverflow,
+    hint: "Select one",
+    searchHint: "Select one",
+    onChanged: (value) {
+      setState(() {
+        selectedValueSingleDialogOverflow = value;
+      });
+    },
+    dialogBox: true,
+    isExpanded: true,
+)
 ```
 #### Single dialog readOnly
 ```dart
-      SearchChoices.single(
-        items: [
-          DropdownMenuItem(
-            child: Text(
-                "one item"),
-            value:
-            "one item",
-          )
-        ],
+SearchChoices.single(
+    items: [
+      DropdownMenuItem(
+        child: Text("one item"),
         value: "one item",
-        hint: "Select one",
-        searchHint: "Select one",
-        disabledHint: "Disabled",
-        onChanged: (value) {
-          setState(() {
-            selectedValue = value;
-          });
-        },
-        dialogBox: true,
-        isExpanded: true,
-        readOnly: true,
-      ),
+      )
+    ],
+    value: "one item",
+    hint: "Select one",
+    searchHint: "Select one",
+    disabledHint: "Disabled",
+    onChanged: (value) {
+      setState(() {});
+    },
+    dialogBox: true,
+    isExpanded: true,
+    readOnly: true,
+)
 ```
 #### Single dialog disabled
 ```dart
-      SearchChoices.single(
-        items: [
-          DropdownMenuItem(
-            child: Text(
-                "one item"),
-            value:
-            "one item",
-          )
-        ],
+SearchChoices.single(
+    items: [
+      DropdownMenuItem(
+        child: Text("one item"),
         value: "one item",
-        hint: "Select one",
-        searchHint: "Select one",
-        disabledHint: "Disabled",
-        onChanged: null,
-        dialogBox: true,
-        isExpanded: true,
-      ),
+      )
+    ],
+    value: "one item",
+    hint: "Select one",
+    searchHint: "Select one",
+    disabledHint: "Disabled",
+    onChanged: null,
+    dialogBox: true,
+    isExpanded: true,
+)
 ```
 #### Single dialog editable items
 This example lets the user add and remove items to and from the list of choices. One can limit the number of items that can be added (100 here).
@@ -765,80 +754,80 @@ This example lets the user add and remove items to and from the list of choices.
     );
   }
 ...
-      SearchChoices.single(
-        items: editableItems,
-        value: selectedValue,
-        hint: "Select one",
-        searchHint: "Select one",
-        disabledHint: (Function updateParent) {
-          return (FlatButton(
-            onPressed: () {
-              addItemDialog().then((value) async {
-                updateParent(value);
-              });
-            },
-            child: Text("No choice, click to add one"),
-          ));
-        },
-        closeButton:
-            (String value, BuildContext closeContext, Function updateParent) {
-          return (editableItems.length >= 100
-              ? "Close"
-              : FlatButton(
-                  onPressed: () {
-                    addItemDialog().then((value) async {
-                      if (value != null &&
-                          editableItems.indexWhere(
-                                  (element) => element.value == value) !=
-                              -1) {
-                        Navigator.pop(
-                            MyApp.navKey.currentState.overlay.context);
-                        updateParent(value);
-                      }
-                    });
-                  },
-                  child: Text("Add and select item"),
-                ));
-        },
-        onChanged: (value) {
-          setState(() {
-            if (!(value is NotGiven)) {
-              selectedValue = value;
-            }
+SearchChoices.single(
+    items: editableItems,
+    value: selectedValueSingleDialogEditableItems,
+    hint: "Select one",
+    searchHint: "Select one",
+    disabledHint: (Function updateParent) {
+      return (FlatButton(
+        onPressed: () {
+          addItemDialog().then((value) async {
+            updateParent(value);
           });
         },
-        displayItem: (item, selected, Function updateParent) {
-          return (Row(children: [
-            selected
-                ? Icon(
-                    Icons.check,
-                    color: Colors.green,
-                  )
-                : Icon(
-                    Icons.check_box_outline_blank,
-                    color: Colors.transparent,
-                  ),
-            SizedBox(width: 7),
-            Expanded(
-              child: item,
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.delete,
-                color: Colors.red,
-              ),
+        child: Text("No choice, click to add one"),
+      ));
+    },
+    closeButton:
+        (String value, BuildContext closeContext, Function updateParent) {
+      return (editableItems.length >= 100
+          ? "Close"
+          : FlatButton(
               onPressed: () {
-                editableItems.removeWhere((element) => item == element);
-                updateParent(null);
-                setState(() {});
+                addItemDialog().then((value) async {
+                  if (value != null &&
+                      editableItems.indexWhere(
+                              (element) => element.value == value) !=
+                          -1) {
+                    Navigator.pop(
+                        MyApp.navKey.currentState.overlay.context);
+                    updateParent(value);
+                  }
+                });
               },
-            ),
-          ]));
-        },
-        dialogBox: true,
-        isExpanded: true,
-        doneButton: "Done",
-      ),
+              child: Text("Add and select item"),
+            ));
+    },
+    onChanged: (value) {
+      setState(() {
+        if (!(value is NotGiven)) {
+          selectedValueSingleDialogEditableItems = value;
+        }
+      });
+    },
+    displayItem: (item, selected, Function updateParent) {
+      return (Row(children: [
+        selected
+            ? Icon(
+                Icons.check,
+                color: Colors.green,
+              )
+            : Icon(
+                Icons.check_box_outline_blank,
+                color: Colors.transparent,
+              ),
+        SizedBox(width: 7),
+        Expanded(
+          child: item,
+        ),
+        IconButton(
+          icon: Icon(
+            Icons.delete,
+            color: Colors.red,
+          ),
+          onPressed: () {
+            editableItems.removeWhere((element) => item == element);
+            updateParent(null);
+            setState(() {});
+          },
+        ),
+      ]));
+    },
+    dialogBox: true,
+    isExpanded: true,
+    doneButton: "Done",
+)
 ```
 #### Multi dialog editable items
 Same example as previously but with multiple selection.
@@ -894,238 +883,239 @@ Same example as previously but with multiple selection.
     );
   }
 ...
-      SearchChoices.multiple(
-        items: editableItems,
-        selectedItems: selectedItems,
-        hint: "Select any",
-        searchHint: "Select any",
-        disabledHint: (Function updateParent) {
-          return (FlatButton(
-            onPressed: () {
-              addItemDialog().then((value) async {
-                if (value != null) {
-                  selectedItems = [0];
-                  updateParent(selectedItems);
-                }
-              });
-            },
-            child: Text("No choice, click to add one"),
-          ));
-        },
-        closeButton: (List<int> values, BuildContext closeContext,
-            Function updateParent) {
-          return (editableItems.length >= 100
-              ? "Close"
-              : FlatButton(
-                  onPressed: () {
-                    addItemDialog().then((value) async {
-                      if (value != null) {
-                        int itemIndex = editableItems
-                            .indexWhere((element) => element.value == value);
-                        if (itemIndex != -1) {
-                          selectedItems.add(itemIndex);
-                          Navigator.pop(
-                              MyApp.navKey.currentState.overlay.context);
-                          updateParent(selectedItems);
-                        }
-                      }
-                    });
-                  },
-                  child: Text("Add and select item"),
-                ));
-        },
-        onChanged: (values) {
-          setState(() {
-            if (!(values is NotGiven)) {
-              selectedItems = values;
+SearchChoices.multiple(
+    items: editableItems,
+    selectedItems: editableSelectedItems,
+    hint: "Select any",
+    searchHint: "Select any",
+    disabledHint: (Function updateParent) {
+      return (FlatButton(
+        onPressed: () {
+          addItemDialog().then((value) async {
+            if (value != null) {
+              editableSelectedItems = [0];
+              updateParent(editableSelectedItems);
             }
           });
         },
-        displayItem: (item, selected, Function updateParent) {
-          return (Row(children: [
-            selected
-                ? Icon(
-                    Icons.check_box,
-                    color: Colors.black,
-                  )
-                : Icon(
-                    Icons.check_box_outline_blank,
-                    color: Colors.black,
-                  ),
-            SizedBox(width: 7),
-            Expanded(
-              child: item,
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.delete,
-                color: Colors.red,
-              ),
+        child: Text("No choice, click to add one"),
+      ));
+    },
+    closeButton: (List<int> values, BuildContext closeContext,
+        Function updateParent) {
+      return (editableItems.length >= 100
+          ? "Close"
+          : FlatButton(
               onPressed: () {
-                int indexOfItem = editableItems.indexOf(item);
-                editableItems.removeWhere((element) => item == element);
-                selectedItems.removeWhere((element) => element == indexOfItem);
-                for (int i = 0; i < selectedItems.length; i++) {
-                  if (selectedItems[i] > indexOfItem) {
-                    selectedItems[i]--;
+                addItemDialog().then((value) async {
+                  if (value != null) {
+                    int itemIndex = editableItems
+                        .indexWhere((element) => element.value == value);
+                    if (itemIndex != -1) {
+                      editableSelectedItems.add(itemIndex);
+                      Navigator.pop(
+                          MyApp.navKey.currentState.overlay.context);
+                      updateParent(editableSelectedItems);
+                    }
                   }
-                }
-                updateParent(selectedItems);
-                setState(() {});
+                });
               },
-            ),
-          ]));
-        },
-        dialogBox: true,
-        isExpanded: true,
-        doneButton: "Done",
-      ),
+              child: Text("Add and select item"),
+            ));
+    },
+    onChanged: (values) {
+      setState(() {
+        if (!(values is NotGiven)) {
+          editableSelectedItems = values;
+        }
+      });
+    },
+    displayItem: (item, selected, Function updateParent) {
+      return (Row(children: [
+        selected
+            ? Icon(
+                Icons.check_box,
+                color: Colors.black,
+              )
+            : Icon(
+                Icons.check_box_outline_blank,
+                color: Colors.black,
+              ),
+        SizedBox(width: 7),
+        Expanded(
+          child: item,
+        ),
+        IconButton(
+          icon: Icon(
+            Icons.delete,
+            color: Colors.red,
+          ),
+          onPressed: () {
+            int indexOfItem = editableItems.indexOf(item);
+            editableItems.removeWhere((element) => item == element);
+            editableSelectedItems
+                .removeWhere((element) => element == indexOfItem);
+            for (int i = 0; i < editableSelectedItems.length; i++) {
+              if (editableSelectedItems[i] > indexOfItem) {
+                editableSelectedItems[i]--;
+              }
+            }
+            updateParent(editableSelectedItems);
+            setState(() {});
+          },
+        ),
+      ]));
+    },
+    dialogBox: true,
+    isExpanded: true,
+    doneButton: "Done",
+)
 ```
 ### Single dialog dark mode
 ```dart
-          Card(
-            color: Colors.black,
-            child: SearchChoices.single(
-              items: items.map((item) {
-                return (DropdownMenuItem(
-                  child: Text(
-                    item.value,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  value: item.value,
-                ));
-              }).toList(),
-              value: selectedValue,
-              hint: Text(
-                "Select one",
-                style: TextStyle(color: Colors.white),
-              ),
-              searchHint: Text(
-                "Select one",
-                style: TextStyle(color: Colors.white),
-              ),
-              style: TextStyle(color: Colors.white, backgroundColor: Colors.black),
-              closeButton: FlatButton(
-                onPressed: () {
-                  Navigator.pop(MyApp.navKey.currentState.overlay.context);
-                },
-                child: Text(
-                  "Close",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              menuBackgroundColor: Colors.black,
-              iconEnabledColor: Colors.white,
-              iconDisabledColor: Colors.grey,
-              onChanged: (value) {
-                setState(() {
-                  selectedValue = value;
-                });
-              },
-              isExpanded: true,
-            ),
+Card(
+    color: Colors.black,
+    child: SearchChoices.single(
+      items: items.map((item) {
+        return (DropdownMenuItem(
+          child: Text(
+            item.value,
+            style: TextStyle(color: Colors.white),
           ),
+          value: item.value,
+        ));
+      }).toList(),
+      value: selectedValueSingleDialogDarkMode,
+      hint: Text(
+        "Select one",
+        style: TextStyle(color: Colors.white),
+      ),
+      searchHint: Text(
+        "Select one",
+        style: TextStyle(color: Colors.white),
+      ),
+      style: TextStyle(color: Colors.white, backgroundColor: Colors.black),
+      closeButton: FlatButton(
+        onPressed: () {
+          Navigator.pop(MyApp.navKey.currentState.overlay.context);
+        },
+        child: Text(
+          "Close",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      menuBackgroundColor: Colors.black,
+      iconEnabledColor: Colors.white,
+      iconDisabledColor: Colors.grey,
+      onChanged: (value) {
+        setState(() {
+          selectedValueSingleDialogDarkMode = value;
+        });
+      },
+      isExpanded: true,
+    ),
+)
 ```
 ### Single dialog ellipsis
 ```dart
-          SearchChoices.single(
-            items: [
-              DropdownMenuItem(
-                child: Text(
-                  "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I wouldn't want to go right now",
-                  overflow: TextOverflow.ellipsis,
-                ),
-                value:
-                    "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I wouldn't want to go right now",
-              )
-            ],
-            value: "",
-            hint: "Select one",
-            searchHint: "Select one",
-            onChanged: (value) {
-              setState(() {
-                selectedValue = value;
-              });
-            },
-            selectedValueWidgetFn: (item) {
-              return (Text(
-                item,
-                overflow: TextOverflow.ellipsis,
-              ));
-            },
-            dialogBox: true,
-            isExpanded: true,
-          ),
+SearchChoices.single(
+    items: [
+      DropdownMenuItem(
+        child: Text(
+          "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I wouldn't want to go right now",
+          overflow: TextOverflow.ellipsis,
+        ),
+        value:
+            "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I wouldn't want to go right now",
+      )
+    ],
+    value: selectedValueSingleDialogEllipsis,
+    hint: "Select one",
+    searchHint: "Select one",
+    onChanged: (value) {
+      setState(() {
+        selectedValueSingleDialogEllipsis = value;
+      });
+    },
+    selectedValueWidgetFn: (item) {
+      return (Text(
+        item,
+        overflow: TextOverflow.ellipsis,
+      ));
+    },
+    dialogBox: true,
+    isExpanded: true,
+)
 ```
 ### Single dialog right to left
 In support for Arabic and Hebrew languages.
 ```dart
-          SearchChoices.single(
-            items: ["طنجة", "فاس‎", "أكادير‎", "تزنيت‎", "آكــلــو", "سيدي بيبي"]
-                .map<DropdownMenuItem<String>>((string) {
-              return (DropdownMenuItem<String>(
-                child: Text(
-                  string,
-                  textDirection: TextDirection.rtl,
-                ),
-                value: string,
-              ));
-            }).toList(),
-            value: selectedValue,
-            hint: Text(
-              "ختار",
-              textDirection: TextDirection.rtl,
-            ),
-            searchHint: Text(
-              "ختار",
-              textDirection: TextDirection.rtl,
-            ),
-            closeButton: FlatButton(
-              onPressed: () {
-                Navigator.pop(MyApp.navKey.currentState.overlay.context);
-              },
-              child: Text(
-                "سدّ",
-                textDirection: TextDirection.rtl,
+SearchChoices.single(
+    items: ["طنجة", "فاس‎", "أكادير‎", "تزنيت‎", "آكــلــو", "سيدي بيبي"]
+        .map<DropdownMenuItem<String>>((string) {
+      return (DropdownMenuItem<String>(
+        child: Text(
+          string,
+          textDirection: TextDirection.rtl,
+        ),
+        value: string,
+      ));
+    }).toList(),
+    value: selectedValueSingleDialogRightToLeft,
+    hint: Text(
+      "ختار",
+      textDirection: TextDirection.rtl,
+    ),
+    searchHint: Text(
+      "ختار",
+      textDirection: TextDirection.rtl,
+    ),
+    closeButton: FlatButton(
+      onPressed: () {
+        Navigator.pop(MyApp.navKey.currentState.overlay.context);
+      },
+      child: Text(
+        "سدّ",
+        textDirection: TextDirection.rtl,
+      ),
+    ),
+    onChanged: (value) {
+      setState(() {
+        selectedValueSingleDialogRightToLeft = value;
+      });
+    },
+    isExpanded: true,
+    rightToLeft: true,
+    displayItem: (item, selected) {
+      return (Row(textDirection: TextDirection.rtl, children: [
+        selected
+            ? Icon(
+                Icons.radio_button_checked,
+                color: Colors.grey,
+              )
+            : Icon(
+                Icons.radio_button_unchecked,
+                color: Colors.grey,
               ),
-            ),
-            onChanged: (value) {
-              setState(() {
-                selectedValue = value;
-              });
-            },
-            isExpanded: true,
-            rightToLeft: true,
-            displayItem: (item, selected) {
-              return (Row(textDirection: TextDirection.rtl, children: [
-                selected
-                    ? Icon(
-                        Icons.radio_button_checked,
-                        color: Colors.grey,
-                      )
-                    : Icon(
-                        Icons.radio_button_unchecked,
-                        color: Colors.grey,
-                      ),
-                SizedBox(width: 7),
-                item,
-                Expanded(
-                  child: SizedBox.shrink(),
-                ),
-              ]));
-            },
-            selectedValueWidgetFn: (item) {
-              return Row(
-                textDirection: TextDirection.rtl,
-                children: <Widget>[
-                  (Text(
-                    item,
-                    textDirection: TextDirection.rtl,
-                  )),
-                ],
-              );
-            },
-          ),
+        SizedBox(width: 7),
+        item,
+        Expanded(
+          child: SizedBox.shrink(),
+        ),
+      ]));
+    },
+    selectedValueWidgetFn: (item) {
+      return Row(
+        textDirection: TextDirection.rtl,
+        children: <Widget>[
+          (Text(
+            item,
+            textDirection: TextDirection.rtl,
+          )),
+        ],
+      );
+    },
+)
 ```
 
 ## Feature requests/comments/questions/bugs

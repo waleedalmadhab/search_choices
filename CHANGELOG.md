@@ -1,3 +1,8 @@
+## 1.0.12
+
+* improvement of the selection update logic
+* consecutive adaptation of the examples
+
 ## 1.0.11
 
 * bug: allow multiselection dialog select all to update when outside a tab bar: https://github.com/icemanbsi/searchable_dropdown/issues/21#issuecomment-599198943 thanks to @ettiennelr
