@@ -611,7 +611,9 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
                     } else {
                       displayMenu.first = true;
                     }
-                    setState(() {});
+                    if (mounted) {
+                      setState(() {});
+                    }
                   },
             child: Row(
               textDirection:

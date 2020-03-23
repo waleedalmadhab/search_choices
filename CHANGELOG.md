@@ -1,3 +1,8 @@
+## 1.0.13
+
+* surrounded a setState by an if statement to check that mounted is set to true
+* corrected issue 8: ios compile error: search_choices_for_push-Swift.h file not found. Thanks @jaspervdbijl !
+
 ## 1.0.12
 
 * improvement of the selection update logic
