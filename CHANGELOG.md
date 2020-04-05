@@ -1,3 +1,7 @@
+## 1.0.14
+
+* Surrounded the DropdownDialog with a StatefulBuilder to allow the refresh of the display when there is a call to updateParent through a setState.
+
 ## 1.0.13
 
 * surrounded a setState by an if statement to check that mounted is set to true

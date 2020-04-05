@@ -516,36 +516,41 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
   }
 
   Widget get menuWidget {
-    return (DropdownDialog(
-      items: widget.items,
-      hint: prepareWidget(widget.searchHint),
-      isCaseSensitiveSearch: widget.isCaseSensitiveSearch,
-      closeButton: widget.closeButton,
-      keyboardType: widget.keyboardType,
-      searchFn: widget.searchFn,
-      multipleSelection: widget.multipleSelection,
-      selectedItems: selectedItems,
-      doneButton: widget.doneButton,
-      displayItem: widget.displayItem,
-      validator: widget.validator,
-      dialogBox: widget.dialogBox,
-      displayMenu: displayMenu,
-      menuConstraints: widget.menuConstraints,
-      menuBackgroundColor: widget.menuBackgroundColor,
-      style: widget.style,
-      iconEnabledColor: widget.iconEnabledColor,
-      iconDisabledColor: widget.iconDisabledColor,
-      callOnPop: () {
-        if (!widget.dialogBox &&
-            widget.onChanged != null &&
-            selectedItems != null) {
-          widget.onChanged(selectedResult);
-        }
-        setState(() {});
-      },
-      updateParent: updateParent,
-      rightToLeft: widget.rightToLeft,
-    ));
+    return StatefulBuilder(  // You need this, notice the parameters below:
+        builder: (BuildContext context, StateSetter setStateFromBuilder) {
+          return (DropdownDialog(
+            items: widget.items,
+            hint: prepareWidget(widget.searchHint),
+            isCaseSensitiveSearch: widget.isCaseSensitiveSearch,
+            closeButton: widget.closeButton,
+            keyboardType: widget.keyboardType,
+            searchFn: widget.searchFn,
+            multipleSelection: widget.multipleSelection,
+            selectedItems: selectedItems,
+            doneButton: widget.doneButton,
+            displayItem: widget.displayItem,
+            validator: widget.validator,
+            dialogBox: widget.dialogBox,
+            displayMenu: displayMenu,
+            menuConstraints: widget.menuConstraints,
+            menuBackgroundColor: widget.menuBackgroundColor,
+            style: widget.style,
+            iconEnabledColor: widget.iconEnabledColor,
+            iconDisabledColor: widget.iconDisabledColor,
+            callOnPop: () {
+              if (!widget.dialogBox &&
+                  widget.onChanged != null &&
+                  selectedItems != null) {
+                widget.onChanged(selectedResult);
+              }
+              setState(() {});
+            },
+            updateParent: (value){
+              updateParent(value);
+              setStateFromBuilder(() {});
+            },
+            rightToLeft: widget.rightToLeft,
+          ));});
   }
 
   @override
