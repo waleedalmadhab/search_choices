@@ -1,3 +1,7 @@
+## 1.0.15
+
+* Bug: menu mode didn't open choices when on hosted web. https://github.com/lcuis/search_choices/issues/9 and https://github.com/icemanbsi/searchable_dropdown/issues/39
+
 ## 1.0.14
 
 * Surrounded the DropdownDialog with a StatefulBuilder to allow the refresh of the display when there is a call to updateParent through a setState.

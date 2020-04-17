@@ -9,6 +9,11 @@ class NotGiven {
   const NotGiven();
 }
 
+class PointerThisPlease<T> {
+  T value;
+  PointerThisPlease(this.value);
+}
+
 Widget prepareWidget(dynamic object,
     {dynamic parameter = const NotGiven(),
     Function updateParent,
@@ -388,7 +393,7 @@ class SearchChoices<T> extends StatefulWidget {
 
 class _SearchChoicesState<T> extends State<SearchChoices<T>> {
   List<int> selectedItems;
-  List<bool> displayMenu = [false];
+  PointerThisPlease<bool> displayMenu = PointerThisPlease<bool>(false);
   Function updateParent;
 
   TextStyle get _textStyle =>
@@ -516,41 +521,42 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
   }
 
   Widget get menuWidget {
-    return StatefulBuilder(  // You need this, notice the parameters below:
+    return StatefulBuilder(
         builder: (BuildContext context, StateSetter setStateFromBuilder) {
-          return (DropdownDialog(
-            items: widget.items,
-            hint: prepareWidget(widget.searchHint),
-            isCaseSensitiveSearch: widget.isCaseSensitiveSearch,
-            closeButton: widget.closeButton,
-            keyboardType: widget.keyboardType,
-            searchFn: widget.searchFn,
-            multipleSelection: widget.multipleSelection,
-            selectedItems: selectedItems,
-            doneButton: widget.doneButton,
-            displayItem: widget.displayItem,
-            validator: widget.validator,
-            dialogBox: widget.dialogBox,
-            displayMenu: displayMenu,
-            menuConstraints: widget.menuConstraints,
-            menuBackgroundColor: widget.menuBackgroundColor,
-            style: widget.style,
-            iconEnabledColor: widget.iconEnabledColor,
-            iconDisabledColor: widget.iconDisabledColor,
-            callOnPop: () {
-              if (!widget.dialogBox &&
-                  widget.onChanged != null &&
-                  selectedItems != null) {
-                widget.onChanged(selectedResult);
-              }
-              setState(() {});
-            },
-            updateParent: (value){
-              updateParent(value);
-              setStateFromBuilder(() {});
-            },
-            rightToLeft: widget.rightToLeft,
-          ));});
+      return (DropdownDialog(
+        items: widget.items,
+        hint: prepareWidget(widget.searchHint),
+        isCaseSensitiveSearch: widget.isCaseSensitiveSearch,
+        closeButton: widget.closeButton,
+        keyboardType: widget.keyboardType,
+        searchFn: widget.searchFn,
+        multipleSelection: widget.multipleSelection,
+        selectedItems: selectedItems,
+        doneButton: widget.doneButton,
+        displayItem: widget.displayItem,
+        validator: widget.validator,
+        dialogBox: widget.dialogBox,
+        displayMenu: displayMenu,
+        menuConstraints: widget.menuConstraints,
+        menuBackgroundColor: widget.menuBackgroundColor,
+        style: widget.style,
+        iconEnabledColor: widget.iconEnabledColor,
+        iconDisabledColor: widget.iconDisabledColor,
+        callOnPop: () {
+          if (!widget.dialogBox &&
+              widget.onChanged != null &&
+              selectedItems != null) {
+            widget.onChanged(selectedResult);
+          }
+          setState(() {});
+        },
+        updateParent: (value) {
+          updateParent(value);
+          setStateFromBuilder(() {});
+        },
+        rightToLeft: widget.rightToLeft,
+      ));
+    });
   }
 
   @override
@@ -614,7 +620,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
                         widget.onChanged(selectedResult);
                       }
                     } else {
-                      displayMenu.first = true;
+                      displayMenu.value = true;
                     }
                     if (mounted) {
                       setState(() {});
@@ -740,7 +746,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
                     style: TextStyle(color: Colors.red, fontSize: 13),
                   )
                 : validatorOutput,
-        displayMenu.first ? menuWidget : SizedBox.shrink(),
+        displayMenu.value ? menuWidget : SizedBox.shrink(),
       ],
     );
   }
@@ -770,7 +776,7 @@ class DropdownDialog<T> extends StatefulWidget {
   final dynamic doneButton;
   final Function validator;
   final bool dialogBox;
-  final List<bool> displayMenu;
+  final PointerThisPlease<bool> displayMenu;
   final BoxConstraints menuConstraints;
   final Function callOnPop;
   final Color menuBackgroundColor;
@@ -1043,7 +1049,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     if (widget.dialogBox) {
       Navigator.pop(context);
     } else {
-      widget.displayMenu.first = false;
+      widget.displayMenu.value = false;
       if (widget.callOnPop != null) {
         widget.callOnPop();
       }
