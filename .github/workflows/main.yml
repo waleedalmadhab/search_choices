@@ -66,11 +66,12 @@ jobs:
 #          password: ${{ secrets.jodsshpassword }}
 #          recursive: true
 
-        # this publication method first checks whether the versions are different
-      - name: Publish to pub.dev if newer version number
-        uses: k-paxian/dart-package-publisher@master
-        with:
-#          accessToken: ${{ secrets.OAUTH_ACCESS_TOKEN }}
-#          refreshToken: ${{ secrets.OAUTH_REFRESH_TOKEN }}
-          credentialJson: ${{ secrets.CREDENTIAL_JSON }}
-          skipTests: true
+#unclear why this publication fails from CD but not from manual command: flutter pub publish
+#        # this publication method first checks whether the versions are different
+#      - name: Publish to pub.dev if newer version number
+#        uses: k-paxian/dart-package-publisher@master
+#        with:
+##          accessToken: ${{ secrets.OAUTH_ACCESS_TOKEN }}
+##          refreshToken: ${{ secrets.OAUTH_REFRESH_TOKEN }}
+#          credentialJson: ${{ secrets.CREDENTIAL_JSON }}
+#          skipTests: true
