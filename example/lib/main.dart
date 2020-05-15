@@ -80,6 +80,7 @@ class _MyAppState extends State<MyApp> {
       ExampleNumber.list.map((exNum) {
     return (DropdownMenuItem(child: Text(exNum.numberString), value: exNum));
   }).toList();
+  List<int> selectedItemsMultiSelect3Menu = [];
 
   static const String appTitle = "Search Choices demo";
   final String loremIpsum =
@@ -882,6 +883,27 @@ class _MyAppState extends State<MyApp> {
             },
           ),
         ],
+      ),
+      "Multi select 3 menu no-autofocus": SearchChoices.multiple(
+        items: items,
+        selectedItems: selectedItemsMultiSelect3Menu,
+        hint: "Select 3 items",
+        searchHint: "Select 3",
+        validator: (selectedItemsForValidatorWithMenu) {
+          if (selectedItemsForValidatorWithMenu.length != 3) {
+            return ("Must select 3");
+          }
+          return (null);
+        },
+        onChanged: (value) {
+          setState(() {
+            selectedItemsMultiSelect3Menu = value;
+          });
+        },
+        isExpanded: true,
+        dialogBox: false,
+        menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
+        autofocus: false,
       ),
     };
 

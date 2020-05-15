@@ -21,8 +21,7 @@ jobs:
           channel: 'dev'
       - run: flutter pub get
       - run: flutter format .
-# pub.dev removes points because of an error on textTheme.subhead -> textTheme.subtitle1 (warning that would occur if the following line remained)
-#      - run: flutter analyze
+      - run: flutter analyze
       - run: flutter config --enable-web
       - run: flutter test
 

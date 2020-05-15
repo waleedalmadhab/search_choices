@@ -101,6 +101,7 @@ factory SearchChoices.single({
     bool readOnly: false,
     Color menuBackgroundColor,
     bool rightToLeft,
+    bool autofocus,
 }
 )
 ```
@@ -136,6 +137,7 @@ factory SearchChoices.single({
 * readOnly bool whether to let the user choose the value to select or just present the selected value if any.
 * menuBackgroundColor Color background color of the menu whether in dialog box or menu mode.
 * rightToLeft bool mirrors the widgets display for right to left languages defaulted to false.
+* autofocus bool automatically focuses on the search field bringing up the keyboard defaulted to true.
 
 #### Multiple choice constructor
 
@@ -175,6 +177,7 @@ SearchChoices<T>.multiple(
     bool readOnly: false,
     Color menuBackgroundColor,
     bool rightToLeft,
+    bool autofocus,
 }
 )
 ```
@@ -209,6 +212,7 @@ SearchChoices<T>.multiple(
 * readOnly bool whether to let the user choose the value to select or just present the selected value if any.
 * menuBackgroundColor Color background color of the menu whether in dialog box or menu mode.
 * rightToLeft bool mirrors the widgets display for right to left languages defaulted to false.
+* autofocus bool automatically focuses on the search field bringing up the keyboard defaulted to true.
 
 #### Example app usage
 

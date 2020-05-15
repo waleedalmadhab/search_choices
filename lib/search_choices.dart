@@ -141,6 +141,7 @@ class SearchChoices<T> extends StatefulWidget {
   final bool readOnly;
   final Color menuBackgroundColor;
   final bool rightToLeft;
+  final bool autofocus;
 
   /// Search choices Widget with a single choice that opens a dialog or a menu to let the user do the selection conveniently with a search.
   ///
@@ -175,6 +176,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// @param readOnly [bool] whether to let the user choose the value to select or just present the selected value if any.
   /// @param menuBackgroundColor [Color] background color of the menu whether in dialog box or menu mode.
   /// @param rightToLeft [bool] mirrors the widgets display for right to left languages defaulted to false.
+  /// @param autofocus [bool] automatically focuses on the search field bringing up the keyboard defaulted to true.
   factory SearchChoices.single({
     Key key,
     @required List<DropdownMenuItem<T>> items,
@@ -208,6 +210,7 @@ class SearchChoices<T> extends StatefulWidget {
     bool readOnly = false,
     Color menuBackgroundColor,
     bool rightToLeft = false,
+    bool autofocus = true,
   }) {
     return (SearchChoices._(
       key: key,
@@ -242,6 +245,7 @@ class SearchChoices<T> extends StatefulWidget {
       readOnly: readOnly,
       menuBackgroundColor: menuBackgroundColor,
       rightToLeft: rightToLeft,
+      autofocus: autofocus,
     ));
   }
 
@@ -277,6 +281,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// @param readOnly [bool] whether to let the user choose the value to select or just present the selected value if any.
   /// @param menuBackgroundColor [Color] background color of the menu whether in dialog box or menu mode.
   /// @param rightToLeft [bool] mirrors the widgets display for right to left languages defaulted to false.
+  /// @param autofocus [bool] automatically focuses on the search field bringing up the keyboard defaulted to true.
   factory SearchChoices.multiple({
     Key key,
     @required List<DropdownMenuItem<T>> items,
@@ -309,6 +314,7 @@ class SearchChoices<T> extends StatefulWidget {
     bool readOnly = false,
     Color menuBackgroundColor,
     bool rightToLeft = false,
+    bool autofocus = true,
   }) {
     return (SearchChoices._(
       key: key,
@@ -343,6 +349,7 @@ class SearchChoices<T> extends StatefulWidget {
       readOnly: readOnly,
       menuBackgroundColor: menuBackgroundColor,
       rightToLeft: rightToLeft,
+      autofocus: autofocus,
     ));
   }
 
@@ -380,6 +387,7 @@ class SearchChoices<T> extends StatefulWidget {
     this.readOnly,
     this.menuBackgroundColor,
     this.rightToLeft,
+    this.autofocus,
   })  : assert(items != null),
         assert(iconSize != null),
         assert(isExpanded != null),
@@ -399,10 +407,10 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
   TextStyle get _textStyle =>
       widget.style ??
       (_enabled && !widget.readOnly
-          ? Theme.of(context).textTheme.subhead
+          ? Theme.of(context).textTheme.subtitle1
           : Theme.of(context)
               .textTheme
-              .subhead
+              .subtitle1
               .copyWith(color: _disabledIconColor));
   bool get _enabled =>
       widget.items != null &&
@@ -555,6 +563,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
           setStateFromBuilder(() {});
         },
         rightToLeft: widget.rightToLeft,
+        autofocus: widget.autofocus,
       ));
     });
   }
@@ -785,6 +794,7 @@ class DropdownDialog<T> extends StatefulWidget {
   final Color iconEnabledColor;
   final Color iconDisabledColor;
   final bool rightToLeft;
+  final bool autofocus;
 
   DropdownDialog({
     Key key,
@@ -809,6 +819,7 @@ class DropdownDialog<T> extends StatefulWidget {
     this.iconEnabledColor,
     this.iconDisabledColor,
     this.rightToLeft,
+    this.autofocus,
   })  : assert(items != null),
         super(key: key);
 
@@ -921,7 +932,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       validatorOutput = widget.validator(selectedResult);
     }
 
-    Widget validatorOutputWidget = valid
+    Widget validatorOutputWidget = valid || !widget.dialogBox
         ? SizedBox.shrink()
         : validatorOutput is String
             ? Text(
@@ -988,7 +999,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 32, vertical: 12)),
             style: widget.style,
-            autofocus: true,
+            autofocus: widget.autofocus,
             onChanged: (value) {
               _updateShownIndexes(value);
               setState(() {});

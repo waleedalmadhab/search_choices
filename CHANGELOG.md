@@ -1,3 +1,9 @@
+## 1.0.16
+
+* avoid deprecated subhead warning in pub.dev
+* search field autofocus parameter, thanks @slavap https://github.com/lcuis/search_choices/issues/11
+* not displaying validation twice when in menu mode, thanks @geriby23 https://github.com/lcuis/search_choices/issues/10
+
 ## 1.0.15
 
 * Bug: menu mode didn't open choices when on hosted web. https://github.com/lcuis/search_choices/issues/9 and https://github.com/icemanbsi/searchable_dropdown/issues/39
