@@ -34,8 +34,11 @@ flutter:
         pluginClass: SearchChoicesPlugin
       macos:
         pluginClass: SearchChoicesPlugin
+        default_package: search_choices
       web:
         pluginClass: SearchChoicesPlugin
+        fileName: search_choices.dart
+        default_package: search_choices
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg
