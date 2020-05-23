@@ -4,11 +4,12 @@ Widget to let the user search through a keyword string typed on a customizable k
 
 ## Platforms
 
-This widget has been successfully tested on iOS, Android and Chrome.
+This widget has been successfully tested on iOS, Android and [Chrome](https://searchchoices.jod.li).
 
 ## Examples
 
 The following examples are extracted from the [example project available in the repository](https://github.com/lcuis/search_choices/tree/master/example).
+More examples are available in this project.
 
 ### Gallery
 
@@ -102,6 +103,7 @@ factory SearchChoices.single({
     Color menuBackgroundColor,
     bool rightToLeft,
     bool autofocus,
+    Function selectedAggregateWidgetFn,
 }
 )
 ```
@@ -138,6 +140,7 @@ factory SearchChoices.single({
 * menuBackgroundColor Color background color of the menu whether in dialog box or menu mode.
 * rightToLeft bool mirrors the widgets display for right to left languages defaulted to false.
 * autofocus bool automatically focuses on the search field bringing up the keyboard defaulted to true.
+* selectedAggregateWidgetFn Function with parameter: list of widgets presenting selected values, returning Widget to be displayed to present the selected items.
 
 #### Multiple choice constructor
 
@@ -178,6 +181,7 @@ SearchChoices<T>.multiple(
     Color menuBackgroundColor,
     bool rightToLeft,
     bool autofocus,
+    Function selectedAggregateWidgetFn,
 }
 )
 ```
@@ -213,6 +217,7 @@ SearchChoices<T>.multiple(
 * menuBackgroundColor Color background color of the menu whether in dialog box or menu mode.
 * rightToLeft bool mirrors the widgets display for right to left languages defaulted to false.
 * autofocus bool automatically focuses on the search field bringing up the keyboard defaulted to true.
+* selectedAggregateWidgetFn Function with parameter: list of widgets presenting selected values, returning Widget to be displayed to present the selected items.
 
 #### Example app usage
 

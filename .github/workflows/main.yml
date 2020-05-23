@@ -66,7 +66,7 @@ jobs:
 #          password: ${{ secrets.jodsshpassword }}
 #          recursive: true
 
-#unclear why this publication fails from CD but not from manual command: flutter pub publish
+#unclear why this publication fails from CD but it's ok from manual command: flutter pub publish
 #        # this publication method first checks whether the versions are different
 #      - name: Publish to pub.dev if newer version number
 #        uses: k-paxian/dart-package-publisher@master

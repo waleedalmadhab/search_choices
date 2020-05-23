@@ -1,3 +1,7 @@
+## 1.0.17
+
+* Present selected values in a custom widget through selectedAggregateWidgetFn. Thanks @slavap https://github.com/lcuis/search_choices/issues/12
+
 ## 1.0.16
 
 * avoid deprecated subhead warning in pub.dev

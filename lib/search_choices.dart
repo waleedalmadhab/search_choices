@@ -142,6 +142,7 @@ class SearchChoices<T> extends StatefulWidget {
   final Color menuBackgroundColor;
   final bool rightToLeft;
   final bool autofocus;
+  final Function selectedAggregateWidgetFn;
 
   /// Search choices Widget with a single choice that opens a dialog or a menu to let the user do the selection conveniently with a search.
   ///
@@ -177,6 +178,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// @param menuBackgroundColor [Color] background color of the menu whether in dialog box or menu mode.
   /// @param rightToLeft [bool] mirrors the widgets display for right to left languages defaulted to false.
   /// @param autofocus [bool] automatically focuses on the search field bringing up the keyboard defaulted to true.
+  /// @param selectedAggregateWidgetFn [Function] with parameter: __list of widgets presenting selected values__ , returning [Widget] to be displayed to present the selected items
   factory SearchChoices.single({
     Key key,
     @required List<DropdownMenuItem<T>> items,
@@ -211,6 +213,7 @@ class SearchChoices<T> extends StatefulWidget {
     Color menuBackgroundColor,
     bool rightToLeft = false,
     bool autofocus = true,
+    Function selectedAggregateWidgetFn,
   }) {
     return (SearchChoices._(
       key: key,
@@ -246,6 +249,7 @@ class SearchChoices<T> extends StatefulWidget {
       menuBackgroundColor: menuBackgroundColor,
       rightToLeft: rightToLeft,
       autofocus: autofocus,
+      selectedAggregateWidgetFn: selectedAggregateWidgetFn,
     ));
   }
 
@@ -282,6 +286,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// @param menuBackgroundColor [Color] background color of the menu whether in dialog box or menu mode.
   /// @param rightToLeft [bool] mirrors the widgets display for right to left languages defaulted to false.
   /// @param autofocus [bool] automatically focuses on the search field bringing up the keyboard defaulted to true.
+  /// @param selectedAggregateWidgetFn [Function] with parameter: __list of widgets presenting selected values__ , returning [Widget] to be displayed to present the selected items
   factory SearchChoices.multiple({
     Key key,
     @required List<DropdownMenuItem<T>> items,
@@ -315,6 +320,7 @@ class SearchChoices<T> extends StatefulWidget {
     Color menuBackgroundColor,
     bool rightToLeft = false,
     bool autofocus = true,
+    Function selectedAggregateWidgetFn,
   }) {
     return (SearchChoices._(
       key: key,
@@ -350,6 +356,7 @@ class SearchChoices<T> extends StatefulWidget {
       menuBackgroundColor: menuBackgroundColor,
       rightToLeft: rightToLeft,
       autofocus: autofocus,
+      selectedAggregateWidgetFn: selectedAggregateWidgetFn,
     ));
   }
 
@@ -388,6 +395,7 @@ class SearchChoices<T> extends StatefulWidget {
     this.menuBackgroundColor,
     this.rightToLeft,
     this.autofocus,
+    this.selectedAggregateWidgetFn,
   })  : assert(items != null),
         assert(iconSize != null),
         assert(isExpanded != null),
@@ -602,9 +610,11 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
     if (list.isEmpty && hintIndex != null) {
       innerItemsWidget = items[hintIndex];
     } else {
-      innerItemsWidget = Column(
-        children: list,
-      );
+      innerItemsWidget = widget.selectedAggregateWidgetFn != null
+          ? widget.selectedAggregateWidgetFn(list)
+          : Column(
+              children: list,
+            );
     }
     final EdgeInsetsGeometry padding = ButtonTheme.of(context).alignedDropdown
         ? _kAlignedButtonPadding

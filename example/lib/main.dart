@@ -81,6 +81,7 @@ class _MyAppState extends State<MyApp> {
     return (DropdownMenuItem(child: Text(exNum.numberString), value: exNum));
   }).toList();
   List<int> selectedItemsMultiSelect3Menu = [];
+  List<int> selectedItemsMultiDialogWithCountAndWrap = [];
 
   static const String appTitle = "Search Choices demo";
   final String loremIpsum =
@@ -904,6 +905,36 @@ class _MyAppState extends State<MyApp> {
         dialogBox: false,
         menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
         autofocus: false,
+      ),
+      "Multi dialog with count and wrap": SearchChoices.multiple(
+        items: items,
+        selectedItems: selectedItemsMultiDialogWithCountAndWrap,
+        hint: "Select items",
+        searchHint: "Select items",
+        onChanged: (value) {
+          setState(() {
+            selectedItemsMultiDialogWithCountAndWrap = value;
+          });
+        },
+        isExpanded: true,
+        selectedValueWidgetFn: (item) {
+          return (Container(
+            margin: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(3.0),
+            decoration:
+                BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+            child: Text(
+              item,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ));
+        },
+        selectedAggregateWidgetFn: (List<Widget> list) {
+          return (Column(children: [
+            Text("${list.length} items selected"),
+            Wrap(children: list),
+          ]));
+        },
       ),
     };
 
