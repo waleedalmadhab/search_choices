@@ -104,6 +104,7 @@ factory SearchChoices.single({
     bool rightToLeft,
     bool autofocus,
     Function selectedAggregateWidgetFn,
+    double padding = 10.0,
 }
 )
 ```
@@ -141,6 +142,7 @@ factory SearchChoices.single({
 * rightToLeft bool mirrors the widgets display for right to left languages defaulted to false.
 * autofocus bool automatically focuses on the search field bringing up the keyboard defaulted to true.
 * selectedAggregateWidgetFn Function with parameter: list of widgets presenting selected values, returning Widget to be displayed to present the selected items.
+* padding double sets the padding around the DropdownButton, defaults to 10.0  
 
 #### Multiple choice constructor
 
@@ -182,6 +184,7 @@ SearchChoices<T>.multiple(
     bool rightToLeft,
     bool autofocus,
     Function selectedAggregateWidgetFn,
+    double padding: 10.0,
 }
 )
 ```
@@ -218,6 +221,7 @@ SearchChoices<T>.multiple(
 * rightToLeft bool mirrors the widgets display for right to left languages defaulted to false.
 * autofocus bool automatically focuses on the search field bringing up the keyboard defaulted to true.
 * selectedAggregateWidgetFn Function with parameter: list of widgets presenting selected values, returning Widget to be displayed to present the selected items.
+* padding double sets the padding around the DropdownButton, defaults to 10.0
 
 #### Example app usage
 
@@ -1152,6 +1156,8 @@ In your pull request, feel free to add your line in the contributors section bel
 ### Contributors
 * (great initial project) https://github.com/icemanbsi/searchable_dropdown/pull/11
 * https://github.com/lcuis
+* https://github.com/avalentic
+* https://github.com/luis-cruzt
 
 ## CI/CD
 
