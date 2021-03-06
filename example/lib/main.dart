@@ -26,7 +26,7 @@ class ExampleNumber {
   };
 
   String get numberString {
-    return (map.containsKey(number) ? map[number] : "unknown");
+    return ((map.containsKey(number) ? map[number] : "unknown") ?? "unknown");
   }
 
   ExampleNumber(this.number);
@@ -46,24 +46,24 @@ void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
   static final navKey = new GlobalKey<NavigatorState>();
-  const MyApp({Key navKey}) : super(key: navKey);
+  const MyApp({Key? navKey}) : super(key: navKey);
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
   bool asTabs = false;
-  String selectedValueSingleDialog;
-  String selectedValueSingleDoneButtonDialog;
-  String selectedValueSingleMenu;
-  String selectedValueSingleDialogCustomKeyboard;
-  String selectedValueSingleDialogOverflow;
-  String selectedValueSingleDialogEditableItems;
-  String selectedValueSingleDialogDarkMode;
-  String selectedValueSingleDialogEllipsis;
-  String selectedValueSingleDialogRightToLeft;
-  String selectedValueUpdateFromOutsideThePlugin;
-  ExampleNumber selectedNumber;
+  String? selectedValueSingleDialog;
+  String? selectedValueSingleDoneButtonDialog;
+  String? selectedValueSingleMenu;
+  String? selectedValueSingleDialogCustomKeyboard;
+  String? selectedValueSingleDialogOverflow;
+  String? selectedValueSingleDialogEditableItems;
+  String? selectedValueSingleDialogDarkMode;
+  String? selectedValueSingleDialogEllipsis;
+  String? selectedValueSingleDialogRightToLeft;
+  String? selectedValueUpdateFromOutsideThePlugin;
+  ExampleNumber? selectedNumber;
   List<int> selectedItemsMultiDialog = [];
   List<int> selectedItemsMultiCustomDisplayDialog = [];
   List<int> selectedItemsMultiSelect3Dialog = [];
@@ -75,7 +75,7 @@ class _MyAppState extends State<MyApp> {
   List<DropdownMenuItem> editableItems = [];
   final _formKey = GlobalKey<FormState>();
   String inputString = "";
-  TextFormField input;
+  TextFormField? input;
   List<DropdownMenuItem<ExampleNumber>> numberItems =
       ExampleNumber.list.map((exNum) {
     return (DropdownMenuItem(child: Text(exNum.numberString), value: exNum));
@@ -86,6 +86,8 @@ class _MyAppState extends State<MyApp> {
   static const String appTitle = "Search Choices demo";
   final String loremIpsum =
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+
+  Function? openDialog;
 
   @override
   void initState() {
@@ -114,7 +116,9 @@ class _MyAppState extends State<MyApp> {
     });
     input = TextFormField(
       validator: (value) {
-        return (value.length < 6 ? "must be at least 6 characters long" : null);
+        return ((value?.length ?? 0) < 6
+            ? "must be at least 6 characters long"
+            : null);
       },
       initialValue: inputString,
       onChanged: (value) {
@@ -142,7 +146,7 @@ class _MyAppState extends State<MyApp> {
 
   addItemDialog() async {
     return await showDialog(
-      context: MyApp.navKey.currentState.overlay.context,
+      context: MyApp.navKey.currentState?.overlay?.context ?? context,
       builder: (BuildContext alertContext) {
         return (AlertDialog(
           title: Text("Add an item"),
@@ -151,10 +155,10 @@ class _MyAppState extends State<MyApp> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                input,
-                FlatButton(
+                input ?? SizedBox.shrink(),
+                TextButton(
                   onPressed: () {
-                    if (_formKey.currentState.validate()) {
+                    if (_formKey.currentState?.validate() ?? false) {
                       setState(() {
                         editableItems.add(DropdownMenuItem(
                           child: Text(inputString),
@@ -166,7 +170,7 @@ class _MyAppState extends State<MyApp> {
                   },
                   child: Text("Ok"),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.pop(alertContext, null);
                   },
@@ -293,7 +297,7 @@ class _MyAppState extends State<MyApp> {
                   ))));
         },
         doneButton: (selectedItemsDone, doneContext) {
-          return (RaisedButton(
+          return (ElevatedButton(
               onPressed: () {
                 Navigator.pop(doneContext);
                 setState(() {});
@@ -303,8 +307,8 @@ class _MyAppState extends State<MyApp> {
         closeButton: null,
         style: TextStyle(fontStyle: FontStyle.italic),
         searchFn: (String keyword, items) {
-          List<int> ret = List<int>();
-          if (keyword != null && items != null && keyword.isNotEmpty) {
+          List<int> ret = [];
+          if (items != null && keyword.isNotEmpty) {
             keyword.split(" ").forEach((k) {
               int i = 0;
               items.forEach((item) {
@@ -354,7 +358,7 @@ class _MyAppState extends State<MyApp> {
           });
         },
         doneButton: (selectedItemsDone, doneContext) {
-          return (RaisedButton(
+          return (ElevatedButton(
               onPressed: selectedItemsDone.length != 3
                   ? null
                   : () {
@@ -413,7 +417,7 @@ class _MyAppState extends State<MyApp> {
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              RaisedButton(
+              ElevatedButton(
                   onPressed: () {
                     setState(() {
                       selectedItemsClose.clear();
@@ -423,7 +427,7 @@ class _MyAppState extends State<MyApp> {
                     updateParent(selectedItemsClose);
                   },
                   child: Text("Select all")),
-              RaisedButton(
+              ElevatedButton(
                   onPressed: () {
                     setState(() {
                       selectedItemsClose.clear();
@@ -453,7 +457,7 @@ class _MyAppState extends State<MyApp> {
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              RaisedButton(
+              ElevatedButton(
                   onPressed: () {
                     setState(() {
                       selectedItemsClose.clear();
@@ -463,7 +467,7 @@ class _MyAppState extends State<MyApp> {
                     updateParent(selectedItemsClose);
                   },
                   child: Text("Select all")),
-              RaisedButton(
+              ElevatedButton(
                   onPressed: () {
                     setState(() {
                       selectedItemsClose.clear();
@@ -567,7 +571,7 @@ class _MyAppState extends State<MyApp> {
         hint: "Select one",
         searchHint: "Select one",
         disabledHint: (Function updateParent) {
-          return (FlatButton(
+          return (TextButton(
             onPressed: () {
               addItemDialog().then((value) async {
                 updateParent(value);
@@ -577,10 +581,10 @@ class _MyAppState extends State<MyApp> {
           ));
         },
         closeButton:
-            (String value, BuildContext closeContext, Function updateParent) {
+            (String? value, BuildContext closeContext, Function updateParent) {
           return (editableItems.length >= 100
               ? "Close"
-              : FlatButton(
+              : TextButton(
                   onPressed: () {
                     addItemDialog().then((value) async {
                       if (value != null &&
@@ -588,7 +592,8 @@ class _MyAppState extends State<MyApp> {
                                   (element) => element.value == value) !=
                               -1) {
                         Navigator.pop(
-                            MyApp.navKey.currentState.overlay.context);
+                            MyApp.navKey.currentState?.overlay?.context ??
+                                context);
                         updateParent(value);
                       }
                     });
@@ -596,7 +601,7 @@ class _MyAppState extends State<MyApp> {
                   child: Text("Add and select item"),
                 ));
         },
-        onChanged: (value) {
+        onChanged: (String? value) {
           setState(() {
             if (!(value is NotGiven)) {
               selectedValueSingleDialogEditableItems = value;
@@ -641,7 +646,7 @@ class _MyAppState extends State<MyApp> {
         hint: "Select any",
         searchHint: "Select any",
         disabledHint: (Function updateParent) {
-          return (FlatButton(
+          return (TextButton(
             onPressed: () {
               addItemDialog().then((value) async {
                 if (value != null) {
@@ -657,7 +662,7 @@ class _MyAppState extends State<MyApp> {
             Function updateParent) {
           return (editableItems.length >= 100
               ? "Close"
-              : FlatButton(
+              : TextButton(
                   onPressed: () {
                     addItemDialog().then((value) async {
                       if (value != null) {
@@ -666,7 +671,8 @@ class _MyAppState extends State<MyApp> {
                         if (itemIndex != -1) {
                           editableSelectedItems.add(itemIndex);
                           Navigator.pop(
-                              MyApp.navKey.currentState.overlay.context);
+                              MyApp.navKey.currentState?.overlay?.context ??
+                                  context);
                           updateParent(editableSelectedItems);
                         }
                       }
@@ -744,9 +750,10 @@ class _MyAppState extends State<MyApp> {
             style: TextStyle(color: Colors.white),
           ),
           style: TextStyle(color: Colors.white, backgroundColor: Colors.black),
-          closeButton: FlatButton(
+          closeButton: TextButton(
             onPressed: () {
-              Navigator.pop(MyApp.navKey.currentState.overlay.context);
+              Navigator.pop(
+                  MyApp.navKey.currentState?.overlay?.context ?? context);
             },
             child: Text(
               "Close",
@@ -812,9 +819,10 @@ class _MyAppState extends State<MyApp> {
           "ختار",
           textDirection: TextDirection.rtl,
         ),
-        closeButton: FlatButton(
+        closeButton: TextButton(
           onPressed: () {
-            Navigator.pop(MyApp.navKey.currentState.overlay.context);
+            Navigator.pop(
+                MyApp.navKey.currentState?.overlay?.context ?? context);
           },
           child: Text(
             "سدّ",
@@ -875,7 +883,7 @@ class _MyAppState extends State<MyApp> {
             },
             isExpanded: true,
           ),
-          FlatButton(
+          TextButton(
             child: Text("Select dolor sit"),
             onPressed: () {
               setState(() {
@@ -934,6 +942,31 @@ class _MyAppState extends State<MyApp> {
             Text("${list.length} items selected"),
             Wrap(children: list),
           ]));
+        },
+      ),
+      "Single dialog open and set search terms": SearchChoices.single(
+        label: Column(
+          children: items.map((item) {
+            return (ElevatedButton(
+              child: item.child,
+              onPressed: () {
+                openDialog!(item.value.toString());
+              },
+            ));
+          }).toList(),
+        ),
+        items: items,
+        value: selectedValueSingleDialog,
+        hint: "Select one",
+        searchHint: "Select one",
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialog = value;
+          });
+        },
+        isExpanded: true,
+        setOpenDialog: (externalOpenDialog) {
+          openDialog = externalOpenDialog;
         },
       ),
     };

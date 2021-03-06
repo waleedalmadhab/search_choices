@@ -1,3 +1,10 @@
+## 2.0.0
+
+* Migrated to sound null safety with Flutter 2, thanks @Raphael-Jose-Ferraro-IRForever https://github.com/lcuis/search_choices/issues/31
+* Added padding parameter to set the padding around the DropdownButton, thanks to @luis-cruzt https://github.com/lcuis/search_choices/pull/27
+* Migrated buttons to non-deprecated versions
+* Added the possibility to call the dialog with the search terms from a button, thanks to @ettiennelr https://github.com/lcuis/search_choices/issues/30
+
 ## 1.0.17
 
 * Present selected values in a custom widget through selectedAggregateWidgetFn. Thanks @slavap https://github.com/lcuis/search_choices/issues/12
