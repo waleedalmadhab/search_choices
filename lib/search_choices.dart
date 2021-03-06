@@ -143,6 +143,7 @@ class SearchChoices<T> extends StatefulWidget {
   final bool rightToLeft;
   final bool autofocus;
   final Function selectedAggregateWidgetFn;
+  final double padding;
 
   /// Search choices Widget with a single choice that opens a dialog or a menu to let the user do the selection conveniently with a search.
   ///
@@ -179,6 +180,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// @param rightToLeft [bool] mirrors the widgets display for right to left languages defaulted to false.
   /// @param autofocus [bool] automatically focuses on the search field bringing up the keyboard defaulted to true.
   /// @param selectedAggregateWidgetFn [Function] with parameter: __list of widgets presenting selected values__ , returning [Widget] to be displayed to present the selected items
+  /// @param padding [double] sets the padding around the DropdownButton, defaults to 10.0
   factory SearchChoices.single({
     Key key,
     @required List<DropdownMenuItem<T>> items,
@@ -214,6 +216,7 @@ class SearchChoices<T> extends StatefulWidget {
     bool rightToLeft = false,
     bool autofocus = true,
     Function selectedAggregateWidgetFn,
+    double padding = 10.0,
   }) {
     return (SearchChoices._(
       key: key,
@@ -250,6 +253,7 @@ class SearchChoices<T> extends StatefulWidget {
       rightToLeft: rightToLeft,
       autofocus: autofocus,
       selectedAggregateWidgetFn: selectedAggregateWidgetFn,
+      padding: padding,
     ));
   }
 
@@ -287,6 +291,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// @param rightToLeft [bool] mirrors the widgets display for right to left languages defaulted to false.
   /// @param autofocus [bool] automatically focuses on the search field bringing up the keyboard defaulted to true.
   /// @param selectedAggregateWidgetFn [Function] with parameter: __list of widgets presenting selected values__ , returning [Widget] to be displayed to present the selected items
+  /// @param padding [double] sets the padding around the DropdownButton, defaults to 10.0
   factory SearchChoices.multiple({
     Key key,
     @required List<DropdownMenuItem<T>> items,
@@ -321,6 +326,7 @@ class SearchChoices<T> extends StatefulWidget {
     bool rightToLeft = false,
     bool autofocus = true,
     Function selectedAggregateWidgetFn,
+    double padding = 10.0,
   }) {
     return (SearchChoices._(
       key: key,
@@ -357,6 +363,7 @@ class SearchChoices<T> extends StatefulWidget {
       rightToLeft: rightToLeft,
       autofocus: autofocus,
       selectedAggregateWidgetFn: selectedAggregateWidgetFn,
+      padding: padding,  
     ));
   }
 
@@ -396,6 +403,7 @@ class SearchChoices<T> extends StatefulWidget {
     this.rightToLeft,
     this.autofocus,
     this.selectedAggregateWidgetFn,
+    this.padding,
   })  : assert(items != null),
         assert(iconSize != null),
         assert(isExpanded != null),
@@ -730,7 +738,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         Stack(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.all(10.0),
+              padding: EdgeInsets.all(widget.padding),
               child: result,
             ),
             widget.underline is NotGiven
