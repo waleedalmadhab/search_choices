@@ -969,6 +969,47 @@ class _MyAppState extends State<MyApp> {
           openDialog = externalOpenDialog;
         },
       ),
+      "Single dialog custom dialog": SearchChoices.single(
+        items: items,
+        value: selectedValueSingleDialog,
+        hint: "Select one",
+        searchHint: "Select one",
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialog = value;
+          });
+        },
+        isExpanded: true,
+        buildDropDownDialog: (
+          Widget titleBar,
+          Widget searchBar,
+          Widget list,
+          Widget closeButton,
+          BuildContext dropDownContext,
+        ) {
+          return (AnimatedContainer(
+            padding: MediaQuery.of(dropDownContext).viewInsets,
+            duration: const Duration(milliseconds: 300),
+            child: Card(
+              margin: EdgeInsets.symmetric(vertical: 30, horizontal: 40),
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 35, horizontal: 45),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    titleBar,
+                    searchBar,
+                    list,
+                    closeButton,
+                  ],
+                ),
+              ),
+            ),
+          ));
+        },
+      ),
     };
 
     return MaterialApp(

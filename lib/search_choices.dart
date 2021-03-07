@@ -234,6 +234,45 @@ class SearchChoices<T> extends StatefulWidget {
   /// [setOpenDialog] [Function] sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
   final Function? setOpenDialog;
 
+  /// [buildDropDownDialog] [Function] controls the layout of the dropdown dialog.
+  /// If null, equivalent to:
+  /// ```
+  /// (Widget titleBar, Widget searchBar, Widget list, Widget closeButton, BuildContext dropDownContext,){
+  /// return AnimatedContainer(
+  ///      padding: MediaQuery.of(dropDownContext).viewInsets,
+  ///      duration: const Duration(milliseconds: 300),
+  ///      child: Card(
+  ///        color: widget.menuBackgroundColor,
+  ///        margin: EdgeInsets.symmetric(
+  ///            vertical: widget.dialogBox ? 10 : 5,
+  ///            horizontal: widget.dialogBox ? 10 : 4),
+  ///        child: Container(
+  ///          constraints: widget.menuConstraints,
+  ///          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+  ///          child: Column(
+  ///            mainAxisAlignment: MainAxisAlignment.start,
+  ///            crossAxisAlignment: CrossAxisAlignment.start,
+  ///            mainAxisSize: MainAxisSize.min,
+  ///            children: <Widget>[
+  ///              titleBar,
+  ///              searchBar,
+  ///              list,
+  ///              closeButton,
+  ///            ],
+  ///          ),
+  ///        ),
+  ///      ),
+  ///    );
+  /// }
+  /// ```
+  final Widget Function(
+    Widget titleBar,
+    Widget searchBar,
+    Widget list,
+    Widget closeButton,
+    BuildContext dropDownContext,
+  )? buildDropDownDialog;
+
   /// Search choices Widget with a single choice that opens a dialog or a menu to let the user do the selection conveniently with a search.
   ///
   /// * [items] with __child__: [Widget] displayed ; __value__: any object with .toString() used to match search keyword.
@@ -271,6 +310,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [selectedAggregateWidgetFn] [Function] with parameter: __list of widgets presenting selected values__ , returning [Widget] to be displayed to present the selected items.
   /// * [padding] [double] sets the padding around the DropdownButton, defaulted to 10.0.
   /// * [setOpenDialog] [Function] sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
+  /// * [buildDropDownDialog] [Function] controls the layout of the dropdown dialog.
   factory SearchChoices.single({
     Key? key,
     required List<DropdownMenuItem<T>> items,
@@ -308,6 +348,14 @@ class SearchChoices<T> extends StatefulWidget {
     Function? selectedAggregateWidgetFn,
     double padding = 10.0,
     Function? setOpenDialog,
+    Widget Function(
+      Widget titleBar,
+      Widget searchBar,
+      Widget list,
+      Widget closeButton,
+      BuildContext dropDownContext,
+    )?
+        buildDropDownDialog,
   }) {
     return (SearchChoices._(
       key: key,
@@ -346,6 +394,7 @@ class SearchChoices<T> extends StatefulWidget {
       selectedAggregateWidgetFn: selectedAggregateWidgetFn,
       padding: padding,
       setOpenDialog: setOpenDialog,
+      buildDropDownDialog: buildDropDownDialog,
     ));
   }
 
@@ -385,6 +434,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [selectedAggregateWidgetFn] [Function] with parameter: __list of widgets presenting selected values__ , returning [Widget] to be displayed to present the selected items.
   /// * [padding] [double] sets the padding around the DropdownButton, defaulted to 10.0.
   /// * [setOpenDialog] [Function] sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
+  /// * [buildDropDownDialog] [Function] controls the layout of the dropdown dialog.
   factory SearchChoices.multiple({
     Key? key,
     required List<DropdownMenuItem<T>> items,
@@ -421,6 +471,14 @@ class SearchChoices<T> extends StatefulWidget {
     Function? selectedAggregateWidgetFn,
     double padding = 10.0,
     Function? setOpenDialog,
+    Widget Function(
+      Widget titleBar,
+      Widget searchBar,
+      Widget list,
+      Widget closeButton,
+      BuildContext dropDownContext,
+    )?
+        buildDropDownDialog,
   }) {
     return (SearchChoices._(
       key: key,
@@ -459,6 +517,7 @@ class SearchChoices<T> extends StatefulWidget {
       selectedAggregateWidgetFn: selectedAggregateWidgetFn,
       padding: padding,
       setOpenDialog: setOpenDialog,
+      buildDropDownDialog: buildDropDownDialog,
     ));
   }
 
@@ -500,6 +559,7 @@ class SearchChoices<T> extends StatefulWidget {
     this.selectedAggregateWidgetFn,
     this.padding = 10,
     this.setOpenDialog,
+    this.buildDropDownDialog,
   })  : assert(!multipleSelection || doneButton != null),
         assert(menuConstraints == null || !dialogBox),
         super(key: key);
@@ -672,6 +732,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         rightToLeft: widget.rightToLeft,
         autofocus: widget.autofocus,
         initialSearchTerms: searchTerms,
+        buildDropDownDialog: widget.buildDropDownDialog,
       ));
     });
   }
@@ -960,6 +1021,15 @@ class DropdownDialog<T> extends StatefulWidget {
   /// Used for the setOpenDialog. This allows the dialogbox to be opened with search terms preset from an external button as shown in example `Single dialog open and set search terms`.
   final String initialSearchTerms;
 
+  /// See SearchChoices class.
+  final Widget Function(
+    Widget titleBar,
+    Widget searchBar,
+    Widget list,
+    Widget closeButton,
+    BuildContext dropDownContext,
+  )? buildDropDownDialog;
+
   DropdownDialog({
     Key? key,
     required this.items,
@@ -985,6 +1055,7 @@ class DropdownDialog<T> extends StatefulWidget {
     required this.rightToLeft,
     required this.autofocus,
     required this.initialSearchTerms,
+    this.buildDropDownDialog,
   }) : super(key: key);
 
   _DropdownDialogState<T> createState() => _DropdownDialogState<T>();
@@ -1061,6 +1132,10 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.buildDropDownDialog != null) {
+      return (widget.buildDropDownDialog!(
+          titleBar(), searchBar(), list(), closeButtonWrapper(), context));
+    }
     return AnimatedContainer(
       padding: MediaQuery.of(context).viewInsets,
       duration: const Duration(milliseconds: 300),

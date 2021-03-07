@@ -1,3 +1,7 @@
+## 2.0.2
+
+* Lets implementation control dropdown dialog layout display through buildDropDownDialog function, thanks @slavap https://github.com/lcuis/search_choices/issues/23 and https://github.com/lcuis/search_choices/issues/22
+
 ## 2.0.1
 
 * Improved dartdoc documentation.
