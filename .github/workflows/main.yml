@@ -52,6 +52,16 @@ jobs:
           username: ${{ secrets.jodsshuser }}
           password: ${{ secrets.jodsshpassword }}
           recursive: true
+      - run: pushd example&&flutter build linux --release&&tar -cvjf search_choices_example_linux_bundle_x64.tar.bz2 build/linux/x64/release/bundle/
+      - name: Deploy Linux bundle
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: example/search_choices_example_linux_bundle_x64.tar.bz2
+          remote: fromgithub/
+          host: ${{ secrets.jodhost }}
+          username: ${{ secrets.jodsshuser }}
+          password: ${{ secrets.jodsshpassword }}
+          recursive: true
 
 
 # ios build fails apparently because of missing signature despite the --no-codesign parameter

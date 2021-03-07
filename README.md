@@ -4,7 +4,7 @@ Widget to let the user search through a keyword string typed on a customizable k
 
 ## Platforms
 
-This widget has been successfully tested on iOS, Android and [Chrome](https://searchchoices.jod.li).
+This widget has been successfully tested on iOS, [Android](https://searchchoices.jod.li/app-release.apk), [Linux](https://searchchoices.jod.li/search_choices_example_linux_bundle_x64.tar.bz2) and [Chrome](https://searchchoices.jod.li). It is expected to work fine on MacOS and Windows.
 
 ## Examples
 

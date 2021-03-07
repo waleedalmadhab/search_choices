@@ -2,6 +2,7 @@
 
 * Improved dartdoc documentation.
 * Added dartdoc command script that is not affected by the issue where dartdoc tries to parse SDK libraries.
+* Added linux release and mentioned windows as a possibility.
 
 ## 2.0.0
 

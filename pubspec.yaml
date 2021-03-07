@@ -36,6 +36,12 @@ flutter:
       macos:
         pluginClass: SearchChoicesPlugin
         default_package: search_choices
+      linux:
+        pluginClass: SearchChoicesPlugin
+        default_package: search_choices
+      windows:
+        pluginClass: SearchChoicesPlugin
+        default_package: search_choices
       web:
         pluginClass: SearchChoicesPlugin
         fileName: search_choices.dart
