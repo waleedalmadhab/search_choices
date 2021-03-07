@@ -1,3 +1,8 @@
+## 2.0.1
+
+* Improved dartdoc documentation.
+* Added dartdoc command script that is not affected by the issue where dartdoc tries to parse SDK libraries.
+
 ## 2.0.0
 
 * Migrated to sound null safety with Flutter 2, thanks @Raphael-Jose-Ferraro-IRForever https://github.com/lcuis/search_choices/issues/31
