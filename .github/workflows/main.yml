@@ -53,7 +53,7 @@ jobs:
           username: ${{ secrets.jodsshuser }}
           password: ${{ secrets.jodsshpassword }}
           recursive: true
-      - run: export ENABLE_FLUTTER_DESKTOP=true&&pushd example&&flutter build linux --release&&tar -cvjf search_choices_example_linux_bundle_x64.tar.bz2 build/linux/x64/release/bundle/
+      - run: export ENABLE_FLUTTER_DESKTOP=true&&pushd example&&flutter config --enable-linux-desktop&&flutter create .&&flutter build linux --release&&tar -cvjf search_choices_example_linux_bundle_x64.tar.bz2 build/linux/x64/release/bundle/
       - name: Deploy Linux bundle
         uses: garygrossgarten/github-action-scp@release
         with:
