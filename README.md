@@ -106,6 +106,13 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
     Function? selectedAggregateWidgetFn,
     double padding = 10.0,
     Function? setOpenDialog,
+    InputDecoration inputDecoration = const InputDecoration(
+      prefixIcon: Icon(
+        Icons.search,
+        size: 24,
+      ),
+      contentPadding: EdgeInsets.symmetric(vertical: 12),
+    ),
     Widget Function  (Widget titleBar,Widget searchBar, Widget list, Widget closeButton, BuildContext dropDownContext,)? buildDropDownDialog,
   })
 ```
@@ -146,6 +153,7 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
 * padding double sets the padding around the DropdownButton, defaulted to 10.0.
 * setOpenDialog Function sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
 * buildDropDownDialog Function controls the layout of the dropdown dialog.
+* inputDecoration Search bar style
 
 
 #### Multiple choice constructor
@@ -189,6 +197,13 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
     Function? selectedAggregateWidgetFn,
     double padding = 10.0,
     Function? setOpenDialog,
+    InputDecoration inputDecoration = const InputDecoration(
+      prefixIcon: Icon(
+        Icons.search,
+        size: 24,
+      ),
+      contentPadding: EdgeInsets.symmetric(vertical: 12),
+    ),
     Widget Function  (Widget titleBar,Widget searchBar, Widget list, Widget closeButton, BuildContext dropDownContext,)? buildDropDownDialog,
   })
 ```
@@ -228,6 +243,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
 * padding double sets the padding around the DropdownButton, defaulted to 10.0.
 * setOpenDialog Function sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
 * buildDropDownDialog Function controls the layout of the dropdown dialog.
+* inputDecoration Search bar style
 
 #### Example app usage
 
@@ -1176,6 +1192,7 @@ In your pull request, feel free to add your line in the contributors section bel
 * https://github.com/lcuis
 * https://github.com/avalentic
 * https://github.com/luis-cruzt
+* https://github.com/develogo
 
 ## CI/CD
 
