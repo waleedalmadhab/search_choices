@@ -351,13 +351,7 @@ class SearchChoices<T> extends StatefulWidget {
     Function? selectedAggregateWidgetFn,
     double padding = 10.0,
     Function? setOpenDialog,
-    InputDecoration inputDecoration = const InputDecoration(
-      prefixIcon: Icon(
-        Icons.search,
-        size: 24,
-      ),
-      contentPadding: EdgeInsets.symmetric(vertical: 12),
-    ),
+    InputDecoration? inputDecoration,
     Widget Function(
       Widget titleBar,
       Widget searchBar,
@@ -404,8 +398,8 @@ class SearchChoices<T> extends StatefulWidget {
       selectedAggregateWidgetFn: selectedAggregateWidgetFn,
       padding: padding,
       setOpenDialog: setOpenDialog,
-      inputDecoration: inputDecoration,
       buildDropDownDialog: buildDropDownDialog,
+      inputDecoration: inputDecoration,
     ));
   }
 
@@ -482,13 +476,7 @@ class SearchChoices<T> extends StatefulWidget {
     Function? selectedAggregateWidgetFn,
     double padding = 10.0,
     Function? setOpenDialog,
-    InputDecoration inputDecoration = const InputDecoration(
-      prefixIcon: Icon(
-        Icons.search,
-        size: 24,
-      ),
-      contentPadding: EdgeInsets.symmetric(vertical: 12),
-    ),
+    InputDecoration? inputDecoration,
     Widget Function(
       Widget titleBar,
       Widget searchBar,
@@ -535,8 +523,8 @@ class SearchChoices<T> extends StatefulWidget {
       selectedAggregateWidgetFn: selectedAggregateWidgetFn,
       padding: padding,
       setOpenDialog: setOpenDialog,
-      inputDecoration: inputDecoration,
       buildDropDownDialog: buildDropDownDialog,
+      inputDecoration: inputDecoration,
     ));
   }
 
@@ -1272,7 +1260,21 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             textDirection:
                 widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
             controller: txtSearch,
-            decoration: widget.inputDecoration,
+            decoration: widget.rightToLeft
+                ? InputDecoration(
+                    suffixIcon: Icon(
+                      Icons.search,
+                      size: 24,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(vertical: 12),
+                  )
+                : InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.search,
+                      size: 24,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(vertical: 12),
+                  ),
             style: widget.style,
             autofocus: widget.autofocus,
             onChanged: (value) {
