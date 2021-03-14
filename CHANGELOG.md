@@ -1,3 +1,7 @@
+## 2.0.3
+
+* New searchInputDecoration parameter, thanks @develogo https://github.com/lcuis/search_choices/pull/35
+
 ## 2.0.2
 
 * Lets implementation control dropdown dialog layout display through buildDropDownDialog function, thanks @slavap https://github.com/lcuis/search_choices/issues/23 and https://github.com/lcuis/search_choices/issues/22

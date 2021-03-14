@@ -1010,6 +1010,20 @@ class _MyAppState extends State<MyApp> {
           ));
         },
       ),
+      "Single dialog custom searchInputDecoration": SearchChoices.single(
+        items: items,
+        value: selectedValueSingleDialog,
+        hint: "Select one",
+        searchHint: "Select one",
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialog = value;
+          });
+        },
+        isExpanded: true,
+        searchInputDecoration: InputDecoration(
+            icon: Icon(Icons.airline_seat_flat), border: OutlineInputBorder()),
+      ),
     };
 
     return MaterialApp(

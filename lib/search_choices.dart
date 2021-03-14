@@ -234,9 +234,6 @@ class SearchChoices<T> extends StatefulWidget {
   /// [setOpenDialog] [Function] sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
   final Function? setOpenDialog;
 
-  /// [inputDecoration] [InputDecoration] search bar style.
-  final InputDecoration? inputDecoration;
-
   /// [buildDropDownDialog] [Function] controls the layout of the dropdown dialog.
   /// If null, equivalent to:
   /// ```
@@ -276,6 +273,9 @@ class SearchChoices<T> extends StatefulWidget {
     BuildContext dropDownContext,
   )? buildDropDownDialog;
 
+  /// [searchInputDecoration] [InputDecoration] sets the search bar decoration.
+  final InputDecoration? searchInputDecoration;
+
   /// Search choices Widget with a single choice that opens a dialog or a menu to let the user do the selection conveniently with a search.
   ///
   /// * [items] with __child__: [Widget] displayed ; __value__: any object with .toString() used to match search keyword.
@@ -314,6 +314,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [padding] [double] sets the padding around the DropdownButton, defaulted to 10.0.
   /// * [setOpenDialog] [Function] sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
   /// * [buildDropDownDialog] [Function] controls the layout of the dropdown dialog.
+  /// * [searchInputDecoration] [InputDecoration] sets the search bar decoration.
   factory SearchChoices.single({
     Key? key,
     required List<DropdownMenuItem<T>> items,
@@ -351,7 +352,6 @@ class SearchChoices<T> extends StatefulWidget {
     Function? selectedAggregateWidgetFn,
     double padding = 10.0,
     Function? setOpenDialog,
-    InputDecoration? inputDecoration,
     Widget Function(
       Widget titleBar,
       Widget searchBar,
@@ -360,6 +360,7 @@ class SearchChoices<T> extends StatefulWidget {
       BuildContext dropDownContext,
     )?
         buildDropDownDialog,
+    InputDecoration? searchInputDecoration,
   }) {
     return (SearchChoices._(
       key: key,
@@ -399,7 +400,7 @@ class SearchChoices<T> extends StatefulWidget {
       padding: padding,
       setOpenDialog: setOpenDialog,
       buildDropDownDialog: buildDropDownDialog,
-      inputDecoration: inputDecoration,
+      searchInputDecoration: searchInputDecoration,
     ));
   }
 
@@ -440,6 +441,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [padding] [double] sets the padding around the DropdownButton, defaulted to 10.0.
   /// * [setOpenDialog] [Function] sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
   /// * [buildDropDownDialog] [Function] controls the layout of the dropdown dialog.
+  /// * [searchInputDecoration] [InputDecoration] sets the search bar decoration.
   factory SearchChoices.multiple({
     Key? key,
     required List<DropdownMenuItem<T>> items,
@@ -476,7 +478,6 @@ class SearchChoices<T> extends StatefulWidget {
     Function? selectedAggregateWidgetFn,
     double padding = 10.0,
     Function? setOpenDialog,
-    InputDecoration? inputDecoration,
     Widget Function(
       Widget titleBar,
       Widget searchBar,
@@ -485,6 +486,7 @@ class SearchChoices<T> extends StatefulWidget {
       BuildContext dropDownContext,
     )?
         buildDropDownDialog,
+    InputDecoration? searchInputDecoration,
   }) {
     return (SearchChoices._(
       key: key,
@@ -524,7 +526,7 @@ class SearchChoices<T> extends StatefulWidget {
       padding: padding,
       setOpenDialog: setOpenDialog,
       buildDropDownDialog: buildDropDownDialog,
-      inputDecoration: inputDecoration,
+      searchInputDecoration: searchInputDecoration,
     ));
   }
 
@@ -567,7 +569,7 @@ class SearchChoices<T> extends StatefulWidget {
     this.padding = 10,
     this.setOpenDialog,
     this.buildDropDownDialog,
-    this.inputDecoration,
+    this.searchInputDecoration,
   })  : assert(!multipleSelection || doneButton != null),
         assert(menuConstraints == null || !dialogBox),
         super(key: key);
@@ -725,7 +727,6 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         style: widget.style,
         iconEnabledColor: widget.iconEnabledColor,
         iconDisabledColor: widget.iconDisabledColor,
-        inputDecoration: widget.inputDecoration,
         callOnPop: () {
           if (!widget.dialogBox &&
               widget.onChanged != null &&
@@ -742,6 +743,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         autofocus: widget.autofocus,
         initialSearchTerms: searchTerms,
         buildDropDownDialog: widget.buildDropDownDialog,
+        searchInputDecoration: widget.searchInputDecoration,
       ));
     });
   }
@@ -1030,9 +1032,6 @@ class DropdownDialog<T> extends StatefulWidget {
   /// Used for the setOpenDialog. This allows the dialogbox to be opened with search terms preset from an external button as shown in example `Single dialog open and set search terms`.
   final String initialSearchTerms;
 
-  /// Used for customize search bar style.
-  final InputDecoration? inputDecoration;
-
   /// See SearchChoices class.
   final Widget Function(
     Widget titleBar,
@@ -1041,6 +1040,9 @@ class DropdownDialog<T> extends StatefulWidget {
     Widget closeButton,
     BuildContext dropDownContext,
   )? buildDropDownDialog;
+
+  /// See SearchChoices class.
+  final InputDecoration? searchInputDecoration;
 
   DropdownDialog({
     Key? key,
@@ -1068,7 +1070,7 @@ class DropdownDialog<T> extends StatefulWidget {
     required this.autofocus,
     required this.initialSearchTerms,
     this.buildDropDownDialog,
-    this.inputDecoration,
+    this.searchInputDecoration,
   }) : super(key: key);
 
   _DropdownDialogState<T> createState() => _DropdownDialogState<T>();
@@ -1260,8 +1262,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             textDirection:
                 widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
             controller: txtSearch,
-            decoration: widget.inputDecoration != null
-                ? widget.inputDecoration
+            decoration: widget.searchInputDecoration != null
+                ? widget.searchInputDecoration
                 : widget.rightToLeft
                     ? InputDecoration(
                         suffixIcon: Icon(
