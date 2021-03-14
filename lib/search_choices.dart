@@ -1260,21 +1260,23 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             textDirection:
                 widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
             controller: txtSearch,
-            decoration: widget.rightToLeft
-                ? InputDecoration(
-                    suffixIcon: Icon(
-                      Icons.search,
-                      size: 24,
-                    ),
-                    contentPadding: EdgeInsets.symmetric(vertical: 12),
-                  )
-                : InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.search,
-                      size: 24,
-                    ),
-                    contentPadding: EdgeInsets.symmetric(vertical: 12),
-                  ),
+            decoration: widget.inputDecoration != null
+                ? widget.inputDecoration
+                : widget.rightToLeft
+                    ? InputDecoration(
+                        suffixIcon: Icon(
+                          Icons.search,
+                          size: 24,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(vertical: 12),
+                      )
+                    : InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.search,
+                          size: 24,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(vertical: 12),
+                      ),
             style: widget.style,
             autofocus: widget.autofocus,
             onChanged: (value) {
