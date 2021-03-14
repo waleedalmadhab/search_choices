@@ -234,6 +234,9 @@ class SearchChoices<T> extends StatefulWidget {
   /// [setOpenDialog] [Function] sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
   final Function? setOpenDialog;
 
+  /// [inputDecoration] [InputDecoration] search bar style.
+  final InputDecoration? inputDecoration;
+
   /// [buildDropDownDialog] [Function] controls the layout of the dropdown dialog.
   /// If null, equivalent to:
   /// ```
@@ -348,6 +351,7 @@ class SearchChoices<T> extends StatefulWidget {
     Function? selectedAggregateWidgetFn,
     double padding = 10.0,
     Function? setOpenDialog,
+    InputDecoration? inputDecoration,
     Widget Function(
       Widget titleBar,
       Widget searchBar,
@@ -395,6 +399,7 @@ class SearchChoices<T> extends StatefulWidget {
       padding: padding,
       setOpenDialog: setOpenDialog,
       buildDropDownDialog: buildDropDownDialog,
+      inputDecoration: inputDecoration,
     ));
   }
 
@@ -471,6 +476,7 @@ class SearchChoices<T> extends StatefulWidget {
     Function? selectedAggregateWidgetFn,
     double padding = 10.0,
     Function? setOpenDialog,
+    InputDecoration? inputDecoration,
     Widget Function(
       Widget titleBar,
       Widget searchBar,
@@ -518,6 +524,7 @@ class SearchChoices<T> extends StatefulWidget {
       padding: padding,
       setOpenDialog: setOpenDialog,
       buildDropDownDialog: buildDropDownDialog,
+      inputDecoration: inputDecoration,
     ));
   }
 
@@ -560,6 +567,7 @@ class SearchChoices<T> extends StatefulWidget {
     this.padding = 10,
     this.setOpenDialog,
     this.buildDropDownDialog,
+    this.inputDecoration,
   })  : assert(!multipleSelection || doneButton != null),
         assert(menuConstraints == null || !dialogBox),
         super(key: key);
@@ -717,6 +725,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         style: widget.style,
         iconEnabledColor: widget.iconEnabledColor,
         iconDisabledColor: widget.iconDisabledColor,
+        inputDecoration: widget.inputDecoration,
         callOnPop: () {
           if (!widget.dialogBox &&
               widget.onChanged != null &&
@@ -1021,6 +1030,9 @@ class DropdownDialog<T> extends StatefulWidget {
   /// Used for the setOpenDialog. This allows the dialogbox to be opened with search terms preset from an external button as shown in example `Single dialog open and set search terms`.
   final String initialSearchTerms;
 
+  /// Used for customize search bar style.
+  final InputDecoration? inputDecoration;
+
   /// See SearchChoices class.
   final Widget Function(
     Widget titleBar,
@@ -1056,6 +1068,7 @@ class DropdownDialog<T> extends StatefulWidget {
     required this.autofocus,
     required this.initialSearchTerms,
     this.buildDropDownDialog,
+    this.inputDecoration,
   }) : super(key: key);
 
   _DropdownDialogState<T> createState() => _DropdownDialogState<T>();
@@ -1247,9 +1260,23 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             textDirection:
                 widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
             controller: txtSearch,
-            decoration: InputDecoration(
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 32, vertical: 12)),
+            decoration: widget.inputDecoration != null
+                ? widget.inputDecoration
+                : widget.rightToLeft
+                    ? InputDecoration(
+                        suffixIcon: Icon(
+                          Icons.search,
+                          size: 24,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(vertical: 12),
+                      )
+                    : InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.search,
+                          size: 24,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(vertical: 12),
+                      ),
             style: widget.style,
             autofocus: widget.autofocus,
             onChanged: (value) {
@@ -1257,19 +1284,6 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
               setState(() {});
             },
             keyboardType: widget.keyboardType,
-          ),
-          Positioned(
-            left: widget.rightToLeft ? null : 0,
-            right: widget.rightToLeft ? 0 : null,
-            top: 0,
-            bottom: 0,
-            child: Center(
-              child: Icon(
-                Icons.search,
-                size: 24,
-                color: widget.iconDisabledColor,
-              ),
-            ),
           ),
           txtSearch.text.isNotEmpty
               ? Positioned(
