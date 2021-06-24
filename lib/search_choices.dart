@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'dart:core';
 
 const EdgeInsetsGeometry _kAlignedButtonPadding =
     EdgeInsetsDirectional.only(start: 16.0, end: 4.0);
@@ -276,6 +277,16 @@ class SearchChoices<T> extends StatefulWidget {
   /// [searchInputDecoration] [InputDecoration] sets the search bar decoration.
   final InputDecoration? searchInputDecoration;
 
+  /// [itemsPerPage] [int] if set, organizes the search list per page with the given number of items displayed per page.
+  final int? itemsPerPage;
+
+  /// [currentPage] [PointerThisPlease<int>] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
+  final PointerThisPlease<int>? currentPage;
+
+  /// [customPaginationDisplay] [Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage)] if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
+  final Widget Function(Widget listWidget, int totalFilteredItemsNb,
+      Function updateSearchPage)? customPaginationDisplay;
+
   /// Search choices Widget with a single choice that opens a dialog or a menu to let the user do the selection conveniently with a search.
   ///
   /// * [items] with __child__: [Widget] displayed ; __value__: any object with .toString() used to match search keyword.
@@ -315,6 +326,9 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [setOpenDialog] [Function] sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
   /// * [buildDropDownDialog] [Function] controls the layout of the dropdown dialog.
   /// * [searchInputDecoration] [InputDecoration] sets the search bar decoration.
+  /// * [itemsPerPage] [int] if set, organizes the search list per page with the given number of items displayed per page.
+  /// * [currentPage] [PointerThisPlease<int>] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
+  /// * [customPaginationDisplay] [Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage)] if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
   factory SearchChoices.single({
     Key? key,
     required List<DropdownMenuItem<T>> items,
@@ -361,6 +375,11 @@ class SearchChoices<T> extends StatefulWidget {
     )?
         buildDropDownDialog,
     InputDecoration? searchInputDecoration,
+    int? itemsPerPage,
+    PointerThisPlease<int>? currentPage,
+    Widget Function(Widget listWidget, int totalFilteredItemsNb,
+            Function updateSearchPage)?
+        customPaginationDisplay,
   }) {
     return (SearchChoices._(
       key: key,
@@ -401,6 +420,9 @@ class SearchChoices<T> extends StatefulWidget {
       setOpenDialog: setOpenDialog,
       buildDropDownDialog: buildDropDownDialog,
       searchInputDecoration: searchInputDecoration,
+      itemsPerPage: itemsPerPage,
+      currentPage: currentPage,
+      customPaginationDisplay: customPaginationDisplay,
     ));
   }
 
@@ -442,6 +464,9 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [setOpenDialog] [Function] sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
   /// * [buildDropDownDialog] [Function] controls the layout of the dropdown dialog.
   /// * [searchInputDecoration] [InputDecoration] sets the search bar decoration.
+  /// * [itemsPerPage] [int] if set, organizes the search list per page with the given number of items displayed per page.
+  /// * [currentPage] [int] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
+  /// * [customPaginationDisplay] [Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage)] if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
   factory SearchChoices.multiple({
     Key? key,
     required List<DropdownMenuItem<T>> items,
@@ -487,6 +512,11 @@ class SearchChoices<T> extends StatefulWidget {
     )?
         buildDropDownDialog,
     InputDecoration? searchInputDecoration,
+    int? itemsPerPage,
+    PointerThisPlease<int>? currentPage,
+    Widget Function(Widget listWidget, int totalFilteredItemsNb,
+            Function updateSearchPage)?
+        customPaginationDisplay,
   }) {
     return (SearchChoices._(
       key: key,
@@ -527,6 +557,9 @@ class SearchChoices<T> extends StatefulWidget {
       setOpenDialog: setOpenDialog,
       buildDropDownDialog: buildDropDownDialog,
       searchInputDecoration: searchInputDecoration,
+      itemsPerPage: itemsPerPage,
+      currentPage: currentPage,
+      customPaginationDisplay: customPaginationDisplay,
     ));
   }
 
@@ -570,6 +603,9 @@ class SearchChoices<T> extends StatefulWidget {
     this.setOpenDialog,
     this.buildDropDownDialog,
     this.searchInputDecoration,
+    this.itemsPerPage,
+    this.currentPage,
+    this.customPaginationDisplay,
   })  : assert(!multipleSelection || doneButton != null),
         assert(menuConstraints == null || !dialogBox),
         super(key: key);
@@ -744,6 +780,9 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         initialSearchTerms: searchTerms,
         buildDropDownDialog: widget.buildDropDownDialog,
         searchInputDecoration: widget.searchInputDecoration,
+        itemsPerPage: widget.itemsPerPage,
+        currentPage: widget.currentPage,
+        customPaginationDisplay: widget.customPaginationDisplay,
       ));
     });
   }
@@ -1044,6 +1083,16 @@ class DropdownDialog<T> extends StatefulWidget {
   /// See SearchChoices class.
   final InputDecoration? searchInputDecoration;
 
+  /// See SearchChoices class.
+  final int? itemsPerPage;
+
+  /// See SearchChoices class.
+  final PointerThisPlease<int>? currentPage;
+
+  /// See SearchChoices class.
+  final Widget Function(Widget listWidget, int totalFilteredItemsNb,
+      Function updateSearchPage)? customPaginationDisplay;
+
   DropdownDialog({
     Key? key,
     required this.items,
@@ -1071,6 +1120,9 @@ class DropdownDialog<T> extends StatefulWidget {
     required this.initialSearchTerms,
     this.buildDropDownDialog,
     this.searchInputDecoration,
+    this.itemsPerPage,
+    this.currentPage,
+    this.customPaginationDisplay,
   }) : super(key: key);
 
   _DropdownDialogState<T> createState() => _DropdownDialogState<T>();
@@ -1096,7 +1148,9 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             : null);
   }
 
-  void _updateShownIndexes(String? keyword) {
+  void _updateShownIndexes(
+    String? keyword,
+  ) {
     if (keyword != null) {
       latestKeyword = keyword;
     }
@@ -1136,6 +1190,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       };
     }
     assert(searchFn != null);
+    widget.currentPage?.value = 1;
     if (widget.initialSearchTerms.isNotEmpty) {
       txtSearch.text = widget.initialSearchTerms;
       _updateShownIndexes(txtSearch.text);
@@ -1282,6 +1337,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             style: widget.style,
             autofocus: widget.autofocus,
             onChanged: (value) {
+              widget.currentPage?.value = 1;
               _updateShownIndexes(value);
               setState(() {});
             },
@@ -1296,6 +1352,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                   child: Center(
                     child: InkWell(
                       onTap: () {
+                        widget.currentPage?.value = 1;
                         _updateShownIndexes('');
                         setState(() {
                           txtSearch.text = '';
@@ -1338,15 +1395,34 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
 
   /// Displays the list of items filtered based on the search terms.
   Widget list() {
-    return Expanded(
+    List<int> pagedShownIndexes = [];
+    bool displayPages = true;
+    if (widget.itemsPerPage == null ||
+        widget.itemsPerPage! >= shownIndexes.length) {
+      pagedShownIndexes = shownIndexes;
+      displayPages = false;
+    } else {
+      if (widget.currentPage!.value < 1 ||
+          widget.currentPage!.value >
+              (shownIndexes.length / widget.itemsPerPage!).ceil()) {
+        widget.currentPage!.value = 1;
+      }
+      for (int i = widget.itemsPerPage! * (widget.currentPage!.value - 1);
+          i < widget.itemsPerPage! * (widget.currentPage!.value) &&
+              i < shownIndexes.length;
+          i++) {
+        pagedShownIndexes.add(shownIndexes[i]);
+      }
+    }
+    Widget scrollBar = Expanded(
       child: Scrollbar(
         child: ListView.builder(
           itemBuilder: (context, index) {
-            DropdownMenuItem item = widget.items[shownIndexes[index]];
+            DropdownMenuItem item = widget.items[pagedShownIndexes[index]];
             Widget? displayItemResult;
             if (widget.displayItem != null) {
               bool itemSelected = (widget.multipleSelection
-                      ? widget.selectedItems?.contains(shownIndexes[index])
+                      ? widget.selectedItems?.contains(pagedShownIndexes[index])
                       : item.value == selectedResult) ??
                   false;
               try {
@@ -1355,6 +1431,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                 displayItemResult =
                     widget.displayItem!(item, itemSelected, (value) {
                   widget.updateParent!(value);
+                  widget.currentPage?.value = 1;
                   _updateShownIndexes(null);
                 });
               }
@@ -1363,16 +1440,17 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
               onTap: () {
                 if (widget.multipleSelection) {
                   setState(() {
-                    if (widget.selectedItems?.contains(shownIndexes[index]) ??
+                    if (widget.selectedItems
+                            ?.contains(pagedShownIndexes[index]) ??
                         false) {
-                      widget.selectedItems?.remove(shownIndexes[index]);
+                      widget.selectedItems?.remove(pagedShownIndexes[index]);
                     } else {
-                      widget.selectedItems?.add(shownIndexes[index]);
+                      widget.selectedItems?.add(pagedShownIndexes[index]);
                     }
                   });
                 } else {
                   widget.selectedItems?.clear();
-                  widget.selectedItems?.add(shownIndexes[index]);
+                  widget.selectedItems?.add(pagedShownIndexes[index]);
                   if (widget.doneButton == null) {
                     pop();
                   } else {
@@ -1388,8 +1466,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                               : TextDirection.ltr,
                           children: [
                               Icon(
-                                widget.selectedItems
-                                            ?.contains(shownIndexes[index]) ??
+                                widget.selectedItems?.contains(
+                                            pagedShownIndexes[index]) ??
                                         false
                                     ? Icons.check_box
                                     : Icons.check_box_outline_blank,
@@ -1405,10 +1483,61 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                       : displayItemResult,
             );
           },
-          itemCount: shownIndexes.length,
+          itemCount: pagedShownIndexes.length,
         ),
       ),
     );
+    if (!displayPages) {
+      return (scrollBar);
+    }
+    Function updateSearchPage = () {
+      _updateShownIndexes(latestKeyword);
+      setState(() {});
+    };
+    if (widget.customPaginationDisplay != null) {
+      return (widget.customPaginationDisplay!(
+          scrollBar, shownIndexes.length, updateSearchPage));
+    }
+    bool first = widget.currentPage!.value == 1;
+    bool last = widget.currentPage!.value >=
+        (shownIndexes.length / widget.itemsPerPage!).ceil();
+    Widget previousPageButton = IconButton(
+      icon: Icon(
+        widget.rightToLeft ? Icons.chevron_right : Icons.chevron_left,
+        color: first ? Colors.grey : Colors.blue,
+      ),
+      onPressed: first
+          ? null
+          : () {
+              widget.currentPage!.value--;
+              updateSearchPage();
+            },
+    );
+    Widget nextPageButton = IconButton(
+      icon: Icon(
+        widget.rightToLeft ? Icons.chevron_left : Icons.chevron_right,
+        color: last ? Colors.grey : Colors.blue,
+      ),
+      onPressed: last
+          ? null
+          : () {
+              widget.currentPage!.value++;
+              updateSearchPage();
+            },
+    );
+    return (Expanded(
+        child: Column(children: [
+      SizedBox(
+        height: 10,
+      ),
+      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        widget.rightToLeft ? nextPageButton : previousPageButton,
+        Text(
+            "${widget.currentPage!.value}/${(shownIndexes.length / widget.itemsPerPage!).ceil()}"),
+        widget.rightToLeft ? previousPageButton : nextPageButton,
+      ]),
+      scrollBar,
+    ])));
   }
 
   /// Returns the close button after the list of items or its replacement.

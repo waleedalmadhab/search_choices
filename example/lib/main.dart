@@ -46,6 +46,7 @@ void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
   static final navKey = new GlobalKey<NavigatorState>();
+
   const MyApp({Key? navKey}) : super(key: navKey);
   @override
   _MyAppState createState() => _MyAppState();
@@ -63,6 +64,7 @@ class _MyAppState extends State<MyApp> {
   String? selectedValueSingleDialogEllipsis;
   String? selectedValueSingleDialogRightToLeft;
   String? selectedValueUpdateFromOutsideThePlugin;
+  String? selectedValueSingleDialogPaged;
   ExampleNumber? selectedNumber;
   List<int> selectedItemsMultiDialog = [];
   List<int> selectedItemsMultiCustomDisplayDialog = [];
@@ -82,12 +84,15 @@ class _MyAppState extends State<MyApp> {
   }).toList();
   List<int> selectedItemsMultiSelect3Menu = [];
   List<int> selectedItemsMultiDialogWithCountAndWrap = [];
+  List<int> selectedItemsMultiDialogPaged = [];
 
   static const String appTitle = "Search Choices demo";
   final String loremIpsum =
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
   Function? openDialog;
+
+  PointerThisPlease<int> currentPage = PointerThisPlease<int>(1);
 
   @override
   void initState() {
@@ -312,7 +317,8 @@ class _MyAppState extends State<MyApp> {
             keyword.split(" ").forEach((k) {
               int i = 0;
               items.forEach((item) {
-                if (k.isNotEmpty &&
+                if (!ret.contains(i) &&
+                    k.isNotEmpty &&
                     (item.value
                         .toString()
                         .toLowerCase()
@@ -1024,6 +1030,142 @@ class _MyAppState extends State<MyApp> {
         searchInputDecoration: InputDecoration(
             icon: Icon(Icons.airline_seat_flat), border: OutlineInputBorder()),
       ),
+      "Single dialog paged": SearchChoices.single(
+        items: items,
+        value: selectedValueSingleDialogPaged,
+        hint: "Select one",
+        searchHint: "Search one",
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialogPaged = value;
+          });
+        },
+        isExpanded: true,
+        itemsPerPage: 5,
+        currentPage: currentPage,
+      ),
+      "Multi dialog paged rtl": SearchChoices.multiple(
+        items: ["طنجة", "فاس‎", "أكادير‎", "تزنيت‎", "آكــلــو", "سيدي بيبي"]
+            .map<DropdownMenuItem<String>>((string) {
+          return (DropdownMenuItem<String>(
+            child: Text(
+              string,
+              textDirection: TextDirection.rtl,
+            ),
+            value: string,
+          ));
+        }).toList(),
+        selectedItems: selectedItemsMultiDialogPaged,
+        hint: Text(
+          "ختار",
+          textDirection: TextDirection.rtl,
+        ),
+        searchHint: Text(
+          "ختار",
+          textDirection: TextDirection.rtl,
+        ),
+        closeButton: TextButton(
+          onPressed: () {
+            Navigator.pop(
+                MyApp.navKey.currentState?.overlay?.context ?? context);
+          },
+          child: Text(
+            "سدّ",
+            textDirection: TextDirection.rtl,
+          ),
+        ),
+        onChanged: (value) {
+          setState(() {
+            selectedItemsMultiDialogPaged = value;
+          });
+        },
+        isExpanded: true,
+        rightToLeft: true,
+        displayItem: (item, selected) {
+          return (Row(textDirection: TextDirection.rtl, children: [
+            selected
+                ? Icon(
+                    Icons.radio_button_checked,
+                    color: Colors.grey,
+                  )
+                : Icon(
+                    Icons.radio_button_unchecked,
+                    color: Colors.grey,
+                  ),
+            SizedBox(width: 7),
+            item,
+            Expanded(
+              child: SizedBox.shrink(),
+            ),
+          ]));
+        },
+        selectedValueWidgetFn: (item) {
+          return Row(
+            textDirection: TextDirection.rtl,
+            children: <Widget>[
+              (Text(
+                item,
+                textDirection: TextDirection.rtl,
+              )),
+            ],
+          );
+        },
+        itemsPerPage: 5,
+        currentPage: currentPage,
+        doneButton: "قريب",
+      ),
+      "Single dialog paged custom pagination": SearchChoices.single(
+        items: items,
+        value: selectedValueSingleDialogPaged,
+        hint: "Select one",
+        searchHint: "Search one",
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialogPaged = value;
+          });
+        },
+        isExpanded: true,
+        itemsPerPage: 5,
+        currentPage: currentPage,
+        customPaginationDisplay: (Widget listWidget, int totalFilteredItemsNb,
+            Function updateSearchPage) {
+          return (Expanded(
+              child: Column(children: [
+            listWidget,
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(children: [
+                Text("Page:"),
+                SizedBox(
+                  width: 10,
+                ),
+                Wrap(
+                  spacing: 10,
+                  children:
+                      Iterable<int>.generate((totalFilteredItemsNb / 5).ceil())
+                          .toList()
+                          .map((i) {
+                    return (SizedBox(
+                      //width: 45.0,
+                      width: (31 + 9 * (i + 1).toString().length) + 0.0,
+                      height: 30.0,
+                      child: ElevatedButton(
+                        child: Text("${i + 1}"),
+                        onPressed: (i + 1) == currentPage.value
+                            ? null
+                            : () {
+                                currentPage.value = i + 1;
+                                updateSearchPage();
+                              },
+                      ),
+                    ));
+                  }).toList(),
+                ),
+              ]),
+            ),
+          ])));
+        },
+      ),
     };
 
     return MaterialApp(
@@ -1043,7 +1185,7 @@ class _MyAppState extends State<MyApp> {
                       return (Tab(
                         text: (i + 1).toString(),
                       ));
-                    }).toList(), //widgets.keys.toList().map((k){return(Tab(text: k));}).toList(),
+                    }).toList(),
                   ),
                 ),
                 body: Container(
