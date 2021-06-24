@@ -277,7 +277,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// [searchInputDecoration] [InputDecoration] sets the search bar decoration.
   final InputDecoration? searchInputDecoration;
 
-  /// [itemsPerPage] [int] if set, organizes the search list per page with the given number of items displayed per page.
+  /// [itemsPerPage] [int] if set, organizes the search list per page with the given number of items displayed per page. Must give [currentPage].
   final int? itemsPerPage;
 
   /// [currentPage] [PointerThisPlease<int>] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
@@ -608,6 +608,8 @@ class SearchChoices<T> extends StatefulWidget {
     this.customPaginationDisplay,
   })  : assert(!multipleSelection || doneButton != null),
         assert(menuConstraints == null || !dialogBox),
+        assert(itemsPerPage == null || currentPage != null,
+            "currentPage must be given if itemsPerPage is given"),
         super(key: key);
 
   @override

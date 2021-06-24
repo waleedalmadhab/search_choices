@@ -1166,6 +1166,22 @@ class _MyAppState extends State<MyApp> {
           ])));
         },
       ),
+      "Single menu paged": SearchChoices.single(
+        items: items,
+        value: selectedValueSingleDialogPaged,
+        hint: "Select one",
+        searchHint: null,
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialogPaged = value;
+          });
+        },
+        dialogBox: false,
+        isExpanded: true,
+        menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
+        itemsPerPage: 5,
+        currentPage: currentPage,
+      ),
     };
 
     return MaterialApp(
