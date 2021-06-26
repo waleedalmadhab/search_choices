@@ -11,7 +11,18 @@ class NotGiven {
   const NotGiven();
 }
 
-/// Class mainly used internally to send pointers to variables instead of the variable directly so that the called function can update the variable value
+/// Class used internally as a tuple with 3 items.
+class _Tuple3<E1, E2, E3>{
+  /// First item of the tuple
+  E1 item1;
+  /// Second item of the tuple
+  E2 item2;
+  /// Third item of the tuple
+  E3 item3;
+  _Tuple3(this.item1,this.item2,this.item3);
+}
+
+/// Class used to send pointers to variables instead of the variable directly so that the called function can update the variable value
 class PointerThisPlease<T> {
   /// Value to be pointed to that can be changed by the called method.
   T value;
@@ -287,6 +298,16 @@ class SearchChoices<T> extends StatefulWidget {
   final Widget Function(Widget listWidget, int totalFilteredItemsNb,
       Function updateSearchPage)? customPaginationDisplay;
 
+  /// [networkSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must clear and fill the [itemsListToClearAndFill] with the returned items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
+  final Future<int> Function(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? networkSearchFn;
+
+  /// [networkSearchOrderOptions] [Map<String, Set<Object>>] when [networkSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"values":["value1",{"value2":order1Value2Widget}]}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  final Map<String, Set<Object>>? networkSearchOrderOptions;
+
+  /// [networkSearchFilterOptions] [Map<String, Map<String, Object>>] when [networkSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  final Map<String, Map<String, Object>>? networkSearchFilterOptions;
+
+
   /// Search choices Widget with a single choice that opens a dialog or a menu to let the user do the selection conveniently with a search.
   ///
   /// * [items] with __child__: [Widget] displayed ; __value__: any object with .toString() used to match search keyword.
@@ -329,6 +350,9 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [itemsPerPage] [int] if set, organizes the search list per page with the given number of items displayed per page.
   /// * [currentPage] [PointerThisPlease<int>] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
   /// * [customPaginationDisplay] [Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage)] if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
+  /// * [networkSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must clear and fill the [itemsListToClearAndFill] with the returned items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
+  /// * [networkSearchOrderOptions] [Map<String, Set<Object>>] when [networkSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"values":["value1",{"value2":order1Value2Widget}]}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  /// * [networkSearchFilterOptions] [Map<String, Map<String, Object>>] when [networkSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   factory SearchChoices.single({
     Key? key,
     required List<DropdownMenuItem<T>> items,
@@ -380,6 +404,9 @@ class SearchChoices<T> extends StatefulWidget {
     Widget Function(Widget listWidget, int totalFilteredItemsNb,
             Function updateSearchPage)?
         customPaginationDisplay,
+    Future<int> Function(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? networkSearchFn,
+    Map<String, Set<Object>>? networkSearchOrderOptions,
+    Map<String, Map<String, Object>>? networkSearchFilterOptions,
   }) {
     return (SearchChoices._(
       key: key,
@@ -423,6 +450,9 @@ class SearchChoices<T> extends StatefulWidget {
       itemsPerPage: itemsPerPage,
       currentPage: currentPage,
       customPaginationDisplay: customPaginationDisplay,
+        networkSearchFn:networkSearchFn,
+        networkSearchOrderOptions:networkSearchOrderOptions,
+        networkSearchFilterOptions:networkSearchFilterOptions,
     ));
   }
 
@@ -467,6 +497,9 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [itemsPerPage] [int] if set, organizes the search list per page with the given number of items displayed per page.
   /// * [currentPage] [int] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
   /// * [customPaginationDisplay] [Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage)] if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
+  /// * [networkSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must clear and fill the [itemsListToClearAndFill] with the returned items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
+  /// * [networkSearchOrderOptions] [Map<String, Set<Object>>] when [networkSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"values":["value1",{"value2":order1Value2Widget}]}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  /// * [networkSearchFilterOptions] [Map<String, Map<String, Object>>] when [networkSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   factory SearchChoices.multiple({
     Key? key,
     required List<DropdownMenuItem<T>> items,
@@ -517,6 +550,9 @@ class SearchChoices<T> extends StatefulWidget {
     Widget Function(Widget listWidget, int totalFilteredItemsNb,
             Function updateSearchPage)?
         customPaginationDisplay,
+    Future<int> Function(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? networkSearchFn,
+    Map<String, Set<Object>>? networkSearchOrderOptions,
+    Map<String, Map<String, Object>>? networkSearchFilterOptions,
   }) {
     return (SearchChoices._(
       key: key,
@@ -560,6 +596,9 @@ class SearchChoices<T> extends StatefulWidget {
       itemsPerPage: itemsPerPage,
       currentPage: currentPage,
       customPaginationDisplay: customPaginationDisplay,
+        networkSearchFn:networkSearchFn,
+        networkSearchOrderOptions:networkSearchOrderOptions,
+        networkSearchFilterOptions:networkSearchFilterOptions,
     ));
   }
 
@@ -606,10 +645,16 @@ class SearchChoices<T> extends StatefulWidget {
     this.itemsPerPage,
     this.currentPage,
     this.customPaginationDisplay,
+    this.networkSearchFn,
+    this.networkSearchOrderOptions,
+    this.networkSearchFilterOptions,
   })  : assert(!multipleSelection || doneButton != null),
         assert(menuConstraints == null || !dialogBox),
         assert(itemsPerPage == null || currentPage != null,
             "currentPage must be given if itemsPerPage is given"),
+        assert(networkSearchOrderOptions==null||networkSearchFn!=null,"networkSearchOrderOptions is of no use if networkSearchFn is not set"),
+        assert(networkSearchFilterOptions==null||networkSearchFn!=null,"networkSearchFilterOptions is of no use if networkSearchFn is not set"),
+        assert(networkSearchFn==null||searchFn==null,"networkSearchFn and searchFn cannot work together"),
         super(key: key);
 
   @override
@@ -785,6 +830,9 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         itemsPerPage: widget.itemsPerPage,
         currentPage: widget.currentPage,
         customPaginationDisplay: widget.customPaginationDisplay,
+        networkSearchFn:widget.networkSearchFn,
+        networkSearchOrderOptions:widget.networkSearchOrderOptions,
+        networkSearchFilterOptions:widget.networkSearchFilterOptions,
       ));
     });
   }
@@ -1095,6 +1143,16 @@ class DropdownDialog<T> extends StatefulWidget {
   final Widget Function(Widget listWidget, int totalFilteredItemsNb,
       Function updateSearchPage)? customPaginationDisplay;
 
+  /// See SearchChoices class.
+  final Future<int> Function(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? networkSearchFn;
+
+  /// See SearchChoices class.
+  final Map<String, Set<Object>>? networkSearchOrderOptions;
+
+  /// See SearchChoices class.
+  final Map<String, Map<String, Object>>? networkSearchFilterOptions;
+
+
   DropdownDialog({
     Key? key,
     required this.items,
@@ -1125,6 +1183,9 @@ class DropdownDialog<T> extends StatefulWidget {
     this.itemsPerPage,
     this.currentPage,
     this.customPaginationDisplay,
+    this.networkSearchFn,
+    this.networkSearchOrderOptions,
+    this.networkSearchFilterOptions,
   }) : super(key: key);
 
   _DropdownDialogState<T> createState() => _DropdownDialogState<T>();
@@ -1140,6 +1201,9 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   Function? searchFn;
   String? latestKeyword;
 
+  bool networkSearch=false;
+  Future<int>? networkSearchResultsNb;
+
   _DropdownDialogState();
 
   dynamic get selectedResult {
@@ -1153,6 +1217,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   void _updateShownIndexes(
     String? keyword,
   ) {
+    assert(!networkSearch,"cannot update shown indexes while doing a network search as all returned are displayed (potentially with pagination)");
     if (keyword != null) {
       latestKeyword = keyword;
     }
@@ -1163,41 +1228,46 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
 
   @override
   void initState() {
-    if (widget.searchFn != null) {
-      searchFn = widget.searchFn;
-    } else {
-      Function matchFn;
-      if (widget.isCaseSensitiveSearch) {
-        matchFn = (item, keyword) {
-          return (item.value.toString().contains(keyword));
-        };
+    if(widget.networkSearchFn!=null){
+      networkSearch=true;
+    }
+    else {
+      if (widget.searchFn != null) {
+        searchFn = widget.searchFn;
       } else {
-        matchFn = (item, keyword) {
-          return (item.value
-              .toString()
-              .toLowerCase()
-              .contains(keyword.toLowerCase()));
+        Function matchFn;
+        if (widget.isCaseSensitiveSearch) {
+          matchFn = (item, keyword) {
+            return (item.value.toString().contains(keyword));
+          };
+        } else {
+          matchFn = (item, keyword) {
+            return (item.value
+                .toString()
+                .toLowerCase()
+                .contains(keyword.toLowerCase()));
+          };
+        }
+        searchFn = (keyword, items) {
+          List<int> shownIndexes = [];
+          int i = 0;
+          widget.items.forEach((item) {
+            if (matchFn(item, keyword) || (keyword?.isEmpty ?? true)) {
+              shownIndexes.add(i);
+            }
+            i++;
+          });
+          return (shownIndexes);
         };
       }
-      searchFn = (keyword, items) {
-        List<int> shownIndexes = [];
-        int i = 0;
-        widget.items.forEach((item) {
-          if (matchFn(item, keyword) || (keyword?.isEmpty ?? true)) {
-            shownIndexes.add(i);
-          }
-          i++;
-        });
-        return (shownIndexes);
-      };
+      assert(searchFn != null);
     }
-    assert(searchFn != null);
     widget.currentPage?.value = 1;
     if (widget.initialSearchTerms.isNotEmpty) {
       txtSearch.text = widget.initialSearchTerms;
-      _updateShownIndexes(txtSearch.text);
+      searchForKeyword(txtSearch.text);
     } else {
-      _updateShownIndexes('');
+      searchForKeyword('');
     }
     super.initState();
   }
@@ -1206,7 +1276,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   Widget build(BuildContext context) {
     if (widget.buildDropDownDialog != null) {
       return (widget.buildDropDownDialog!(
-          titleBar(), searchBar(), list(), closeButtonWrapper(), context));
+          titleBar(), searchBar(), listWithPagination(), closeButtonWrapper(), context));
     }
     return AnimatedContainer(
       padding: MediaQuery.of(context).viewInsets,
@@ -1226,7 +1296,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             children: <Widget>[
               titleBar(),
               searchBar(),
-              list(),
+              listWithPagination(),
               closeButtonWrapper(),
             ],
           ),
@@ -1310,6 +1380,21 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
           );
   }
 
+  /// Basically splits the search between the searchFn and the networkSearchFn cases.
+  void searchForKeyword(String? keyword){
+    if(networkSearch){
+      _doNetworkSearch(keyword);
+    }
+    else{
+      _updateShownIndexes(keyword);
+    }
+  }
+
+  /// Refreshes the displayed list with the network search results.
+  void _doNetworkSearch(String? keyword){
+    networkSearchResultsNb=widget.networkSearchFn!(keyword,widget.items,null,null,null,null);
+  }
+
   /// Search bar where the user can type text to look for the items to select.
   Widget searchBar() {
     return Container(
@@ -1340,7 +1425,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             autofocus: widget.autofocus,
             onChanged: (value) {
               widget.currentPage?.value = 1;
-              _updateShownIndexes(value);
+              searchForKeyword(value);
               setState(() {});
             },
             keyboardType: widget.keyboardType,
@@ -1355,7 +1440,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                     child: InkWell(
                       onTap: () {
                         widget.currentPage?.value = 1;
-                        _updateShownIndexes('');
+                        searchForKeyword('');
                         setState(() {
                           txtSearch.text = '';
                         });
@@ -1395,10 +1480,96 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     }
   }
 
-  /// Displays the list of items filtered based on the search terms.
-  Widget list() {
+  void deselectItem(int index,T value){
+    widget.selectedItems?.remove(index);
+  }
+
+  void selectItem(int index,T value){
+    if(!widget.multipleSelection){
+      widget.selectedItems?.clear();
+    }
+    widget.selectedItems?.add(index);
+  }
+
+  void itemTapped(int index,T value, bool itemSelected){
+    if (widget.multipleSelection&&itemSelected) {
+      setState(() {
+          deselectItem(index, value);
+      });
+    } else {
+      selectItem(index, value);
+      if (!widget.multipleSelection&&widget.doneButton == null) {
+        pop();
+      } else {
+        setState(() {});
+      }
+    }
+  }
+
+  /// Returns whether an item is selected. Relies on index in case of non future list of items.
+  bool isItemSelected(int index,T value){
+    return(widget.selectedItems?.contains(index)??false);
+  }
+
+  /// Builds the list display from the given list of [DropdownMenuItem] along with the [bool] indicating whether the item is selected or not and the [int] as the index in the [selectedItems] list.
+  Widget listDisplay(List<_Tuple3<int,DropdownMenuItem<T>,bool>> itemsToDisplay){
+    return
+    Expanded(
+      child: Scrollbar(
+        child: ListView.builder(
+          itemBuilder: (context, index) {
+            int itemIndex = itemsToDisplay[index].item1;
+            DropdownMenuItem item = itemsToDisplay[index].item2;
+            bool isItemSelected = itemsToDisplay[index].item3;
+            Widget? displayItemResult;
+            if (widget.displayItem != null) {
+              try {
+                displayItemResult = widget.displayItem!(item, isItemSelected);
+              } on NoSuchMethodError {
+                displayItemResult =
+                    widget.displayItem!(item, isItemSelected, (value) {
+                      widget.updateParent!(value);
+                      widget.currentPage?.value = 1;
+                      searchForKeyword(null);
+                    });
+              }
+            }
+            return InkWell(
+              onTap: () {
+                itemTapped(itemIndex, item.value, isItemSelected);
+              },
+              child:
+              widget.displayItem == null
+                  ? widget.multipleSelection ? (Row(
+                  textDirection: widget.rightToLeft
+                      ? TextDirection.rtl
+                      : TextDirection.ltr,
+                  children: [
+                    Icon(
+                      isItemSelected
+                          ? Icons.check_box
+                          : Icons.check_box_outline_blank,
+                    ),
+                    SizedBox(
+                      width: 7,
+                    ),
+                    Flexible(child: item),
+                  ]))
+                  : item
+                  : displayItemResult,
+            );
+          },
+          itemCount: itemsToDisplay.length,
+        ),
+      ),
+    );
+  }
+
+  /// Displays the list of items filtered based on the search terms with pagination.
+  Widget listWithPagination() {
     List<int> pagedShownIndexes = [];
     bool displayPages = true;
+    
     if (widget.itemsPerPage == null ||
         widget.itemsPerPage! >= shownIndexes.length) {
       pagedShownIndexes = shownIndexes;
@@ -1416,93 +1587,31 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
         pagedShownIndexes.add(shownIndexes[i]);
       }
     }
-    Widget scrollBar = Expanded(
-      child: Scrollbar(
-        child: ListView.builder(
-          itemBuilder: (context, index) {
-            DropdownMenuItem item = widget.items[pagedShownIndexes[index]];
-            Widget? displayItemResult;
-            if (widget.displayItem != null) {
-              bool itemSelected = (widget.multipleSelection
-                      ? widget.selectedItems?.contains(pagedShownIndexes[index])
-                      : item.value == selectedResult) ??
-                  false;
-              try {
-                displayItemResult = widget.displayItem!(item, itemSelected);
-              } on NoSuchMethodError {
-                displayItemResult =
-                    widget.displayItem!(item, itemSelected, (value) {
-                  widget.updateParent!(value);
-                  widget.currentPage?.value = 1;
-                  _updateShownIndexes(null);
-                });
-              }
-            }
-            return InkWell(
-              onTap: () {
-                if (widget.multipleSelection) {
-                  setState(() {
-                    if (widget.selectedItems
-                            ?.contains(pagedShownIndexes[index]) ??
-                        false) {
-                      widget.selectedItems?.remove(pagedShownIndexes[index]);
-                    } else {
-                      widget.selectedItems?.add(pagedShownIndexes[index]);
-                    }
-                  });
-                } else {
-                  widget.selectedItems?.clear();
-                  widget.selectedItems?.add(pagedShownIndexes[index]);
-                  if (widget.doneButton == null) {
-                    pop();
-                  } else {
-                    setState(() {});
-                  }
-                }
-              },
-              child: widget.multipleSelection
-                  ? widget.displayItem == null
-                      ? (Row(
-                          textDirection: widget.rightToLeft
-                              ? TextDirection.rtl
-                              : TextDirection.ltr,
-                          children: [
-                              Icon(
-                                widget.selectedItems?.contains(
-                                            pagedShownIndexes[index]) ??
-                                        false
-                                    ? Icons.check_box
-                                    : Icons.check_box_outline_blank,
-                              ),
-                              SizedBox(
-                                width: 7,
-                              ),
-                              Flexible(child: item),
-                            ]))
-                      : displayItemResult
-                  : widget.displayItem == null
-                      ? item
-                      : displayItemResult,
-            );
-          },
-          itemCount: pagedShownIndexes.length,
-        ),
-      ),
-    );
+
+    List<_Tuple3<int,DropdownMenuItem<T>,bool>> itemsToDisplay;
+    itemsToDisplay=pagedShownIndexes.map<_Tuple3<int,DropdownMenuItem<T>,bool>>((int index){
+      return(_Tuple3<int,DropdownMenuItem<T>,bool>(index,widget.items[index] as DropdownMenuItem<T>,isItemSelected(index, widget.items[index].value)));
+    }).toList();
+    Widget scrollBar=listDisplay(itemsToDisplay);
+    
     if (!displayPages) {
       return (scrollBar);
     }
+    
     Function updateSearchPage = () {
-      _updateShownIndexes(latestKeyword);
+      searchForKeyword(latestKeyword);
       setState(() {});
     };
+    
     if (widget.customPaginationDisplay != null) {
       return (widget.customPaginationDisplay!(
           scrollBar, shownIndexes.length, updateSearchPage));
     }
+    
     bool first = widget.currentPage!.value == 1;
     bool last = widget.currentPage!.value >=
         (shownIndexes.length / widget.itemsPerPage!).ceil();
+    
     Widget previousPageButton = IconButton(
       icon: Icon(
         widget.rightToLeft ? Icons.chevron_right : Icons.chevron_left,
@@ -1515,6 +1624,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
               updateSearchPage();
             },
     );
+    
     Widget nextPageButton = IconButton(
       icon: Icon(
         widget.rightToLeft ? Icons.chevron_left : Icons.chevron_right,
@@ -1527,6 +1637,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
               updateSearchPage();
             },
     );
+    
     return (Expanded(
         child: Column(children: [
       SizedBox(

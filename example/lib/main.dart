@@ -740,7 +740,7 @@ class _MyAppState extends State<MyApp> {
           items: items.map((item) {
             return (DropdownMenuItem(
               child: Text(
-                item.value,
+                item.value.toString(),
                 style: TextStyle(color: Colors.white),
               ),
               value: item.value,
@@ -1146,7 +1146,6 @@ class _MyAppState extends State<MyApp> {
                           .toList()
                           .map((i) {
                     return (SizedBox(
-                      //width: 45.0,
                       width: (31 + 9 * (i + 1).toString().length) + 0.0,
                       height: 30.0,
                       child: ElevatedButton(
@@ -1181,6 +1180,45 @@ class _MyAppState extends State<MyApp> {
         menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
         itemsPerPage: 5,
         currentPage: currentPage,
+      ),
+      "Single dialog paged future": SearchChoices.single(
+        items: items,
+        value: selectedValueSingleDialogPaged,
+        hint: "Select one capital",
+        searchHint: "Search capitals",
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialogPaged = value;
+          });
+        },
+        isExpanded: true,
+        itemsPerPage: 5,
+        currentPage: currentPage,
+        networkSearchFn:(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb) async{
+          return(await Future.delayed(Duration(seconds: 2)).then((value){
+            itemsListToClearAndFill.clear();
+            itemsListToClearAndFill.addAll(Iterable<int>.generate(5)
+                .toList()
+                .map((i) {
+              return (DropdownMenuItem(
+                value: (i+1)*5,
+                child: Text(((i+1)*5).toString()),
+              ));
+            }).toList());
+            return(
+            100
+            );
+          }));
+        },
+        networkSearchOrderOptions:{
+          "country":{Wrap(children:[Icon(Icons.flag),Text("Country")]),true},
+          "capital":{Wrap(children:[Icon(Icons.location_city),Text("Capital")]),true},
+          "continent":{"Continent",true},
+          "population":{Wrap(children:[Icon(Icons.people),Text("Population")]),false},
+        },
+        networkSearchFilterOptions:{
+          "continent":{"icon":Text("Continent"),"values":["Africa","Americas","Asia","Australia",{"Europe":Wrap(children:[Text("Europe"),Icon(Icons.stars,)])},"Oceania"]},
+          },
       ),
     };
 
@@ -1236,7 +1274,9 @@ class _MyAppState extends State<MyApp> {
               body: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Column(
-                  children: widgets
+                  children:
+//                    [
+                    widgets
                       .map((k, v) {
                         return (MapEntry(
                             k,
@@ -1261,7 +1301,9 @@ class _MyAppState extends State<MyApp> {
                                     )))));
                       })
                       .values
-                      .toList(),
+                      .toList()
+//                      .last]
+                  ,
                 ),
               ),
             ),
