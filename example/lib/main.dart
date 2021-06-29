@@ -75,6 +75,7 @@ class _MyAppState extends State<MyApp> {
   List<int> editableSelectedItems = [];
   List<DropdownMenuItem> items = [];
   List<DropdownMenuItem> editableItems = [];
+  List<DropdownMenuItem> futureItems = [];
   final _formKey = GlobalKey<FormState>();
   String inputString = "";
   TextFormField? input;
@@ -1182,7 +1183,7 @@ class _MyAppState extends State<MyApp> {
         currentPage: currentPage,
       ),
       "Single dialog paged future": SearchChoices.single(
-        items: items,
+        items: futureItems,
         value: selectedValueSingleDialogPaged,
         hint: "Select one capital",
         searchHint: "Search capitals",
@@ -1194,7 +1195,7 @@ class _MyAppState extends State<MyApp> {
         isExpanded: true,
         itemsPerPage: 5,
         currentPage: currentPage,
-        networkSearchFn:(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb) async{
+        futureSearchFn:(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb) async{
           return(await Future.delayed(Duration(seconds: 2)).then((value){
             itemsListToClearAndFill.clear();
             itemsListToClearAndFill.addAll(Iterable<int>.generate(5)
@@ -1205,18 +1206,19 @@ class _MyAppState extends State<MyApp> {
                 child: Text(((i+1)*5).toString()),
               ));
             }).toList());
+            futureItems=itemsListToClearAndFill;
             return(
-            100
+            Tuple2<List<DropdownMenuItem>,int>(itemsListToClearAndFill,100)
             );
           }));
         },
-        networkSearchOrderOptions:{
+        futureSearchOrderOptions:{
           "country":{Wrap(children:[Icon(Icons.flag),Text("Country")]),true},
           "capital":{Wrap(children:[Icon(Icons.location_city),Text("Capital")]),true},
           "continent":{"Continent",true},
           "population":{Wrap(children:[Icon(Icons.people),Text("Population")]),false},
         },
-        networkSearchFilterOptions:{
+        futureSearchFilterOptions:{
           "continent":{"icon":Text("Continent"),"values":["Africa","Americas","Asia","Australia",{"Europe":Wrap(children:[Text("Europe"),Icon(Icons.stars,)])},"Oceania"]},
           },
       ),
@@ -1275,7 +1277,7 @@ class _MyAppState extends State<MyApp> {
                 scrollDirection: Axis.vertical,
                 child: Column(
                   children:
-//                    [
+                    [
                     widgets
                       .map((k, v) {
                         return (MapEntry(
@@ -1302,7 +1304,7 @@ class _MyAppState extends State<MyApp> {
                       })
                       .values
                       .toList()
-//                      .last]
+                      .last]
                   ,
                 ),
               ),
