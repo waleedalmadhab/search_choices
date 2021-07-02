@@ -15,6 +15,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  # http package is used for the futureSearchFn example
+  http:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart';
 
 import 'package:search_choices/search_choices.dart';
 
@@ -1196,7 +1199,22 @@ class _MyAppState extends State<MyApp> {
         itemsPerPage: 5,
         currentPage: currentPage,
         futureSearchFn:(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb) async{
-          return(await Future.delayed(Duration(seconds: 2)).then((value){
+          Response response=await get(Uri.parse('https://searchchoices.jod.li/exampleList.php?page=2,50&order=population,desc&filter=continent,a'))
+//          final Response response=await get(Uri.parse('https://google.com'))
+              .timeout(Duration(seconds:10,))
+          ;
+          if(response.statusCode!=200){
+            throw Exception("failed to get data from internet");
+          }
+          dynamic data=jsonDecode(response.body);
+          int nbResults=data["results"];
+          List<DropdownMenuItem> results=(data["records"] as List<dynamic>).map<DropdownMenuItem>((item)=>
+              DropdownMenuItem(
+                value:item["id"],
+                child: Text("${item["capital"]} | ${item["country"]} | ${item["continent"]} | ${item["population"]}"),
+              )).toList();
+          return(Tuple2<List<DropdownMenuItem>,int>(results,nbResults));
+          return(await Future.delayed(Duration(seconds: 2)).then((value){//dummy static test
             itemsListToClearAndFill.clear();
             itemsListToClearAndFill.addAll(Iterable<int>.generate(5)
                 .toList()
@@ -1277,7 +1295,7 @@ class _MyAppState extends State<MyApp> {
                 scrollDirection: Axis.vertical,
                 child: Column(
                   children:
-                    [
+//                    [
                     widgets
                       .map((k, v) {
                         return (MapEntry(
@@ -1304,7 +1322,7 @@ class _MyAppState extends State<MyApp> {
                       })
                       .values
                       .toList()
-                      .last]
+//                      .last]
                   ,
                 ),
               ),

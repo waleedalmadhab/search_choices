@@ -316,6 +316,8 @@ class SearchChoices<T> extends StatefulWidget {
   /// [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   final Map<String, Map<String, Object>>? futureSearchFilterOptions;
 
+  List<T> selectedValues=[];
+
 
   /// Search choices Widget with a single choice that opens a dialog or a menu to let the user do the selection conveniently with a search.
   ///
@@ -675,6 +677,8 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
   PointerThisPlease<bool> displayMenu = PointerThisPlease<bool>(false);
   Function? updateParent;
 
+  List<T> selectedValues=[];
+
   TextStyle get _textStyle =>
       widget.style ??
       (_enabled && !(widget.readOnly)
@@ -727,10 +731,16 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
   }
 
   bool get hasSelection {
+    if(widget.futureSearchFn!=null){
+      return (selectedValues.isNotEmpty);
+    }
     return (selectedItems != null && ((selectedItems?.isNotEmpty) ?? true));
   }
 
   dynamic get selectedResult {
+    if(widget.futureSearchFn!=null){
+      return(selectedValues);
+    }
     return (widget.multipleSelection
         ? selectedItems
         : selectedItems?.isNotEmpty ?? false
@@ -739,6 +749,9 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
   }
 
   updateSelectedItems({dynamic sel = const NotGiven()}) {
+    if(widget.futureSearchFn!=null){
+      return;
+    }
     List<int>? updatedSelectedItems;
     if (widget.multipleSelection) {
       if (!(sel is NotGiven)) {
@@ -759,7 +772,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
       if (updatedSelectedItems == null) updatedSelectedItems = [];
     }
     selectedItems?.retainWhere((element) =>
-        updatedSelectedItems?.any((selected) => selected == element) ?? false);
+    updatedSelectedItems?.any((selected) => selected == element) ?? false);
     updatedSelectedItems.forEach((selected) {
       if (!(selectedItems?.any((element) => selected == element) ?? true)) {
         selectedItems?.add(selected);
@@ -767,297 +780,349 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
     });
   }
 
-  int? indexFromValue(T value) {
-    return (widget.items.indexWhere((item) {
-      return (item.value == value);
-    }));
-  }
-
-  @override
-  void initState() {
-    if (widget.setOpenDialog != null) {
-      widget.setOpenDialog!(showDialogOrMenu);
+  updateSelectedValues({dynamic sel = const NotGiven()}) {
+    if (widget.futureSearchFn == null) {
+      return;
     }
-    selectedItems = [];
-    selectedItems?.addAll(widget.selectedItems);
-    super.initState();
-    updateParent = (sel) {
+    List<T>? updatedSelectedValues;
+    if (widget.multipleSelection) {
       if (!(sel is NotGiven)) {
-        widget.onChanged!(sel);
-        updateSelectedItems(sel: sel);
+        updatedSelectedValues = sel as List<T>;
+      } else {
+        updatedSelectedValues = List<T>.from(widget.selectedValues);
       }
-    };
-    updateSelectedItems();
-    super.initState();
-  }
+    } else {
+      T? val = !(sel is NotGiven) ? sel as T : widget.value;
+      if (val != null) {
+        updatedSelectedValues = [val];
+      }
+        if (updatedSelectedValues == null) updatedSelectedValues = [];
+      }
+      selectedValues.retainWhere((element) =>
+      updatedSelectedValues?.any((selected) => selected == element) ?? false);
+      updatedSelectedValues.forEach((selected) {
+        if (!(selectedValues.any((element) => selected == element))) {
+          selectedValues.add(selected);
+        }
+      });
+    }
 
-  @override
-  void didUpdateWidget(SearchChoices oldWidget) {
-    super.didUpdateWidget(oldWidget as SearchChoices<T>);
-    updateSelectedItems();
-  }
+    int? indexFromValue(T value) {
+    assert(widget.futureSearchFn==null,"got a futureSearchFn with a call to indexFromValue");
+      return (widget.items.indexWhere((item) {
+        return (item.value == value);
+      }));
+    }
 
-  Widget menuWidget({String searchTerms = ""}) {
-    return StatefulBuilder(
-        builder: (BuildContext context, StateSetter setStateFromBuilder) {
-      return (DropdownDialog(
-        items: widget.items,
-        hint: prepareWidget(widget.searchHint),
-        isCaseSensitiveSearch: widget.isCaseSensitiveSearch,
-        closeButton: widget.closeButton,
-        keyboardType: widget.keyboardType,
-        searchFn: widget.searchFn,
-        multipleSelection: widget.multipleSelection,
-        selectedItems: selectedItems,
-        doneButton: widget.doneButton,
-        displayItem: widget.displayItem,
-        validator: widget.validator,
-        dialogBox: widget.dialogBox,
-        displayMenu: displayMenu,
-        menuConstraints: widget.menuConstraints,
-        menuBackgroundColor: widget.menuBackgroundColor,
-        style: widget.style,
-        iconEnabledColor: widget.iconEnabledColor,
-        iconDisabledColor: widget.iconDisabledColor,
-        callOnPop: () {
-          if (!widget.dialogBox &&
-              widget.onChanged != null &&
-              selectedItems != null) {
-            widget.onChanged!(selectedResult);
+    @override
+    void initState() {
+      if (widget.setOpenDialog != null) {
+        widget.setOpenDialog!(showDialogOrMenu);
+      }
+      if (widget.futureSearchFn != null) {
+        selectedValues = [];
+        selectedValues.addAll(widget.selectedValues);
+//      super.initState();
+        updateParent = (sel) {
+          if (!(sel is NotGiven)) {
+            widget.onChanged!(sel);
+            updateSelectedValues(sel: sel);
           }
-          setState(() {});
-        },
-        updateParent: (value) {
-          updateParent!(value);
-          setStateFromBuilder(() {});
-        },
-        rightToLeft: widget.rightToLeft,
-        autofocus: widget.autofocus,
-        initialSearchTerms: searchTerms,
-        buildDropDownDialog: widget.buildDropDownDialog,
-        searchInputDecoration: widget.searchInputDecoration,
-        itemsPerPage: widget.itemsPerPage,
-        currentPage: widget.currentPage,
-        customPaginationDisplay: widget.customPaginationDisplay,
-        futureSearchFn:widget.futureSearchFn,
-        futureSearchOrderOptions:widget.futureSearchOrderOptions,
-        futureSearchFilterOptions:widget.futureSearchFilterOptions,
-      ));
-    });
-  }
-
-  showDialogOrMenu(String searchTerms) async {
-    if (widget.dialogBox) {
-      await showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (context) {
-            return (menuWidget(searchTerms: searchTerms));
-          });
-      if (widget.onChanged != null && selectedItems != null) {
-        widget.onChanged!(selectedResult);
+        };
+        updateSelectedValues();
       }
-    } else {
-      displayMenu.value = true;
+      else {
+        selectedItems = [];
+        selectedItems?.addAll(widget.selectedItems);
+//      super.initState();
+        updateParent = (sel) {
+          if (!(sel is NotGiven)) {
+            widget.onChanged!(sel);
+            updateSelectedItems(sel: sel);
+          }
+        };
+        updateSelectedItems();
+      }
+      super.initState();
     }
-    if (mounted) {
-      setState(() {});
-    }
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    final List<Widget> items =
-        _enabled ? List<Widget>.from(widget.items) : <Widget>[];
-    int? hintIndex;
-    if (widget.hint != null ||
-        (!_enabled &&
-            prepareWidget(widget.disabledHint, parameter: updateParent) !=
-                null)) {
-      final Widget? emplacedHint = _enabled
-          ? prepareWidget(widget.hint)
-          : DropdownMenuItem<Widget>(
-              child:
-                  prepareWidget(widget.disabledHint, parameter: updateParent) ??
-                      prepareWidget(widget.hint) ??
-                      SizedBox.shrink());
-      hintIndex = items.length;
-      items.add(DefaultTextStyle(
-        style: _textStyle.copyWith(color: Theme.of(context).hintColor),
-        child: IgnorePointer(
-          child: emplacedHint,
-          ignoringSemantics: false,
-        ),
-      ));
+    @override
+    void didUpdateWidget(SearchChoices oldWidget) {
+      super.didUpdateWidget(oldWidget as SearchChoices<T>);
+      if (widget.futureSearchFn != null) {
+        updateSelectedValues();
+      }
+      else {
+        updateSelectedItems();
+      }
     }
-    Widget innerItemsWidget;
-    List<Widget> list = [];
-    selectedItems?.forEach((item) {
-      list.add(widget.selectedValueWidgetFn != null
-          ? widget.selectedValueWidgetFn!(widget.items[item].value)
-          : items[item]);
-    });
-    if (list.isEmpty && hintIndex != null) {
-      innerItemsWidget = items[hintIndex];
-    } else {
-      innerItemsWidget = widget.selectedAggregateWidgetFn != null
-          ? widget.selectedAggregateWidgetFn!(list)
-          : Column(
-              children: list,
-            );
-    }
-    final EdgeInsetsGeometry padding = ButtonTheme.of(context).alignedDropdown
-        ? _kAlignedButtonPadding
-        : _kUnalignedButtonPadding;
-    Widget? clickable = !_enabled &&
-            prepareWidget(widget.disabledHint, parameter: updateParent) != null
-        ? prepareWidget(widget.disabledHint, parameter: updateParent)
-        : InkWell(
-            key: Key(
-                "clickableResultPlaceHolder"), //this key is used for running automated tests
-            onTap: widget.readOnly || !_enabled
-                ? null
-                : () async {
-                    await showDialogOrMenu("");
-                  },
-            child: Row(
-              textDirection:
-                  widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
-              children: <Widget>[
-                widget.isExpanded
-                    ? Expanded(child: innerItemsWidget)
-                    : innerItemsWidget,
-                IconTheme(
-                  data: IconThemeData(
-                    color: _iconColor,
-                    size: widget.iconSize,
-                  ),
-                  child:
-                      prepareWidget(widget.icon, parameter: selectedResult) ??
-                          SizedBox.shrink(),
-                ),
-              ],
+
+    Widget menuWidget({String searchTerms = ""}) {
+      return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setStateFromBuilder) {
+            return (DropdownDialog(
+              items: widget.items,
+              hint: prepareWidget(widget.searchHint),
+              isCaseSensitiveSearch: widget.isCaseSensitiveSearch,
+              closeButton: widget.closeButton,
+              keyboardType: widget.keyboardType,
+              searchFn: widget.searchFn,
+              multipleSelection: widget.multipleSelection,
+              selectedItems: selectedItems,
+              doneButton: widget.doneButton,
+              displayItem: widget.displayItem,
+              validator: widget.validator,
+              dialogBox: widget.dialogBox,
+              displayMenu: displayMenu,
+              menuConstraints: widget.menuConstraints,
+              menuBackgroundColor: widget.menuBackgroundColor,
+              style: widget.style,
+              iconEnabledColor: widget.iconEnabledColor,
+              iconDisabledColor: widget.iconDisabledColor,
+              callOnPop: () {
+                if (!widget.dialogBox &&
+                    widget.onChanged != null &&
+                    selectedItems != null) {
+                  widget.onChanged!(selectedResult);
+                }
+                setState(() {});
+              },
+              updateParent: (value) {
+                updateParent!(value);
+                setStateFromBuilder(() {});
+              },
+              rightToLeft: widget.rightToLeft,
+              autofocus: widget.autofocus,
+              initialSearchTerms: searchTerms,
+              buildDropDownDialog: widget.buildDropDownDialog,
+              searchInputDecoration: widget.searchInputDecoration,
+              itemsPerPage: widget.itemsPerPage,
+              currentPage: widget.currentPage,
+              customPaginationDisplay: widget.customPaginationDisplay,
+              futureSearchFn: widget.futureSearchFn,
+              futureSearchOrderOptions: widget.futureSearchOrderOptions,
+              futureSearchFilterOptions: widget.futureSearchFilterOptions,
             ));
-
-    Widget result = DefaultTextStyle(
-      style: _textStyle,
-      child: Container(
-        padding: padding.resolve(Directionality.of(context)),
-        child: Row(
-          textDirection:
-              widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            widget.isExpanded
-                ? Expanded(child: clickable ?? SizedBox.shrink())
-                : clickable ?? SizedBox.shrink(),
-            !widget.displayClearIcon
-                ? SizedBox()
-                : InkWell(
-                    onTap: hasSelection && _enabled && !widget.readOnly
-                        ? () {
-                            clearSelection();
-                          }
-                        : null,
-                    child: Container(
-                      padding: padding.resolve(Directionality.of(context)),
-                      child: Row(
-                        textDirection: widget.rightToLeft
-                            ? TextDirection.rtl
-                            : TextDirection.ltr,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          IconTheme(
-                            data: IconThemeData(
-                              color:
-                                  hasSelection && _enabled && !widget.readOnly
-                                      ? _enabledIconColor
-                                      : _disabledIconColor,
-                              size: widget.iconSize,
-                            ),
-                            child: widget.clearIcon,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-          ],
-        ),
-      ),
-    );
-
-    final double bottom = 8.0;
-    var validatorOutput;
-    if (widget.validator != null) {
-      validatorOutput = widget.validator!(selectedResult);
+          });
     }
-    var labelOutput = prepareWidget(widget.label, parameter: selectedResult,
-        stringToWidgetFunction: (string) {
-      return (Text(string,
-          textDirection:
-              widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
-          style: TextStyle(color: Colors.blueAccent, fontSize: 13)));
-    });
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        labelOutput ?? SizedBox.shrink(),
-        Stack(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(widget.padding),
-              child: result,
-            ),
-            widget.underline is NotGiven
-                ? SizedBox.shrink()
-                : Positioned(
-                    left: 0.0,
-                    right: 0.0,
-                    bottom: bottom,
-                    child: prepareWidget(widget.underline,
-                            parameter: selectedResult) ??
-                        Container(
-                          height: 1.0,
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: valid
-                                          ? Color(0xFFBDBDBD)
-                                          : Colors.red,
-                                      width: 0.0))),
-                        ),
-                  ),
-          ],
-        ),
-        valid
-            ? SizedBox.shrink()
-            : validatorOutput is String
-                ? Text(
-                    validatorOutput,
+
+    showDialogOrMenu(String searchTerms) async {
+      if (widget.dialogBox) {
+        await showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (context) {
+              return (menuWidget(searchTerms: searchTerms));
+            });
+        if (widget.onChanged != null && selectedItems != null) {
+          widget.onChanged!(selectedResult);
+        }
+      } else {
+        displayMenu.value = true;
+      }
+      if (mounted) {
+        setState(() {});
+      }
+    }
+
+    @override
+    Widget build(BuildContext context) {
+      final List<Widget> items =
+      _enabled ? List<Widget>.from(widget.items) : <Widget>[];
+      int? hintIndex;
+      if (widget.hint != null ||
+          (!_enabled &&
+              prepareWidget(widget.disabledHint, parameter: updateParent) !=
+                  null)) {
+        final Widget? emplacedHint = _enabled
+            ? prepareWidget(widget.hint)
+            : DropdownMenuItem<Widget>(
+            child:
+            prepareWidget(widget.disabledHint, parameter: updateParent) ??
+                prepareWidget(widget.hint) ??
+                SizedBox.shrink());
+        hintIndex = items.length;
+        items.add(DefaultTextStyle(
+          style: _textStyle.copyWith(color: Theme
+              .of(context)
+              .hintColor),
+          child: IgnorePointer(
+            child: emplacedHint,
+            ignoringSemantics: false,
+          ),
+        ));
+      }
+      Widget innerItemsWidget;
+      List<Widget> list = [];
+      selectedItems?.forEach((item) {
+        list.add(widget.selectedValueWidgetFn != null
+            ? widget.selectedValueWidgetFn!(widget.items[item].value)
+            : items[item]);
+      });
+      if (list.isEmpty && hintIndex != null) {
+        innerItemsWidget = items[hintIndex];
+      } else {
+        innerItemsWidget = widget.selectedAggregateWidgetFn != null
+            ? widget.selectedAggregateWidgetFn!(list)
+            : Column(
+          children: list,
+        );
+      }
+      final EdgeInsetsGeometry padding = ButtonTheme
+          .of(context)
+          .alignedDropdown
+          ? _kAlignedButtonPadding
+          : _kUnalignedButtonPadding;
+      Widget? clickable = !_enabled &&
+          prepareWidget(widget.disabledHint, parameter: updateParent) != null
+          ? prepareWidget(widget.disabledHint, parameter: updateParent)
+          : InkWell(
+          key: Key(
+              "clickableResultPlaceHolder"),
+          //this key is used for running automated tests
+          onTap: widget.readOnly || !_enabled
+              ? null
+              : () async {
+            await showDialogOrMenu("");
+          },
+          child: Row(
+            textDirection:
+            widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
+            children: <Widget>[
+              widget.isExpanded
+                  ? Expanded(child: innerItemsWidget)
+                  : innerItemsWidget,
+              IconTheme(
+                data: IconThemeData(
+                  color: _iconColor,
+                  size: widget.iconSize,
+                ),
+                child:
+                prepareWidget(widget.icon, parameter: selectedResult) ??
+                    SizedBox.shrink(),
+              ),
+            ],
+          ));
+
+      Widget result = DefaultTextStyle(
+        style: _textStyle,
+        child: Container(
+          padding: padding.resolve(Directionality.of(context)),
+          child: Row(
+            textDirection:
+            widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              widget.isExpanded
+                  ? Expanded(child: clickable ?? SizedBox.shrink())
+                  : clickable ?? SizedBox.shrink(),
+              !widget.displayClearIcon
+                  ? SizedBox()
+                  : InkWell(
+                onTap: hasSelection && _enabled && !widget.readOnly
+                    ? () {
+                  clearSelection();
+                }
+                    : null,
+                child: Container(
+                  padding: padding.resolve(Directionality.of(context)),
+                  child: Row(
                     textDirection: widget.rightToLeft
                         ? TextDirection.rtl
                         : TextDirection.ltr,
-                    style: TextStyle(color: Colors.red, fontSize: 13),
-                  )
-                : validatorOutput,
-        displayMenu.value ? menuWidget() : SizedBox.shrink(),
-      ],
-    );
-  }
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      IconTheme(
+                        data: IconThemeData(
+                          color:
+                          hasSelection && _enabled && !widget.readOnly
+                              ? _enabledIconColor
+                              : _disabledIconColor,
+                          size: widget.iconSize,
+                        ),
+                        child: widget.clearIcon,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
 
-  clearSelection() {
-    selectedItems?.clear();
-    if (widget.onChanged != null) {
-      widget.onChanged!(selectedResult);
+      final double bottom = 8.0;
+      var validatorOutput;
+      if (widget.validator != null) {
+        validatorOutput = widget.validator!(selectedResult);
+      }
+      var labelOutput = prepareWidget(widget.label, parameter: selectedResult,
+          stringToWidgetFunction: (string) {
+            return (Text(string,
+                textDirection:
+                widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
+                style: TextStyle(color: Colors.blueAccent, fontSize: 13)));
+          });
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          labelOutput ?? SizedBox.shrink(),
+          Stack(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(widget.padding),
+                child: result,
+              ),
+              widget.underline is NotGiven
+                  ? SizedBox.shrink()
+                  : Positioned(
+                left: 0.0,
+                right: 0.0,
+                bottom: bottom,
+                child: prepareWidget(widget.underline,
+                    parameter: selectedResult) ??
+                    Container(
+                      height: 1.0,
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: valid
+                                      ? Color(0xFFBDBDBD)
+                                      : Colors.red,
+                                  width: 0.0))),
+                    ),
+              ),
+            ],
+          ),
+          valid
+              ? SizedBox.shrink()
+              : validatorOutput is String
+              ? Text(
+            validatorOutput,
+            textDirection: widget.rightToLeft
+                ? TextDirection.rtl
+                : TextDirection.ltr,
+            style: TextStyle(color: Colors.red, fontSize: 13),
+          )
+              : validatorOutput,
+          displayMenu.value ? menuWidget() : SizedBox.shrink(),
+        ],
+      );
     }
-    if (widget.onClear != null) {
-      widget.onClear!();
+
+    clearSelection() {
+      selectedItems?.clear();
+      if (widget.onChanged != null) {
+        widget.onChanged!(selectedResult);
+      }
+      if (widget.onClear != null) {
+        widget.onClear!();
+      }
+      setState(() {});
     }
-    setState(() {});
   }
-}
 
 /// Class mainly used internally to display the available choices. Cannot be made private because of automated testing.
 class DropdownDialog<T> extends StatefulWidget {
@@ -1212,6 +1277,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
 
   bool futureSearch=false;
   Future<Tuple2<List<DropdownMenuItem>,int>>? futureSearchResults;
+
+  List<T> selectedValues=[];
 
   _DropdownDialogState();
 
@@ -1492,12 +1559,15 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
 
   void deselectItem(int index,T value){
     widget.selectedItems?.remove(index);
+    selectedValues.remove(value);
   }
 
   void selectItem(int index,T value){
     if(!widget.multipleSelection){
+      selectedValues.clear();
       widget.selectedItems?.clear();
     }
+    selectedValues.add(value);
     widget.selectedItems?.add(index);
   }
 
@@ -1518,6 +1588,9 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
 
   /// Returns whether an item is selected. Relies on index in case of non future list of items.
   bool isItemSelected(int index,T value){
+    if(futureSearch){
+      return(selectedValues.contains(value));
+    }
     return(widget.selectedItems?.contains(index)??false);
   }
 
@@ -1616,19 +1689,22 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
         future: _doFutureSearch(latestKeyword),
         builder: (context,AsyncSnapshot<Tuple2<List<DropdownMenuItem>,int>> snapshot) {
           if (snapshot.hasError) {
-            return (ElevatedButton.icon(onPressed: () {
+            return (Column(children:[SizedBox(height:15),Center(child: ElevatedButton.icon(onPressed: () {
               _doFutureSearch(latestKeyword);
-            }, icon: Icon(Icons.repeat), label: Text("Retry")));
+            }, icon: Icon(Icons.repeat), label: Text("Error - retry")),)]));
           }
           if (!snapshot.hasData||snapshot.connectionState == ConnectionState.waiting) {
             return (Column(children:[SizedBox(height:15),Center(child: CircularProgressIndicator(),)]));
           }
           if (snapshot.data == null) {
-            return (Text("No data 2"));
+            return (Column(children:[SizedBox(height:15),Center(child: Text("-"),)]));
           }
           if (snapshot.connectionState == ConnectionState.done) {
             Tuple2<List<DropdownMenuItem>, int>data = snapshot.data!;
             int nbResults = data.item2;
+            if(data.item1.length==0){
+              return (Column(children:[SizedBox(height:15),Center(child: Text("-"),)]));//no results
+            }
             itemsToDisplay =
                 data.item1.map<Tuple3<int, DropdownMenuItem<T>, bool>>((
                     DropdownMenuItem item) {
@@ -1641,6 +1717,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                 nbResults <= itemsToDisplay.length) {
               return (scrollBar);
             }
+            // Handle the pagination
             return (scrollBar);
           }
           print("connection state: ${snapshot.connectionState.toString()}");
