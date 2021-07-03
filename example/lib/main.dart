@@ -1195,6 +1195,7 @@ class _MyAppState extends State<MyApp> {
             selectedValueSingleDialogPaged = value;
           });
         },
+        selectedValues: [selectedValueSingleDialogPaged],
         isExpanded: true,
         itemsPerPage: 5,
         currentPage: currentPage,
@@ -1295,7 +1296,7 @@ class _MyAppState extends State<MyApp> {
                 scrollDirection: Axis.vertical,
                 child: Column(
                   children:
-//                    [
+                    [
                     widgets
                       .map((k, v) {
                         return (MapEntry(
@@ -1322,7 +1323,8 @@ class _MyAppState extends State<MyApp> {
                       })
                       .values
                       .toList()
-//                      .last]
+                      .last]
+//                      .first]
                   ,
                 ),
               ),

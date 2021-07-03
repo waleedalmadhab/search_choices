@@ -316,7 +316,8 @@ class SearchChoices<T> extends StatefulWidget {
   /// [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   final Map<String, Map<String, Object>>? futureSearchFilterOptions;
 
-  List<T> selectedValues=[];
+  /// [selectedValues] [List<T>] contains the list of selected values.
+  final List<T>? selectedValues;
 
 
   /// Search choices Widget with a single choice that opens a dialog or a menu to let the user do the selection conveniently with a search.
@@ -364,6 +365,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [futureSearchFn] [Future<Tuple2<List<DropdownMenuItem>,int>> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must clear and fill the [itemsListToClearAndFill] with the returned items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
   /// * [futureSearchOrderOptions] [Map<String, Set<Object>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"values":["value1",{"value2":order1Value2Widget}]}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   /// * [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  /// * [selectedValues] [List<T>] contains the list of selected values.
   factory SearchChoices.single({
     Key? key,
     required List<DropdownMenuItem<T>> items,
@@ -418,6 +420,7 @@ class SearchChoices<T> extends StatefulWidget {
     Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn,
     Map<String, Set<Object>>? futureSearchOrderOptions,
     Map<String, Map<String, Object>>? futureSearchFilterOptions,
+    List<T>? selectedValues=const [],
   }) {
     return (SearchChoices._(
       key: key,
@@ -461,9 +464,10 @@ class SearchChoices<T> extends StatefulWidget {
       itemsPerPage: itemsPerPage,
       currentPage: currentPage,
       customPaginationDisplay: customPaginationDisplay,
-        futureSearchFn:futureSearchFn,
-        futureSearchOrderOptions:futureSearchOrderOptions,
-        futureSearchFilterOptions:futureSearchFilterOptions,
+      futureSearchFn:futureSearchFn,
+      futureSearchOrderOptions:futureSearchOrderOptions,
+      futureSearchFilterOptions:futureSearchFilterOptions,
+      selectedValues: selectedValues,
     ));
   }
 
@@ -511,6 +515,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [futureSearchFn] [Future<Tuple2<List<DropdownMenuItem>,int>> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must clear and fill the [itemsListToClearAndFill] with the returned items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
   /// * [futureSearchOrderOptions] [Map<String, Set<Object>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"values":["value1",{"value2":order1Value2Widget}]}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   /// * [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  /// * [selectedValues] [List<T>] contains the list of selected values.
   factory SearchChoices.multiple({
     Key? key,
     required List<DropdownMenuItem<T>> items,
@@ -564,6 +569,7 @@ class SearchChoices<T> extends StatefulWidget {
     Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn,
     Map<String, Set<Object>>? futureSearchOrderOptions,
     Map<String, Map<String, Object>>? futureSearchFilterOptions,
+    List<T>? selectedValues=const [],
   }) {
     return (SearchChoices._(
       key: key,
@@ -607,9 +613,10 @@ class SearchChoices<T> extends StatefulWidget {
       itemsPerPage: itemsPerPage,
       currentPage: currentPage,
       customPaginationDisplay: customPaginationDisplay,
-        futureSearchFn:futureSearchFn,
-        futureSearchOrderOptions:futureSearchOrderOptions,
-        futureSearchFilterOptions:futureSearchFilterOptions,
+      futureSearchFn:futureSearchFn,
+      futureSearchOrderOptions:futureSearchOrderOptions,
+      futureSearchFilterOptions:futureSearchFilterOptions,
+      selectedValues: selectedValues,
     ));
   }
 
@@ -659,6 +666,7 @@ class SearchChoices<T> extends StatefulWidget {
     this.futureSearchFn,
     this.futureSearchOrderOptions,
     this.futureSearchFilterOptions,
+    this.selectedValues=const [],
   })  : assert(!multipleSelection || doneButton != null),
         assert(menuConstraints == null || !dialogBox),
         assert(itemsPerPage == null || currentPage != null,
@@ -677,7 +685,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
   PointerThisPlease<bool> displayMenu = PointerThisPlease<bool>(false);
   Function? updateParent;
 
-  List<T> selectedValues=[];
+  List<T> selectedValues=[];//TODO: remove This is the one used for the result onChanged
 
   TextStyle get _textStyle =>
       widget.style ??
@@ -739,7 +747,13 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
 
   dynamic get selectedResult {
     if(widget.futureSearchFn!=null){
-      return(selectedValues);
+      if(widget.multipleSelection) {
+        return (selectedValues);
+      }
+      if(selectedValues.isNotEmpty){
+        return(selectedValues.first);
+      }
+      return(null);
     }
     return (widget.multipleSelection
         ? selectedItems
@@ -789,7 +803,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
       if (!(sel is NotGiven)) {
         updatedSelectedValues = sel as List<T>;
       } else {
-        updatedSelectedValues = List<T>.from(widget.selectedValues);
+        updatedSelectedValues = List<T>.from(widget.selectedValues!);
       }
     } else {
       T? val = !(sel is NotGiven) ? sel as T : widget.value;
@@ -821,8 +835,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
       }
       if (widget.futureSearchFn != null) {
         selectedValues = [];
-        selectedValues.addAll(widget.selectedValues);
-//      super.initState();
+        selectedValues.addAll(widget.selectedValues!);
         updateParent = (sel) {
           if (!(sel is NotGiven)) {
             widget.onChanged!(sel);
@@ -834,7 +847,6 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
       else {
         selectedItems = [];
         selectedItems?.addAll(widget.selectedItems);
-//      super.initState();
         updateParent = (sel) {
           if (!(sel is NotGiven)) {
             widget.onChanged!(sel);
@@ -882,7 +894,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
               callOnPop: () {
                 if (!widget.dialogBox &&
                     widget.onChanged != null &&
-                    selectedItems != null) {
+                    selectedResult != null) {
                   widget.onChanged!(selectedResult);
                 }
                 setState(() {});
@@ -902,6 +914,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
               futureSearchFn: widget.futureSearchFn,
               futureSearchOrderOptions: widget.futureSearchOrderOptions,
               futureSearchFilterOptions: widget.futureSearchFilterOptions,
+              selectedValues: selectedValues,
             ));
           });
     }
@@ -914,7 +927,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
             builder: (context) {
               return (menuWidget(searchTerms: searchTerms));
             });
-        if (widget.onChanged != null && selectedItems != null) {
+        if (widget.onChanged != null && selectedResult != null) {
           widget.onChanged!(selectedResult);
         }
       } else {
@@ -954,11 +967,20 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
       }
       Widget innerItemsWidget;
       List<Widget> list = [];
-      selectedItems?.forEach((item) {
-        list.add(widget.selectedValueWidgetFn != null
-            ? widget.selectedValueWidgetFn!(widget.items[item].value)
-            : items[item]);
-      });
+      if(widget.futureSearchFn==null) {
+        selectedItems?.forEach((item) {
+          list.add(widget.selectedValueWidgetFn != null
+              ? widget.selectedValueWidgetFn!(widget.items[item].value)
+              : items[item]);
+        });
+      }
+      else{
+        selectedValues.forEach((element) {
+          list.add(widget.selectedValueWidgetFn != null
+              ? widget.selectedValueWidgetFn!(element)
+              : element is String ? Text(element) : element);
+        });
+      }
       if (list.isEmpty && hintIndex != null) {
         innerItemsWidget = items[hintIndex];
       } else {
@@ -1113,7 +1135,12 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
     }
 
     clearSelection() {
-      selectedItems?.clear();
+      if(widget.futureSearchFn==null) {
+        selectedItems?.clear();
+      }
+      else{
+        selectedValues.clear();
+      }
       if (widget.onChanged != null) {
         widget.onChanged!(selectedResult);
       }
@@ -1226,6 +1253,8 @@ class DropdownDialog<T> extends StatefulWidget {
   /// See SearchChoices class.
   final Map<String, Map<String, Object>>? futureSearchFilterOptions;
 
+  /// See SearchChoices class.
+  final List<T>? selectedValues;//TODO: remove This one is filled
 
   DropdownDialog({
     Key? key,
@@ -1260,6 +1289,7 @@ class DropdownDialog<T> extends StatefulWidget {
     this.futureSearchFn,
     this.futureSearchOrderOptions,
     this.futureSearchFilterOptions,
+    this.selectedValues,
   }) : super(key: key);
 
   _DropdownDialogState<T> createState() => _DropdownDialogState<T>();
@@ -1278,11 +1308,18 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   bool futureSearch=false;
   Future<Tuple2<List<DropdownMenuItem>,int>>? futureSearchResults;
 
-  List<T> selectedValues=[];
-
   _DropdownDialogState();
 
   dynamic get selectedResult {
+    if(futureSearch){
+      if(widget.multipleSelection){
+        return(widget.selectedValues);
+      }
+      if(widget.selectedValues!.isNotEmpty){
+        return(widget.selectedValues!.first);
+      }
+      return(null);
+    }
     return (widget.multipleSelection
         ? widget.selectedItems
         : widget.selectedItems?.isNotEmpty ?? false
@@ -1558,17 +1595,29 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   }
 
   void deselectItem(int index,T value){
-    widget.selectedItems?.remove(index);
-    selectedValues.remove(value);
+    if(futureSearch) {
+      widget.selectedValues?.remove(value);
+    }
+    else {
+      widget.selectedItems?.remove(index);
+    }
   }
 
   void selectItem(int index,T value){
     if(!widget.multipleSelection){
-      selectedValues.clear();
-      widget.selectedItems?.clear();
+      if(futureSearch) {
+        widget.selectedValues?.clear();
+      }
+      else {
+        widget.selectedItems?.clear();
+      }
     }
-    selectedValues.add(value);
-    widget.selectedItems?.add(index);
+    if(futureSearch) {
+      widget.selectedValues?.add(value);
+    }
+    else {
+      widget.selectedItems?.add(index);
+    }
   }
 
   void itemTapped(int index,T value, bool itemSelected){
@@ -1589,7 +1638,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   /// Returns whether an item is selected. Relies on index in case of non future list of items.
   bool isItemSelected(int index,T value){
     if(futureSearch){
-      return(selectedValues.contains(value));
+      return(widget.selectedValues!.contains(value));
     }
     return(widget.selectedItems?.contains(index)??false);
   }
