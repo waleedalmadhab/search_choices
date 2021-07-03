@@ -1745,14 +1745,15 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     List<Tuple3<int,DropdownMenuItem<dynamic>,bool>> itemsToDisplay;
 
     if(futureSearch){
+      Widget errorRetryButton=Column(children:[SizedBox(height:15),Center(child: ElevatedButton.icon(onPressed: () {
+        _doFutureSearch(latestKeyword);
+      }, icon: Icon(Icons.repeat), label: Text("Error - retry")),)]);
       return(
       FutureBuilder(
         future: _doFutureSearch(latestKeyword),
         builder: (context,AsyncSnapshot<Tuple2<List<DropdownMenuItem>,int>> snapshot) {
           if (snapshot.hasError) {
-            return (Column(children:[SizedBox(height:15),Center(child: ElevatedButton.icon(onPressed: () {
-              _doFutureSearch(latestKeyword);
-            }, icon: Icon(Icons.repeat), label: Text("Error - retry")),)]));
+            return (errorRetryButton);
           }
           if (!snapshot.hasData||snapshot.connectionState == ConnectionState.waiting) {
             return (Column(children:[SizedBox(height:15),Center(child: CircularProgressIndicator(),)]));
@@ -1782,7 +1783,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             return (scrollBar);
           }
           print("connection state: ${snapshot.connectionState.toString()}");
-          return (Text("Check connection"));
+          return (errorRetryButton);
         },
       )
       );
