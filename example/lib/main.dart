@@ -1186,7 +1186,6 @@ class _MyAppState extends State<MyApp> {
         currentPage: currentPage,
       ),
       "Single dialog paged future": SearchChoices.single(
-        items: futureItems,
         value: selectedValueSingleDialogPaged,
         hint: "Select one capital",
         searchHint: "Search capitals",
@@ -1195,7 +1194,6 @@ class _MyAppState extends State<MyApp> {
             selectedValueSingleDialogPaged = value;
           });
         },
-        selectedValues: [selectedValueSingleDialogPaged],
         isExpanded: true,
         itemsPerPage: 5,
         currentPage: currentPage,
@@ -1216,7 +1214,7 @@ class _MyAppState extends State<MyApp> {
                   ))));
         },
         futureSearchFn:(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb) async{
-          Response response=await get(Uri.parse('https://searchchoices.jod.li/exampleList.php?page=2,50&order=population,desc&filter=continent,a'))
+          Response response=await get(Uri.parse("https://searchchoices.jod.li/exampleList.php?page=${pageNb??1},5&order=population,desc${keyword==null?"":"&filter=capital,"+keyword}"))
               .timeout(Duration(seconds:10,))
           ;
           if(response.statusCode!=200){
