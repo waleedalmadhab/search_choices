@@ -67,7 +67,7 @@ class _MyAppState extends State<MyApp> {
   String? selectedValueSingleDialogEllipsis;
   String? selectedValueSingleDialogRightToLeft;
   String? selectedValueUpdateFromOutsideThePlugin;
-  String? selectedValueSingleDialogPaged;
+  dynamic? selectedValueSingleDialogPaged;
   ExampleNumber? selectedNumber;
   List<int> selectedItemsMultiDialog = [];
   List<int> selectedItemsMultiCustomDisplayDialog = [];
@@ -1199,9 +1199,24 @@ class _MyAppState extends State<MyApp> {
         isExpanded: true,
         itemsPerPage: 5,
         currentPage: currentPage,
+        selectedValueWidgetFn: (item) {
+          return (Center(
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    side: BorderSide(
+                      color: Colors.brown,
+                      width: 0.5,
+                    ),
+                  ),
+                  margin: EdgeInsets.all(12),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Text(item["capital"]),
+                  ))));
+        },
         futureSearchFn:(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb) async{
           Response response=await get(Uri.parse('https://searchchoices.jod.li/exampleList.php?page=2,50&order=population,desc&filter=continent,a'))
-//          final Response response=await get(Uri.parse('https://google.com'))
               .timeout(Duration(seconds:10,))
           ;
           if(response.statusCode!=200){
@@ -1211,25 +1226,23 @@ class _MyAppState extends State<MyApp> {
           int nbResults=data["results"];
           List<DropdownMenuItem> results=(data["records"] as List<dynamic>).map<DropdownMenuItem>((item)=>
               DropdownMenuItem(
-                value:item["id"],
-                child: Text("${item["capital"]} | ${item["country"]} | ${item["continent"]} | ${item["population"]}"),
+                value:item,
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    side: BorderSide(
+                      color: Colors.brown,
+                      width: 0.5,
+                    ),
+                  ),
+                  margin: EdgeInsets.all(12),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
+                  ),
+                ),
               )).toList();
           return(Tuple2<List<DropdownMenuItem>,int>(results,nbResults));
-          return(await Future.delayed(Duration(seconds: 2)).then((value){//dummy static test
-            itemsListToClearAndFill.clear();
-            itemsListToClearAndFill.addAll(Iterable<int>.generate(5)
-                .toList()
-                .map((i) {
-              return (DropdownMenuItem(
-                value: (i+1)*5,
-                child: Text(((i+1)*5).toString()),
-              ));
-            }).toList());
-            futureItems=itemsListToClearAndFill;
-            return(
-            Tuple2<List<DropdownMenuItem>,int>(itemsListToClearAndFill,100)
-            );
-          }));
         },
         futureSearchOrderOptions:{
           "country":{Wrap(children:[Icon(Icons.flag),Text("Country")]),true},
