@@ -1214,7 +1214,7 @@ class _MyAppState extends State<MyApp> {
                   ))));
         },
         futureSearchFn:(String? keyword, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb) async{
-          Response response=await get(Uri.parse("https://searchchoices.jod.li/exampleList.php?page=${pageNb??1},5&order=population,desc${keyword==null?"":"&filter=capital,"+keyword}"))
+          Response response=await get(Uri.parse("https://searchchoices.jod.li/exampleList.php?page=${pageNb??1},5${orderBy==null?"":"&order="+orderBy+","+(orderAsc??true?"asc":"desc")}${keyword==null?"":"&filter=capital,"+keyword}"))
               .timeout(Duration(seconds:10,))
           ;
           if(response.statusCode!=200){
@@ -1243,10 +1243,10 @@ class _MyAppState extends State<MyApp> {
           return(Tuple2<List<DropdownMenuItem>,int>(results,nbResults));
         },
         futureSearchOrderOptions:{
-          "country":{Wrap(children:[Icon(Icons.flag),Text("Country")]),true},
-          "capital":{Wrap(children:[Icon(Icons.location_city),Text("Capital")]),true},
-          "continent":{"Continent",true},
-          "population":{Wrap(children:[Icon(Icons.people),Text("Population")]),false},
+          "country":{"icon":Wrap(children:[Icon(Icons.flag),Text("Country")]),"asc":true},
+          "capital":{"icon":Wrap(children:[Icon(Icons.location_city),Text("Capital")]),"asc":true},
+          "continent":{"icon":"Continent","asc":true},
+          "population":{"icon":Wrap(children:[Icon(Icons.people),Text("Population")]),"asc":false},
         },
         futureSearchFilterOptions:{
           "continent":{"icon":Text("Continent"),"values":["Africa","Americas","Asia","Australia",{"Europe":Wrap(children:[Text("Europe"),Icon(Icons.stars,)])},"Oceania"]},

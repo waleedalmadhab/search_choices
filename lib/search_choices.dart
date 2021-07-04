@@ -310,8 +310,8 @@ class SearchChoices<T> extends StatefulWidget {
   /// [futureSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must return items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
   final Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn;
 
-  /// [futureSearchOrderOptions] [Map<String, Set<Object>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"values":["value1",{"value2":order1Value2Widget}]}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
-  final Map<String, Set<Object>>? futureSearchOrderOptions;
+  /// [futureSearchOrderOptions] [Map<String, Map<String,dynamic>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  final Map<String, Map<String,dynamic>>? futureSearchOrderOptions;
 
   /// [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   final Map<String, Map<String, Object>>? futureSearchFilterOptions;
@@ -363,7 +363,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [currentPage] [PointerThisPlease<int>] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
   /// * [customPaginationDisplay] [Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage)] if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
   /// * [futureSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must return items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
-  /// * [futureSearchOrderOptions] [Map<String, Set<Object>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"values":["value1",{"value2":order1Value2Widget}]}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  /// * [futureSearchOrderOptions] [Map<String, Map<String,dynamic>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   /// * [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   factory SearchChoices.single({
     Key? key,
@@ -417,7 +417,7 @@ class SearchChoices<T> extends StatefulWidget {
             Function updateSearchPage)?
         customPaginationDisplay,
     Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn,
-    Map<String, Set<Object>>? futureSearchOrderOptions,
+    Map<String, Map<String,dynamic>>? futureSearchOrderOptions,
     Map<String, Map<String, Object>>? futureSearchFilterOptions,
   }) {
     return (SearchChoices._(
@@ -510,7 +510,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [currentPage] [int] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
   /// * [customPaginationDisplay] [Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage)] if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
   /// * [futureSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must return items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
-  /// * [futureSearchOrderOptions] [Map<String, Set<Object>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"values":["value1",{"value2":order1Value2Widget}]}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  /// * [futureSearchOrderOptions] [Map<String, Map<String,dynamic>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   /// * [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   /// * [futureSelectedValues] [List<T>] contains the list of selected values in case of future search in multiple selection mode.
   factory SearchChoices.multiple({
@@ -564,7 +564,7 @@ class SearchChoices<T> extends StatefulWidget {
             Function updateSearchPage)?
         customPaginationDisplay,
     Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn,
-    Map<String, Set<Object>>? futureSearchOrderOptions,
+    Map<String, Map<String,dynamic>>? futureSearchOrderOptions,
     Map<String, Map<String, Object>>? futureSearchFilterOptions,
     List<T>? futureSelectedValues,
   }) {
@@ -1253,7 +1253,7 @@ class DropdownDialog<T> extends StatefulWidget {
   final Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn;
 
   /// See SearchChoices class.
-  final Map<String, Set<Object>>? futureSearchOrderOptions;
+  final Map<String, Map<String,dynamic>>? futureSearchOrderOptions;
 
   /// See SearchChoices class.
   final Map<String, Map<String, Object>>? futureSearchFilterOptions;
@@ -1312,6 +1312,10 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
 
   bool futureSearch = false;
 
+  String? orderBy;
+
+  bool? orderAsc;
+
   _DropdownDialogState();
 
   dynamic get selectedResult {
@@ -1329,6 +1333,59 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
         : widget.selectedItems?.isNotEmpty ?? false
         ? widget.items![widget.selectedItems?.first ?? 0].value
         : null);
+  }
+
+  Widget get futureSearchOrderOptionsWidget {
+    if (widget.futureSearchOrderOptions == null ||
+        widget.futureSearchOrderOptions!.isEmpty) {
+      return (SizedBox.shrink());
+    }
+    return (
+        DropdownButton<String>(
+          selectedItemBuilder: (BuildContext bc){
+            return(
+                widget.futureSearchOrderOptions!.map<String,
+                Widget>((k, v) {
+              return (MapEntry(k, Row(children:[widget.rightToLeft?orderArrowWidget:SizedBox.shrink(),Center(child:prepareWidget(v["icon"]) ?? Text(k)),widget.rightToLeft?SizedBox.shrink():orderArrowWidget],),
+                ));
+            }).values.toList()..insert(0,SizedBox.shrink(),));
+          },
+          value: orderBy,
+          underline: orderBy==null?Container(
+            height: 2,
+          ):null,
+          onChanged: (String? newValue) {
+            if(newValue==null){
+              orderAsc=true;
+              orderBy=null;
+            }
+            if(orderBy==newValue){
+              orderAsc=(!(orderAsc??false));
+            }
+            else{
+              orderAsc=widget.futureSearchOrderOptions![newValue]?["asc"]??true;
+            }
+            setState(() {
+              orderBy = newValue!;
+            });
+          },
+          icon: Icon(orderBy == null ? Icons.sort : Icons.sort_sharp,),
+          items: widget.futureSearchOrderOptions!.map<String,
+              DropdownMenuItem<String>>((k, v) {
+            return (MapEntry(k, DropdownMenuItem<String>(
+              child: Row(children:[widget.rightToLeft&&k==orderBy?orderArrowWidget:SizedBox.shrink(),prepareWidget(v["icon"]) ?? Text(k),!widget.rightToLeft&&k==orderBy?orderArrowWidget:SizedBox.shrink()],),
+              value: k,
+            )));
+          }).values.toList()..insert(0,DropdownMenuItem(child:Icon(Icons.clear,) ,value:null,)),
+        )
+    );
+  }
+
+  Widget get orderArrowWidget{
+    if(orderBy==null){
+      return(SizedBox.shrink());
+    }
+   return((orderAsc??true?Icon(Icons.arrow_upward):Icon(Icons.arrow_downward)));
   }
 
   void _updateShownIndexes(String? keyword,) {
@@ -1480,6 +1537,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             prepareWidget(widget.hint) ?? SizedBox.shrink(),
+            widget.futureSearchOrderOptions==null?SizedBox.shrink():futureSearchOrderOptionsWidget,
             Column(
               children: <Widget>[
                 doneButtonWidget ?? SizedBox.shrink(),
@@ -1516,8 +1574,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       String? keyword) {
     return(widget.futureSearchFn!(
       keyword,
-      null,
-      null,
+      orderBy,
+      orderAsc,
       null,
       widget.currentPage?.value ?? 1,
     ));
