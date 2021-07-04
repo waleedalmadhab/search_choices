@@ -307,8 +307,8 @@ class SearchChoices<T> extends StatefulWidget {
   final Widget Function(Widget listWidget, int totalFilteredItemsNb,
       Function updateSearchPage)? customPaginationDisplay;
 
-  /// [futureSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must clear and fill the [itemsListToClearAndFill] with the returned items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
-  final Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn;
+  /// [futureSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must return items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
+  final Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn;
 
   /// [futureSearchOrderOptions] [Map<String, Set<Object>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"values":["value1",{"value2":order1Value2Widget}]}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   final Map<String, Set<Object>>? futureSearchOrderOptions;
@@ -362,7 +362,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [itemsPerPage] [int] if set, organizes the search list per page with the given number of items displayed per page.
   /// * [currentPage] [PointerThisPlease<int>] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
   /// * [customPaginationDisplay] [Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage)] if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
-  /// * [futureSearchFn] [Future<Tuple2<List<DropdownMenuItem>,int>> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must clear and fill the [itemsListToClearAndFill] with the returned items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
+  /// * [futureSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must return items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
   /// * [futureSearchOrderOptions] [Map<String, Set<Object>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"values":["value1",{"value2":order1Value2Widget}]}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   /// * [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   factory SearchChoices.single({
@@ -416,7 +416,7 @@ class SearchChoices<T> extends StatefulWidget {
     Widget Function(Widget listWidget, int totalFilteredItemsNb,
             Function updateSearchPage)?
         customPaginationDisplay,
-    Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn,
+    Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn,
     Map<String, Set<Object>>? futureSearchOrderOptions,
     Map<String, Map<String, Object>>? futureSearchFilterOptions,
   }) {
@@ -509,7 +509,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [itemsPerPage] [int] if set, organizes the search list per page with the given number of items displayed per page.
   /// * [currentPage] [int] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
   /// * [customPaginationDisplay] [Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage)] if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
-  /// * [futureSearchFn] [Future<Tuple2<List<DropdownMenuItem>,int>> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must clear and fill the [itemsListToClearAndFill] with the returned items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
+  /// * [futureSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must return items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
   /// * [futureSearchOrderOptions] [Map<String, Set<Object>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"values":["value1",{"value2":order1Value2Widget}]}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   /// * [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   /// * [futureSelectedValues] [List<T>] contains the list of selected values in case of future search in multiple selection mode.
@@ -563,7 +563,7 @@ class SearchChoices<T> extends StatefulWidget {
     Widget Function(Widget listWidget, int totalFilteredItemsNb,
             Function updateSearchPage)?
         customPaginationDisplay,
-    Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn,
+    Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn,
     Map<String, Set<Object>>? futureSearchOrderOptions,
     Map<String, Map<String, Object>>? futureSearchFilterOptions,
     List<T>? futureSelectedValues,
@@ -1250,7 +1250,7 @@ class DropdownDialog<T> extends StatefulWidget {
       Function updateSearchPage)? customPaginationDisplay;
 
   /// See SearchChoices class.
-  final Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn;
+  final Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn;
 
   /// See SearchChoices class.
   final Map<String, Set<Object>>? futureSearchOrderOptions;
@@ -1310,32 +1310,29 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   Function? searchFn;
   String? latestKeyword;
 
-  bool futureSearch=false;
-  Future<Tuple2<List<DropdownMenuItem>,int>>? futureSearchResults;
+  bool futureSearch = false;
 
   _DropdownDialogState();
 
   dynamic get selectedResult {
-    if(futureSearch){
-      if(widget.multipleSelection){
-        return(widget.futureSelectedValues);
+    if (futureSearch) {
+      if (widget.multipleSelection) {
+        return (widget.futureSelectedValues);
       }
-      if(widget.futureSelectedValues!.isNotEmpty){
-        return(widget.futureSelectedValues!.first);
+      if (widget.futureSelectedValues!.isNotEmpty) {
+        return (widget.futureSelectedValues!.first);
       }
-      return(null);
+      return (null);
     }
     return (widget.multipleSelection
         ? widget.selectedItems
         : widget.selectedItems?.isNotEmpty ?? false
-            ? widget.items![widget.selectedItems?.first ?? 0].value
-            : null);
+        ? widget.items![widget.selectedItems?.first ?? 0].value
+        : null);
   }
 
-  void _updateShownIndexes(
-    String? keyword,
-  ) {
-    assert(!futureSearch,"cannot update shown indexes while doing a network search as all returned are displayed (potentially with pagination)");
+  void _updateShownIndexes(String? keyword,) {
+    assert(!futureSearch, "cannot update shown indexes while doing a network search as all returned are displayed (potentially with pagination)");
     if (keyword != null) {
       latestKeyword = keyword;
     }
@@ -1346,8 +1343,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
 
   @override
   void initState() {
-    if(widget.futureSearchFn!=null){
-      futureSearch=true;
+    if (widget.futureSearchFn != null) {
+      futureSearch = true;
     }
     else {
       if (widget.searchFn != null) {
@@ -1394,10 +1391,13 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   Widget build(BuildContext context) {
     if (widget.buildDropDownDialog != null) {
       return (widget.buildDropDownDialog!(
-          titleBar(), searchBar(), listWithPagination(), closeButtonWrapper(), context));
+          titleBar(), searchBar(), listWithPagination(), closeButtonWrapper(),
+          context));
     }
     return AnimatedContainer(
-      padding: MediaQuery.of(context).viewInsets,
+      padding: MediaQuery
+          .of(context)
+          .viewInsets,
       duration: const Duration(milliseconds: 300),
       child: Card(
         color: widget.menuBackgroundColor,
@@ -1440,85 +1440,87 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     Widget validatorOutputWidget = valid || !widget.dialogBox
         ? SizedBox.shrink()
         : validatorOutput is String
-            ? Text(
-                validatorOutput,
-                textDirection:
-                    widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
-                style: TextStyle(color: Colors.red, fontSize: 13),
-              )
-            : validatorOutput;
+        ? Text(
+      validatorOutput,
+      textDirection:
+      widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
+      style: TextStyle(color: Colors.red, fontSize: 13),
+    )
+        : validatorOutput;
 
     Widget? doneButtonWidget =
-        widget.multipleSelection || widget.doneButton != null
-            ? prepareWidget(widget.doneButton,
-                parameter: selectedResult,
-                context: context,
-                updateParent: widget.updateParent,
-                stringToWidgetFunction: (string) {
-                return (TextButton.icon(
-                    onPressed: !valid
-                        ? null
-                        : () {
-                            pop();
-                            setState(() {});
-                          },
-                    icon: Icon(Icons.close),
-                    label: Text(
-                      string,
-                      textDirection: widget.rightToLeft
-                          ? TextDirection.rtl
-                          : TextDirection.ltr,
-                    )));
-              })
-            : SizedBox.shrink();
+    widget.multipleSelection || widget.doneButton != null
+        ? prepareWidget(widget.doneButton,
+        parameter: selectedResult,
+        context: context,
+        updateParent: widget.updateParent,
+        stringToWidgetFunction: (string) {
+          return (TextButton.icon(
+              onPressed: !valid
+                  ? null
+                  : () {
+                pop();
+                setState(() {});
+              },
+              icon: Icon(Icons.close),
+              label: Text(
+                string,
+                textDirection: widget.rightToLeft
+                    ? TextDirection.rtl
+                    : TextDirection.ltr,
+              )));
+        })
+        : SizedBox.shrink();
     return widget.hint != null
         ? Container(
-            margin: EdgeInsets.only(bottom: 8),
-            child: Row(
-                textDirection:
-                    widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  prepareWidget(widget.hint) ?? SizedBox.shrink(),
-                  Column(
-                    children: <Widget>[
-                      doneButtonWidget ?? SizedBox.shrink(),
-                      validatorOutputWidget
-                    ],
-                  ),
-                ]),
-          )
-        : Container(
-            child: Column(
+      margin: EdgeInsets.only(bottom: 8),
+      child: Row(
+          textDirection:
+          widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            prepareWidget(widget.hint) ?? SizedBox.shrink(),
+            Column(
               children: <Widget>[
                 doneButtonWidget ?? SizedBox.shrink(),
                 validatorOutputWidget
               ],
             ),
-          );
+          ]),
+    )
+        : Container(
+      child: Column(
+        children: <Widget>[
+          doneButtonWidget ?? SizedBox.shrink(),
+          validatorOutputWidget
+        ],
+      ),
+    );
   }
 
   /// Basically splits the search between the searchFn and the futureSearchFn cases.
-  void searchForKeyword(String? keyword){
-    if(futureSearch){
+  void searchForKeyword(String? keyword) {
+    if (futureSearch) {
+      if (keyword != null) {
+        latestKeyword = keyword;
+      }
       _doFutureSearch(keyword);
     }
-    else{
+    else {
       _updateShownIndexes(keyword);
     }
   }
 
   /// Refreshes the displayed list with the network search results.
-  Future<Tuple2<List<DropdownMenuItem>,int>>? _doFutureSearch(String? keyword){
-    futureSearchResults=widget.futureSearchFn!(
-        keyword,
-        widget.items??[],//TODO: try to remove this
-        null,
-        null,
-        null,
-        widget.currentPage?.value??1,
-    );
-    return(futureSearchResults);
+  Future<Tuple2<List<DropdownMenuItem>, int>>? _doFutureSearch(
+      String? keyword) {
+    return(widget.futureSearchFn!(
+      keyword,
+      null,
+      null,
+      null,
+      widget.currentPage?.value ?? 1,
+    ));
   }
 
   /// Search bar where the user can type text to look for the items to select.
@@ -1528,25 +1530,25 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
         children: <Widget>[
           TextField(
             textDirection:
-                widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
+            widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
             controller: txtSearch,
             decoration: widget.searchInputDecoration != null
                 ? widget.searchInputDecoration
                 : widget.rightToLeft
-                    ? InputDecoration(
-                        suffixIcon: Icon(
-                          Icons.search,
-                          size: 24,
-                        ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 12),
-                      )
-                    : InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.search,
-                          size: 24,
-                        ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 12),
-                      ),
+                ? InputDecoration(
+              suffixIcon: Icon(
+                Icons.search,
+                size: 24,
+              ),
+              contentPadding: EdgeInsets.symmetric(vertical: 12),
+            )
+                : InputDecoration(
+              prefixIcon: Icon(
+                Icons.search,
+                size: 24,
+              ),
+              contentPadding: EdgeInsets.symmetric(vertical: 12),
+            ),
             style: widget.style,
             autofocus: widget.autofocus,
             onChanged: (value) {
@@ -1558,36 +1560,36 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
           ),
           txtSearch.text.isNotEmpty
               ? Positioned(
-                  right: widget.rightToLeft ? null : 0,
-                  left: widget.rightToLeft ? 0 : null,
-                  top: 0,
-                  bottom: 0,
+            right: widget.rightToLeft ? null : 0,
+            left: widget.rightToLeft ? 0 : null,
+            top: 0,
+            bottom: 0,
+            child: Center(
+              child: InkWell(
+                onTap: () {
+                  widget.currentPage?.value = 1;
+                  searchForKeyword('');
+                  setState(() {
+                    txtSearch.text = '';
+                  });
+                },
+                borderRadius: BorderRadius.all(Radius.circular(32)),
+                child: Container(
+                  width: 32,
+                  height: 32,
                   child: Center(
-                    child: InkWell(
-                      onTap: () {
-                        widget.currentPage?.value = 1;
-                        searchForKeyword('');
-                        setState(() {
-                          txtSearch.text = '';
-                        });
-                      },
-                      borderRadius: BorderRadius.all(Radius.circular(32)),
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        child: Center(
-                          child: Icon(
-                            Icons.close,
-                            size: 24,
-                            color: txtSearch.text.isEmpty
-                                ? widget.iconDisabledColor
-                                : widget.iconEnabledColor,
-                          ),
-                        ),
-                      ),
+                    child: Icon(
+                      Icons.close,
+                      size: 24,
+                      color: txtSearch.text.isEmpty
+                          ? widget.iconDisabledColor
+                          : widget.iconEnabledColor,
                     ),
                   ),
-                )
+                ),
+              ),
+            ),
+          )
               : Container(),
         ],
       ),
@@ -1606,8 +1608,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     }
   }
 
-  void deselectItem(int index,T value){
-    if(futureSearch) {
+  void deselectItem(int index, T value) {
+    if (futureSearch) {
       widget.futureSelectedValues?.remove(value);
     }
     else {
@@ -1615,16 +1617,16 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     }
   }
 
-  void selectItem(int index,T value){
-    if(!widget.multipleSelection){
-      if(futureSearch) {
+  void selectItem(int index, T value) {
+    if (!widget.multipleSelection) {
+      if (futureSearch) {
         widget.futureSelectedValues?.clear();
       }
       else {
         widget.selectedItems?.clear();
       }
     }
-    if(futureSearch) {
+    if (futureSearch) {
       widget.futureSelectedValues?.add(value);
     }
     else {
@@ -1632,14 +1634,14 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     }
   }
 
-  void itemTapped(int index,T value, bool itemSelected){
-    if (widget.multipleSelection&&itemSelected) {
+  void itemTapped(int index, T value, bool itemSelected) {
+    if (widget.multipleSelection && itemSelected) {
       setState(() {
-          deselectItem(index, value);
+        deselectItem(index, value);
       });
     } else {
       selectItem(index, value);
-      if (!widget.multipleSelection&&widget.doneButton == null) {
+      if (!widget.multipleSelection && widget.doneButton == null) {
         pop();
       } else {
         setState(() {});
@@ -1648,76 +1650,153 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   }
 
   /// Returns whether an item is selected. Relies on index in case of non future list of items.
-  bool isItemSelected(int index,T value){
-    if(futureSearch){
-      return(widget.futureSelectedValues!.contains(value));
+  bool isItemSelected(int index, T value) {
+    if (futureSearch) {
+      return (widget.futureSelectedValues!.contains(value));
     }
-    return(widget.selectedItems?.contains(index)??false);
+    return (widget.selectedItems?.contains(index) ?? false);
   }
 
   /// Builds the list display from the given list of [DropdownMenuItem] along with the [bool] indicating whether the item is selected or not and the [int] as the index in the [selectedItems] list.
-  Widget listDisplay(List<Tuple3<int,DropdownMenuItem<dynamic>,bool>> itemsToDisplay){
+  Widget listDisplay(
+      List<Tuple3<int, DropdownMenuItem<dynamic>, bool>> itemsToDisplay) {
     return
-    Expanded(
-      child: Scrollbar(
-        child: ListView.builder(
-          itemBuilder: (context, index) {
-            int itemIndex = itemsToDisplay[index].item1;
-            DropdownMenuItem item = itemsToDisplay[index].item2;
-            bool isItemSelected = itemsToDisplay[index].item3;
-            Widget? displayItemResult;
-            if (widget.displayItem != null) {
-              try {
-                displayItemResult = widget.displayItem!(item, isItemSelected);
-              } on NoSuchMethodError {
-                displayItemResult =
-                    widget.displayItem!(item, isItemSelected, (value) {
-                      widget.updateParent!(value);
-                      widget.currentPage?.value = 1;
-                      searchForKeyword(null);
-                    });
+      Expanded(
+        child: Scrollbar(
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              int itemIndex = itemsToDisplay[index].item1;
+              DropdownMenuItem item = itemsToDisplay[index].item2;
+              bool isItemSelected = itemsToDisplay[index].item3;
+              Widget? displayItemResult;
+              if (widget.displayItem != null) {
+                try {
+                  displayItemResult = widget.displayItem!(item, isItemSelected);
+                } on NoSuchMethodError {
+                  displayItemResult =
+                      widget.displayItem!(item, isItemSelected, (value) {
+                        widget.updateParent!(value);
+                        widget.currentPage?.value = 1;
+                        searchForKeyword(null);
+                      });
+                }
               }
-            }
-            return InkWell(
-              onTap: () {
-                itemTapped(itemIndex, item.value, isItemSelected);
-              },
-              child:
-              widget.displayItem == null
-                  ? widget.multipleSelection ? (Row(
-                  textDirection: widget.rightToLeft
-                      ? TextDirection.rtl
-                      : TextDirection.ltr,
-                  children: [
-                    Icon(
-                      isItemSelected
-                          ? Icons.check_box
-                          : Icons.check_box_outline_blank,
-                    ),
-                    SizedBox(
-                      width: 7,
-                    ),
-                    Flexible(child: item),
-                  ]))
-                  : item
-                  : displayItemResult,
-            );
-          },
-          itemCount: itemsToDisplay.length,
+              return InkWell(
+                onTap: () {
+                  itemTapped(itemIndex, item.value, isItemSelected);
+                },
+                child:
+                widget.displayItem == null
+                    ? widget.multipleSelection ? (Row(
+                    textDirection: widget.rightToLeft
+                        ? TextDirection.rtl
+                        : TextDirection.ltr,
+                    children: [
+                      Icon(
+                        isItemSelected
+                            ? Icons.check_box
+                            : Icons.check_box_outline_blank,
+                      ),
+                      SizedBox(
+                        width: 7,
+                      ),
+                      Flexible(child: item),
+                    ]))
+                    : item
+                    : displayItemResult,
+              );
+            },
+            itemCount: itemsToDisplay.length,
+          ),
         ),
+      );
+  }
+
+  /// Is the current page the first page (==1)?
+  bool isFirstPage() {
+    return (widget.currentPage!.value == 1);
+  }
+
+  /// Is the current page the last one? The [totalNbItemsToPage] argument is the total number of items to be displayed once the filters are applied on all the pages.
+  bool isLastPage(int totalNbItemsToPage) {
+    return (widget.currentPage!.value >=
+        (totalNbItemsToPage / widget.itemsPerPage!).ceil());
+  }
+
+  /// Provides a button to go to previous page taking into account the RTL. The button updates the search page through the given [updateSearchPage].
+  Widget previousPageButton(Function updateSearchPage) {
+    return (IconButton(
+      icon: Icon(
+        widget.rightToLeft ? Icons.chevron_right : Icons.chevron_left,
+        color: isFirstPage() ? Colors.grey : Colors.blue,
       ),
+      onPressed: isFirstPage()
+          ? null
+          : () {
+        widget.currentPage!.value--;
+        updateSearchPage();
+      },
+    )
     );
   }
 
-//  Widget prepareTheListWidget(){
-//
-//  }
+  /// Provides a button to go to next page taking into account the RTL. The button updates the search page through the given [updateSearchPage]. The [totalNbItemsToPage] argument is the total number of items to be displayed once the filters are applied on all the pages.
+  Widget nextPageButton(Function updateSearchPage, int totalNbItemsToPage) {
+    return (IconButton(
+      icon: Icon(
+        widget.rightToLeft ? Icons.chevron_left : Icons.chevron_right,
+        color: isLastPage(totalNbItemsToPage) ? Colors.grey : Colors.blue,
+      ),
+      onPressed: isLastPage(totalNbItemsToPage)
+          ? null
+          : () {
+        widget.currentPage!.value++;
+        updateSearchPage();
+      },
+    )
+    );
+  }
+
+  /// Returns the [Widget] with the given [scrollBar] paginated either through the widget.customPaginationDisplay function or through the standard pagination function which takes into account RTL. The button updates the search page through the given [updateSearchPage]. The [totalNbItemsToPage] argument is the total number of items to be displayed once the filters are applied on all the pages.
+  Widget paginatedResults(Widget scrollBar, Function updateSearchPage,
+      int totalNbItemsToPage) {
+    if (widget.customPaginationDisplay != null) {
+      return (widget.customPaginationDisplay!(
+          scrollBar, totalNbItemsToPage, updateSearchPage));
+    }
+
+    return (
+        Expanded(
+            child: Column(children: [
+              SizedBox(
+                height: 10,
+              ),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    widget.rightToLeft
+                        ? nextPageButton(updateSearchPage, totalNbItemsToPage)
+                        : previousPageButton(updateSearchPage),
+                    Text(
+                        "${widget.currentPage!.value}/${(totalNbItemsToPage /
+                            widget.itemsPerPage!).ceil()}"),
+                    widget.rightToLeft
+                        ? previousPageButton(updateSearchPage)
+                        : nextPageButton(
+                        updateSearchPage, totalNbItemsToPage),
+                  ]),
+              scrollBar,
+            ]
+            )
+        )
+    );
+  }
+
 
   /// Displays the list of items filtered based on the search terms with pagination.
   Widget listWithPagination() {
     List<int> pagedShownIndexes = [];
     bool displayPages = true;
-    if(!futureSearch) {
+    if (!futureSearch) {
       if (widget.itemsPerPage == null ||
           widget.itemsPerPage! >= shownIndexes.length) {
         pagedShownIndexes = shownIndexes;
@@ -1736,139 +1815,111 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
         }
       }
     }
-    else{
-      if(widget.itemsPerPage == null){
-        displayPages=false;
+    else {
+      if (widget.itemsPerPage == null) {
+        displayPages = false;
       }
     }
 
-    List<Tuple3<int,DropdownMenuItem<dynamic>,bool>> itemsToDisplay;
+    List<Tuple3<int, DropdownMenuItem<dynamic>, bool>> itemsToDisplay;
 
-    if(futureSearch){
-      Widget errorRetryButton=Column(children:[SizedBox(height:15),Center(child: ElevatedButton.icon(onPressed: () {
-        _doFutureSearch(latestKeyword);
-      }, icon: Icon(Icons.repeat), label: Text("Error - retry")),)]);
-      return(
-      FutureBuilder(
-        future: _doFutureSearch(latestKeyword),
-        builder: (context,AsyncSnapshot<Tuple2<List<DropdownMenuItem>,int>> snapshot) {
-          if (snapshot.hasError) {
-            return (errorRetryButton);
-          }
-          if (!snapshot.hasData||snapshot.connectionState == ConnectionState.waiting) {
-            return (Column(children:[SizedBox(height:15),Center(child: CircularProgressIndicator(),)]));
-          }
-          if (snapshot.data == null) {
-            return (Column(children:[SizedBox(height:15),Center(child: Text("-"),)]));
-          }
-          if (snapshot.connectionState == ConnectionState.done) {
-            Tuple2<List<DropdownMenuItem>, int>data = snapshot.data!;
-            int nbResults = data.item2;
-            if(data.item1.length==0){
-              return (Column(children:[SizedBox(height:15),Center(child: Text("-"),)]));//no results
-            }
-            itemsToDisplay =
-                data.item1.map<Tuple3<int, DropdownMenuItem<dynamic>, bool>>((
-                    DropdownMenuItem item) {
-                  return (Tuple3<int, DropdownMenuItem<dynamic>, bool>(
-                      -1, item,
-                      isItemSelected(-1, item.value!)));
-                }).toList();
-            Widget scrollBar = listDisplay(itemsToDisplay);
-            if (widget.itemsPerPage == null ||
-                nbResults <= itemsToDisplay.length) {
-              return (scrollBar);
-            }
-            // Handle the pagination
-            return (scrollBar);
-          }
-          print("connection state: ${snapshot.connectionState.toString()}");
-          return (errorRetryButton);
-        },
-      )
-      );
-    }
-
-
-      itemsToDisplay =
-          pagedShownIndexes.map<Tuple3<int, DropdownMenuItem<T>, bool>>((
-              int index) {
-            return (Tuple3<int, DropdownMenuItem<T>, bool>(
-                index, widget.items![index] as DropdownMenuItem<T>,
-                isItemSelected(index, widget.items![index].value)));
-          }).toList();
-    Widget scrollBar=listDisplay(itemsToDisplay);
-    
-    if (!displayPages) {
-      return (scrollBar);
-    }
-    
     Function updateSearchPage = () {
       searchForKeyword(latestKeyword);
       setState(() {});
     };
-    
-    if (widget.customPaginationDisplay != null) {
-      return (widget.customPaginationDisplay!(
-          scrollBar, shownIndexes.length, updateSearchPage));
+
+    if (futureSearch) {
+      Widget errorRetryButton = Column(children: [
+        SizedBox(height: 15),
+        Center(child: ElevatedButton.icon(onPressed: () {
+          _doFutureSearch(latestKeyword);
+        }, icon: Icon(Icons.repeat), label: Text("Error - retry")),)
+      ]);
+      return (
+          FutureBuilder(
+            future: _doFutureSearch(latestKeyword),
+            builder: (context,
+                AsyncSnapshot<Tuple2<List<DropdownMenuItem>, int>> snapshot) {
+              if (snapshot.hasError) {
+                return (errorRetryButton);
+              }
+              if (!snapshot.hasData ||
+                  snapshot.connectionState == ConnectionState.waiting) {
+                return (Column(children: [
+                  SizedBox(height: 15),
+                  Center(child: CircularProgressIndicator(),)
+                ]));
+              }
+              if (snapshot.data == null) {
+                return (Column(children: [
+                  SizedBox(height: 15),
+                  Center(child: Text("-"),)
+                ]));
+              }
+              if (snapshot.connectionState == ConnectionState.done) {
+                Tuple2<List<DropdownMenuItem>, int>data = snapshot.data!;
+                int nbResults = data.item2;
+                if (data.item1.length == 0) {
+                  return (Column(children: [
+                    SizedBox(height: 15),
+                    Center(child: Text("-"),)
+                  ])); //no results
+                }
+                itemsToDisplay =
+                    data.item1.map<
+                        Tuple3<int, DropdownMenuItem<dynamic>, bool>>((
+                        DropdownMenuItem item) {
+                      return (Tuple3<int, DropdownMenuItem<dynamic>, bool>(
+                          -1, item,
+                          isItemSelected(-1, item.value!)));
+                    }).toList();
+                Widget scrollBar = listDisplay(itemsToDisplay);
+                if (widget.itemsPerPage == null ||
+                    nbResults <= itemsToDisplay.length) {
+                  return (scrollBar);
+                }
+
+                // Handle the pagination
+                return (paginatedResults(
+                  scrollBar, updateSearchPage, nbResults,));
+              }
+              print(
+                  "connection state: ${snapshot.connectionState.toString()}");
+              return (errorRetryButton);
+            },
+          )
+      );
     }
-    
-    bool first = widget.currentPage!.value == 1;
-    bool last = widget.currentPage!.value >=
-        (shownIndexes.length / widget.itemsPerPage!).ceil();
-    
-    Widget previousPageButton = IconButton(
-      icon: Icon(
-        widget.rightToLeft ? Icons.chevron_right : Icons.chevron_left,
-        color: first ? Colors.grey : Colors.blue,
-      ),
-      onPressed: first
-          ? null
-          : () {
-              widget.currentPage!.value--;
-              updateSearchPage();
-            },
-    );
-    
-    Widget nextPageButton = IconButton(
-      icon: Icon(
-        widget.rightToLeft ? Icons.chevron_left : Icons.chevron_right,
-        color: last ? Colors.grey : Colors.blue,
-      ),
-      onPressed: last
-          ? null
-          : () {
-              widget.currentPage!.value++;
-              updateSearchPage();
-            },
-    );
-    
-    return (Expanded(
-        child: Column(children: [
-      SizedBox(
-        height: 10,
-      ),
-      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        widget.rightToLeft ? nextPageButton : previousPageButton,
-        Text(
-            "${widget.currentPage!.value}/${(shownIndexes.length / widget.itemsPerPage!).ceil()}"),
-        widget.rightToLeft ? previousPageButton : nextPageButton,
-      ]),
-      scrollBar,
-    ])));
+
+
+    itemsToDisplay =
+        pagedShownIndexes.map<Tuple3<int, DropdownMenuItem<T>, bool>>((
+            int index) {
+          return (Tuple3<int, DropdownMenuItem<T>, bool>(
+              index, widget.items![index] as DropdownMenuItem<T>,
+              isItemSelected(index, widget.items![index].value)));
+        }).toList();
+    Widget scrollBar = listDisplay(itemsToDisplay);
+
+    if (!displayPages) {
+      return (scrollBar);
+    }
+
+    return (paginatedResults(
+      scrollBar, updateSearchPage, shownIndexes.length,));
   }
 
   /// Returns the close button after the list of items or its replacement.
   Widget closeButtonWrapper() {
     return (prepareWidget(widget.closeButton,
-            parameter: selectedResult, context: context, updateParent: (sel) {
+        parameter: selectedResult, context: context, updateParent: (sel) {
           widget.updateParent!(sel);
           setState(() {});
         }, stringToWidgetFunction: (string) {
           return (Container(
             child: Row(
               textDirection:
-                  widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
+              widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -1878,7 +1929,10 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                   },
                   child: Container(
                       constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width / 2),
+                          maxWidth: MediaQuery
+                              .of(context)
+                              .size
+                              .width / 2),
                       child: Text(
                         string,
                         textDirection: widget.rightToLeft

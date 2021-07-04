@@ -1213,7 +1213,7 @@ class _MyAppState extends State<MyApp> {
                     child: Text(item["capital"]),
                   ))));
         },
-        futureSearchFn:(String? keyword, List<DropdownMenuItem> itemsListToClearAndFill, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb) async{
+        futureSearchFn:(String? keyword, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb) async{
           Response response=await get(Uri.parse("https://searchchoices.jod.li/exampleList.php?page=${pageNb??1},5&order=population,desc${keyword==null?"":"&filter=capital,"+keyword}"))
               .timeout(Duration(seconds:10,))
           ;
