@@ -68,6 +68,7 @@ class _MyAppState extends State<MyApp> {
   String? selectedValueSingleDialogRightToLeft;
   String? selectedValueUpdateFromOutsideThePlugin;
   dynamic? selectedValueSingleDialogPaged;
+  dynamic? selectedValueSingleDialogPagedFuture;
   ExampleNumber? selectedNumber;
   List<int> selectedItemsMultiDialog = [];
   List<int> selectedItemsMultiCustomDisplayDialog = [];
@@ -1190,12 +1191,12 @@ class _MyAppState extends State<MyApp> {
         currentPage: currentPage,
       ),
       "Single dialog paged future": SearchChoices.single(
-        value: selectedValueSingleDialogPaged,
+        value: selectedValueSingleDialogPagedFuture,
         hint: "Select one capital",
         searchHint: "Search capitals",
         onChanged: (value) {
           setState(() {
-            selectedValueSingleDialogPaged = value;
+            selectedValueSingleDialogPagedFuture = value;
           });
         },
         isExpanded: true,
@@ -1388,7 +1389,7 @@ class _MyAppState extends State<MyApp> {
           scrollDirection: Axis.vertical,
           child: Column(
             children:
-            [
+//            [
               widgets
                   .map((k, v) {
                 return (MapEntry(
@@ -1415,8 +1416,8 @@ class _MyAppState extends State<MyApp> {
               })
                   .values
                   .toList()
-                  .last
-            ]
+//                  .last
+//            ]
 //                      .first]
             ,
           ),

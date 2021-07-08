@@ -1528,10 +1528,10 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                             Widget inner;
                             String fk;
                             if (value is Map<String, dynamic>) {
-                              assert((value as Map<String, dynamic>).length ==
+                              assert((value).length ==
                                   1, "filter object not well built");
-                              fk = (value as Map<String, dynamic>).keys.first;
-                              dynamic? fv = (value as Map<String, dynamic>)
+                              fk = (value).keys.first;
+                              dynamic? fv = (value)
                                   .values.first ?? null;
 
                               inner = (prepareWidget(
