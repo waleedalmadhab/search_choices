@@ -1833,10 +1833,9 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     bool filtersMatch = false;
     if (!force &&
         latestFutureSearchArgs != null &&
-        (latestFutureSearchArgs![0] == keyword &&
-            latestFutureSearchArgs![1] == orderBy &&
-            latestFutureSearchArgs![2] == orderAsc &&
-            latestFutureSearchArgs![3] == filters &&
+        (latestFutureSearchArgs![0] == (keyword??"") &&
+            latestFutureSearchArgs![1] == (orderBy??"") &&
+            latestFutureSearchArgs![2] == (orderAsc??true) &&
             latestFutureSearchArgs![4] == (widget.currentPage?.value ?? 1))
     ) {
       if ((filters == null || filters?.length == 0) &&
@@ -1847,12 +1846,17 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       }
       else {
         filtersMatch = true;
-        List<Tuple2<String,
-            String>> oldFilters = latestFutureSearchArgs![3] as List<
-            Tuple2<String, String>>;
+        List<dynamic> oldFiltersDyn = (latestFutureSearchArgs![3]??[]) as List<
+            dynamic>;
+        List<Tuple2<String,String>> oldFilters=[];
+        if(oldFiltersDyn.isNotEmpty) {
+          oldFilters = oldFiltersDyn.map<Tuple2<String, String>>((e) =>
+              Tuple2<String, String>((e as Tuple2<String, String>).item1,
+                  (e).item2)).toList();
+        }
         filters?.forEach((filter) {
           if (!oldFilters.any((element) =>
-          element.item1 == filter.item1 && element.item2 == element.item2)) {
+          (element.item1 == filter.item1 && element.item2 == filter.item2))) {
             filtersMatch = false;
           }
         }
@@ -1860,7 +1864,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
         if (filtersMatch) {
           oldFilters.forEach((filter) {
             if (!filters!.any((element) =>
-            element.item1 == filter.item1 && element.item2 == element.item2)) {
+            (element.item1 == filter.item1 && element.item2 == filter.item2))) {
               filtersMatch = false;
             }
           }
@@ -1872,7 +1876,11 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       return (latestFutureResult);
     }
     latestFutureSearchArgs =
-    [keyword, orderBy, orderAsc, filters, widget.currentPage?.value ?? 1];
+    [String.fromCharCodes(keyword?.runes??[]),
+      String.fromCharCodes(orderBy?.runes??[]),
+      orderAsc??true?true:false,
+      filters?.map((e) => Tuple2<String,String>(String.fromCharCodes(e.item1.runes),String.fromCharCodes(e.item2.runes))).toList(),
+      widget.currentPage?.value ?? 1];
     latestFutureResult = widget.futureSearchFn!(
       keyword,
       orderBy,
