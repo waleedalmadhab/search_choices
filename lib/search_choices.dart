@@ -6,8 +6,65 @@ const EdgeInsetsGeometry _kAlignedButtonPadding =
     EdgeInsetsDirectional.only(start: 16.0, end: 4.0);
 const EdgeInsets _kUnalignedButtonPadding = EdgeInsets.zero;
 
+
+class DropdownButtonNoSelDisp<T> extends  DropdownButton{
+  DropdownButtonNoSelDisp(
+      {
+        Key? key,
+        required List<DropdownMenuItem<T>>? items,
+        DropdownButtonBuilder? selectedItemBuilder,
+        T? value,
+        Widget? hint,
+        Widget? disabledHint,
+        ValueChanged<dynamic>? onChanged,
+        VoidCallback? onTap,
+        int elevation = 8,
+        TextStyle? style,
+        Widget? underline,
+        Widget? icon,
+        Color? iconDisabledColor,
+        Color? iconEnabledColor,
+        double iconSize = 24.0,
+        bool isDense = false,
+        bool isExpanded = false,
+        double? itemHeight = kMinInteractiveDimension,
+        Color? focusColor,
+        FocusNode? focusNode,
+        bool autofocus = false,
+        Color? dropdownColor,
+        double? menuMaxHeight,
+      }
+  ):super(
+      key:key,
+      items: items,
+    selectedItemBuilder:selectedItemBuilder,
+    value:value,
+    hint:hint,
+    disabledHint:disabledHint,
+    onChanged:onChanged,
+    onTap:onTap,
+    elevation:elevation,
+    style:style,
+    underline:underline,
+    icon:icon,
+    iconDisabledColor:iconDisabledColor,
+    iconEnabledColor:iconEnabledColor,
+    iconSize:iconSize,
+    isDense:isDense,
+    isExpanded:isExpanded,
+    itemHeight:itemHeight,
+    focusColor:focusColor,
+    focusNode:focusNode,
+    autofocus:autofocus,
+    dropdownColor:dropdownColor,
+    menuMaxHeight:menuMaxHeight,
+  );
+
+}
+
 /// Class mainly used internally to set a value to NotGiven by its type
 class NotGiven {
+  /// Simplest constructor ever
   const NotGiven();
 }
 
@@ -308,7 +365,7 @@ class SearchChoices<T> extends StatefulWidget {
       Function updateSearchPage)? customPaginationDisplay;
 
   /// [futureSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must return items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
-  final Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn;
+  final Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, List<Tuple2<String,String>>? filters, int? pageNb)? futureSearchFn;
 
   /// [futureSearchOrderOptions] [Map<String, Map<String,dynamic>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   final Map<String, Map<String,dynamic>>? futureSearchOrderOptions;
@@ -416,7 +473,7 @@ class SearchChoices<T> extends StatefulWidget {
     Widget Function(Widget listWidget, int totalFilteredItemsNb,
             Function updateSearchPage)?
         customPaginationDisplay,
-    Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn,
+    Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, List<Tuple2<String,String>>? filters, int? pageNb)? futureSearchFn,
     Map<String, Map<String,dynamic>>? futureSearchOrderOptions,
     Map<String, Map<String, Object>>? futureSearchFilterOptions,
   }) {
@@ -563,7 +620,7 @@ class SearchChoices<T> extends StatefulWidget {
     Widget Function(Widget listWidget, int totalFilteredItemsNb,
             Function updateSearchPage)?
         customPaginationDisplay,
-    Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn,
+    Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, List<Tuple2<String,String>>? filters, int? pageNb)? futureSearchFn,
     Map<String, Map<String,dynamic>>? futureSearchOrderOptions,
     Map<String, Map<String, Object>>? futureSearchFilterOptions,
     List<T>? futureSelectedValues,
@@ -827,6 +884,15 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
       }));
     }
 
+    sendSelection(dynamic selection,BuildContext onChangeContext) {
+      try {
+        widget.onChanged!(selection);
+      }
+      catch (e) {
+        widget.onChanged!(selection, onChangeContext);
+      }
+    }
+
     @override
     void initState() {
       if (widget.setOpenDialog != null) {
@@ -839,7 +905,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         }
         updateParent = (sel) {
           if (!(sel is NotGiven)) {
-            widget.onChanged!(sel);
+            sendSelection(sel,context);
             updateSelectedValues(sel: sel);
           }
         };
@@ -850,7 +916,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         selectedItems?.addAll(widget.selectedItems);
         updateParent = (sel) {
           if (!(sel is NotGiven)) {
-            widget.onChanged!(sel);
+            sendSelection(sel,context);
             updateSelectedItems(sel: sel);
           }
         };
@@ -872,7 +938,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
 
     Widget menuWidget({String searchTerms = ""}) {
       return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setStateFromBuilder) {
+          builder: (BuildContext menuContext, StateSetter setStateFromBuilder) {
             return (DropdownDialog(
               items: widget.items,
               hint: prepareWidget(widget.searchHint),
@@ -896,7 +962,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
                 if (!widget.dialogBox &&
                     widget.onChanged != null &&
                     selectedResult != null) {
-                  widget.onChanged!(selectedResult);
+                  sendSelection(selectedResult,menuContext);
                 }
                 setState(() {});
               },
@@ -925,11 +991,11 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         await showDialog(
             context: context,
             barrierDismissible: true,
-            builder: (context) {
+            builder: (BuildContext dialogContext) {
               return (menuWidget(searchTerms: searchTerms));
             });
         if (widget.onChanged != null && selectedResult != null) {
-          widget.onChanged!(selectedResult);
+          sendSelection(selectedResult,context);
         }
       } else {
         displayMenu.value = true;
@@ -1147,7 +1213,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         futureSelectedValues.clear();
       }
       if (widget.onChanged != null) {
-        widget.onChanged!(selectedResult);
+        sendSelection(selectedResult,context);
       }
       if (widget.onClear != null) {
         widget.onClear!();
@@ -1250,7 +1316,7 @@ class DropdownDialog<T> extends StatefulWidget {
       Function updateSearchPage)? customPaginationDisplay;
 
   /// See SearchChoices class.
-  final Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb)? futureSearchFn;
+  final Future<Tuple2<List<DropdownMenuItem>,int>> Function(String? keyword, String? orderBy, bool? orderAsc, List<Tuple2<String,String>>? filters, int? pageNb)? futureSearchFn;
 
   /// See SearchChoices class.
   final Map<String, Map<String,dynamic>>? futureSearchOrderOptions;
@@ -1316,6 +1382,11 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
 
   bool? orderAsc;
 
+  List<Tuple2<String, String>>? filters;
+
+  Future<Tuple2<List<DropdownMenuItem>, int>>? latestFutureResult;
+  List<dynamic>? latestFutureSearchArgs;
+
   _DropdownDialogState();
 
   dynamic get selectedResult {
@@ -1340,52 +1411,228 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
         widget.futureSearchOrderOptions!.isEmpty) {
       return (SizedBox.shrink());
     }
-    return (
-        DropdownButton<String>(
-          selectedItemBuilder: (BuildContext bc){
-            return(
-                widget.futureSearchOrderOptions!.map<String,
-                Widget>((k, v) {
-              return (MapEntry(k, Row(children:[widget.rightToLeft?orderArrowWidget:SizedBox.shrink(),Center(child:prepareWidget(v["icon"]) ?? Text(k)),widget.rightToLeft?SizedBox.shrink():orderArrowWidget],),
-                ));
-            }).values.toList()..insert(0,SizedBox.shrink(),));
-          },
-          value: orderBy,
-          underline: orderBy==null?Container(
-            height: 2,
-          ):null,
-          onChanged: (String? newValue) {
-            if(newValue==null){
-              orderAsc=true;
-              orderBy=null;
-            }
-            if(orderBy==newValue){
-              orderAsc=(!(orderAsc??false));
-            }
-            else{
-              orderAsc=widget.futureSearchOrderOptions![newValue]?["asc"]??true;
-            }
-            setState(() {
-              orderBy = newValue!;
-            });
-          },
-          icon: Icon(orderBy == null ? Icons.sort : Icons.sort_sharp,),
+    Widget icon = Icon(
+      Icons.sort,
+      size: 17,
+    );
+    void Function() onPressed = () {
+      showMenu(
+          context: context,
+          position: RelativeRect.fromLTRB(100, 30, 20, 100),
           items: widget.futureSearchOrderOptions!.map<String,
-              DropdownMenuItem<String>>((k, v) {
-            return (MapEntry(k, DropdownMenuItem<String>(
-              child: Row(children:[widget.rightToLeft&&k==orderBy?orderArrowWidget:SizedBox.shrink(),prepareWidget(v["icon"]) ?? Text(k),!widget.rightToLeft&&k==orderBy?orderArrowWidget:SizedBox.shrink()],),
+              PopupMenuItem>((k, v) {
+            return (MapEntry(k, PopupMenuItem(
+              child: SizedBox(
+                height: 30,
+                child: ElevatedButton(
+                  onPressed: () {
+                    widget.currentPage?.value = 1;
+                    if (k.isEmpty) {
+                      orderAsc = true;
+                      orderBy = null;
+                    }
+                    else {
+                      if (orderBy == k) {
+                        orderAsc = (!(orderAsc ?? false));
+                      }
+                      else {
+                        orderAsc =
+                        widget.futureSearchOrderOptions![k] ? ["asc"] ??
+                            true;
+                      }
+                      setState(() {
+                        orderBy = k;
+                      });
+                    }
+                    Navigator.pop(context);
+                  },
+                  child: Row(children: [widget.rightToLeft && k == orderBy
+                      ? orderArrowWidget
+                      : SizedBox.shrink(), prepareWidget(
+                    v["icon"], parameter: orderAsc,
+                    updateParent: widget.updateParent,
+                    context: context,) ??
+                      Text(k), !widget.rightToLeft && k == orderBy
+                      ? orderArrowWidget
+                      : SizedBox.shrink()
+                  ],),
+                ),
+              ),
               value: k,
             )));
-          }).values.toList()..insert(0,DropdownMenuItem(child:Icon(Icons.clear,) ,value:null,)),
-        )
+          }).values.toList()
+            ..insert(0,
+                PopupMenuItem(child: SizedBox(
+                  height: 30,
+                  child: ElevatedButton(onPressed: () {
+                    widget.currentPage?.value = 1;
+                    orderBy = null;
+                    orderAsc = null;
+                    Navigator.pop(context);
+                  }, child: Icon(Icons.clear, size: 17,)),
+                ),)));
+    };
+
+    return SizedBox(
+      height: 25,
+      width: orderBy == null ? 48 : 70,
+      child: (
+          orderBy == null ? ElevatedButton(
+            child: icon,
+            onPressed: onPressed,
+          )
+              : ElevatedButton.icon(
+            label: orderArrowWidget,
+            icon: icon,
+            onPressed: onPressed,
+          )
+      ),
     );
   }
 
-  Widget get orderArrowWidget{
-    if(orderBy==null){
-      return(SizedBox.shrink());
+  Widget get futureSearchFilterOptionsWidget {
+    if (widget.futureSearchFilterOptions == null ||
+        widget.futureSearchFilterOptions!.isEmpty) {
+      return (SizedBox.shrink());
     }
-   return((orderAsc??true?Icon(Icons.arrow_upward):Icon(Icons.arrow_downward)));
+    return SizedBox(
+      height: 25,
+      width: 48,
+      child: (
+          ElevatedButton(
+            child: Icon(
+              filters == null || filters!.isEmpty ? Icons.filter : filters!
+                  .length == 1 ? Icons.filter_1 : filters!.length == 2 ? Icons
+                  .filter_2 : filters!.length == 3 ? Icons.filter_3 : filters!
+                  .length == 4 ? Icons.filter_4 : filters!.length == 5 ? Icons
+                  .filter_5 : filters!.length == 6 ? Icons.filter_6 : filters!
+                  .length == 7 ? Icons.filter_7 : filters!.length == 8 ? Icons
+                  .filter_8 : filters!.length == 9 ? Icons.filter_9 : Icons
+                  .filter_9_plus_sharp,
+              size: 17,
+            ),
+            onPressed: () {
+              showMenu(
+                  context: context,
+                  position: RelativeRect.fromLTRB(100, 30, 20, 100),
+                  items: widget.futureSearchFilterOptions!.map<String,
+                      PopupMenuItem>((k, v) {
+                    bool exclusive = v.containsKey("exclusive")
+                        ? v["exclusive"] as bool
+                        : false;
+                    return (MapEntry(k, PopupMenuItem(
+                        child: Column(
+                          children:
+                          ((v["values"] ?? []) as List<dynamic>).map<Widget>((
+                              value,) {
+                            Widget inner;
+                            String fk;
+                            if (value is Map<String, dynamic>) {
+                              assert((value as Map<String, dynamic>).length ==
+                                  1, "filter object not well built");
+                              fk = (value as Map<String, dynamic>).keys.first;
+                              dynamic? fv = (value as Map<String, dynamic>)
+                                  .values.first ?? null;
+
+                              inner = (prepareWidget(
+                                fv ?? fk, parameter: filters,
+                                updateParent: widget.updateParent,
+                                context: context,) ?? fk) as Widget;
+                            }
+                            else {
+                              fk = value;
+                              inner = prepareWidget(
+                                value, parameter: filters,
+                                updateParent: widget.updateParent,
+                                context: context,) ?? value;
+                            }
+                            bool isSelected = false;
+                            if (filters?.any((Tuple2<String, String> element) {
+                              return (element.item1 == k &&
+                                  element.item2 == fk);
+                            }) ?? false) {
+                              isSelected = true;
+                            }
+                            return (Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: (SizedBox(
+                                height: 30,
+                                child: (
+                                    ElevatedButton(
+                                      child: Row(children: [
+                                        widget.rightToLeft && isSelected
+                                            ? Icon(Icons.check)
+                                            : SizedBox.shrink(),
+                                        inner,
+                                        !widget.rightToLeft && isSelected
+                                            ? Icon(Icons.check)
+                                            : SizedBox.shrink()
+                                      ],),
+                                      onPressed: () {
+                                        widget.currentPage?.value = 1;
+                                        if (filters == null) {
+                                          filters = [];
+                                        }
+                                        bool isSelected = false;
+                                        if (filters?.any((
+                                            Tuple2<String, String> element) {
+                                          return (element.item1 == k &&
+                                              element.item2 == fk);
+                                        }) ?? false) {
+                                          isSelected = true;
+                                        }
+                                        if (isSelected) {
+                                          filters!.removeWhere((element) =>
+                                          element.item1 == k &&
+                                              element.item2 == fk);
+                                        }
+                                        else {
+                                          if (exclusive) {
+                                            filters!.removeWhere((
+                                                element) => element.item1 == k);
+                                          }
+                                          filters!.add(Tuple2(k, fk));
+                                        }
+                                        Navigator.pop(context);
+                                      },
+                                    )),
+                              )),
+                            ));
+                          }).toList()
+                            ..insert(0,
+                              PopupMenuItem(
+                                child: SizedBox(
+                                  height: 30,
+                                  child:
+                                  prepareWidget(
+                                    v["icon"] ?? k, parameter: filters,
+                                    updateParent: widget.updateParent,
+                                    context: context,) ?? Text(k),),
+                              ),
+                            ),
+                        ))));
+                  }).values.toList()
+                    ..insert(0,
+                        PopupMenuItem(child: SizedBox(
+                          height: 30,
+                          child: ElevatedButton(onPressed: () {
+                            widget.currentPage?.value = 1;
+                            filters?.clear();
+                            Navigator.pop(context);
+                          }, child: Icon(Icons.clear, size: 17,)),
+                        ),)));
+            },
+          )
+      ),
+    );
+  }
+
+  Widget get orderArrowWidget {
+    if (orderBy == null) {
+      return (SizedBox.shrink());
+    }
+    return (Icon(
+      orderAsc ?? true ? Icons.arrow_upward : Icons.arrow_downward, size: 17,));
   }
 
   void _updateShownIndexes(String? keyword,) {
@@ -1445,15 +1692,15 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext dropdownDialogContext) {
     if (widget.buildDropDownDialog != null) {
       return (widget.buildDropDownDialog!(
           titleBar(), searchBar(), listWithPagination(), closeButtonWrapper(),
-          context));
+          dropdownDialogContext));
     }
     return AnimatedContainer(
       padding: MediaQuery
-          .of(context)
+          .of(dropdownDialogContext)
           .viewInsets,
       duration: const Duration(milliseconds: 300),
       child: Card(
@@ -1537,7 +1784,18 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             prepareWidget(widget.hint) ?? SizedBox.shrink(),
-            widget.futureSearchOrderOptions==null?SizedBox.shrink():futureSearchOrderOptionsWidget,
+            Row(
+              children: <Widget>[
+                widget.futureSearchOrderOptions == null
+                    ? SizedBox.shrink()
+                    : futureSearchOrderOptionsWidget,
+                widget.futureSearchOrderOptions != null &&
+                    widget.futureSearchFilterOptions != null ? SizedBox(
+                  width: 10,) : SizedBox.shrink(),
+                widget.futureSearchFilterOptions == null
+                    ? SizedBox.shrink()
+                    : futureSearchFilterOptionsWidget,
+              ],),
             Column(
               children: <Widget>[
                 doneButtonWidget ?? SizedBox.shrink(),
@@ -1570,15 +1828,59 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   }
 
   /// Refreshes the displayed list with the network search results.
-  Future<Tuple2<List<DropdownMenuItem>, int>>? _doFutureSearch(
-      String? keyword) {
-    return(widget.futureSearchFn!(
+  Future<Tuple2<List<DropdownMenuItem>, int>>? _doFutureSearch(String? keyword,
+      {bool force = false}) {
+    bool filtersMatch = false;
+    if (!force &&
+        latestFutureSearchArgs != null &&
+        (latestFutureSearchArgs![0] == keyword &&
+            latestFutureSearchArgs![1] == orderBy &&
+            latestFutureSearchArgs![2] == orderAsc &&
+            latestFutureSearchArgs![3] == filters &&
+            latestFutureSearchArgs![4] == (widget.currentPage?.value ?? 1))
+    ) {
+      if ((filters == null || filters?.length == 0) &&
+          (latestFutureSearchArgs![3] == null ||
+              (latestFutureSearchArgs![3] as List<Tuple2<String, String>>)
+                  .length == 0)) {
+        filtersMatch = true;
+      }
+      else {
+        filtersMatch = true;
+        List<Tuple2<String,
+            String>> oldFilters = latestFutureSearchArgs![3] as List<
+            Tuple2<String, String>>;
+        filters?.forEach((filter) {
+          if (!oldFilters.any((element) =>
+          element.item1 == filter.item1 && element.item2 == element.item2)) {
+            filtersMatch = false;
+          }
+        }
+        );
+        if (filtersMatch) {
+          oldFilters.forEach((filter) {
+            if (!filters!.any((element) =>
+            element.item1 == filter.item1 && element.item2 == element.item2)) {
+              filtersMatch = false;
+            }
+          }
+          );
+        }
+      }
+    }
+    if (filtersMatch) {
+      return (latestFutureResult);
+    }
+    latestFutureSearchArgs =
+    [keyword, orderBy, orderAsc, filters, widget.currentPage?.value ?? 1];
+    latestFutureResult = widget.futureSearchFn!(
       keyword,
       orderBy,
       orderAsc,
-      null,
+      filters,
       widget.currentPage?.value ?? 1,
-    ));
+    );
+    return (latestFutureResult);
   }
 
   /// Search bar where the user can type text to look for the items to select.
@@ -1890,7 +2192,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       Widget errorRetryButton = Column(children: [
         SizedBox(height: 15),
         Center(child: ElevatedButton.icon(onPressed: () {
-          _doFutureSearch(latestKeyword);
+          _doFutureSearch(latestKeyword, force: true);
         }, icon: Icon(Icons.repeat), label: Text("Error - retry")),)
       ]);
       return (

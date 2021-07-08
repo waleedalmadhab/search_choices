@@ -83,7 +83,7 @@ class _MyAppState extends State<MyApp> {
   String inputString = "";
   TextFormField? input;
   List<DropdownMenuItem<ExampleNumber>> numberItems =
-      ExampleNumber.list.map((exNum) {
+  ExampleNumber.list.map((exNum) {
     return (DropdownMenuItem(child: Text(exNum.numberString), value: exNum));
   }).toList();
   List<int> selectedItemsMultiSelect3Menu = [];
@@ -112,8 +112,8 @@ class _MyAppState extends State<MyApp> {
       } else {
         wordPair += word;
         if (items.indexWhere((item) {
-              return (item.value == wordPair);
-            }) ==
+          return (item.value == wordPair);
+        }) ==
             -1) {
           items.add(DropdownMenuItem(
             child: Text(wordPair),
@@ -224,7 +224,9 @@ class _MyAppState extends State<MyApp> {
         },
         closeButton: (selectedItems) {
           return (selectedItems.isNotEmpty
-              ? "Save ${selectedItems.length == 1 ? '"' + items[selectedItems.first].value.toString() + '"' : '(' + selectedItems.length.toString() + ')'}"
+              ? "Save ${selectedItems.length == 1 ? '"' +
+              items[selectedItems.first].value.toString() + '"' : '(' +
+              selectedItems.length.toString() + ')'}"
               : "Save without selection");
         },
         isExpanded: true,
@@ -244,13 +246,13 @@ class _MyAppState extends State<MyApp> {
           return (Row(children: [
             selected
                 ? Icon(
-                    Icons.radio_button_checked,
-                    color: Colors.grey,
-                  )
+              Icons.radio_button_checked,
+              color: Colors.grey,
+            )
                 : Icon(
-                    Icons.radio_button_unchecked,
-                    color: Colors.grey,
-                  ),
+              Icons.radio_button_unchecked,
+              color: Colors.grey,
+            ),
             SizedBox(width: 7),
             Expanded(
               child: item,
@@ -276,13 +278,13 @@ class _MyAppState extends State<MyApp> {
           return (Row(children: [
             selected
                 ? Icon(
-                    Icons.check,
-                    color: Colors.green,
-                  )
+              Icons.check,
+              color: Colors.green,
+            )
                 : Icon(
-                    Icons.check_box_outline_blank,
-                    color: Colors.grey,
-                  ),
+              Icons.check_box_outline_blank,
+              color: Colors.grey,
+            ),
             SizedBox(width: 7),
             Expanded(
               child: item,
@@ -345,7 +347,7 @@ class _MyAppState extends State<MyApp> {
           height: 1.0,
           decoration: BoxDecoration(
               border:
-                  Border(bottom: BorderSide(color: Colors.teal, width: 3.0))),
+              Border(bottom: BorderSide(color: Colors.teal, width: 3.0))),
         ),
         iconDisabledColor: Colors.brown,
         iconEnabledColor: Colors.indigo,
@@ -372,9 +374,9 @@ class _MyAppState extends State<MyApp> {
               onPressed: selectedItemsDone.length != 3
                   ? null
                   : () {
-                      Navigator.pop(doneContext);
-                      setState(() {});
-                    },
+                Navigator.pop(doneContext);
+                setState(() {});
+              },
               child: Text("Save")));
         },
         closeButton: (selectedItemsClose) {
@@ -528,7 +530,7 @@ class _MyAppState extends State<MyApp> {
             child: Text(
                 "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I wouldn't want to go right now"),
             value:
-                "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I wouldn't want to go right now",
+            "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I wouldn't want to go right now",
           )
         ],
         value: selectedValueSingleDialogOverflow,
@@ -595,21 +597,21 @@ class _MyAppState extends State<MyApp> {
           return (editableItems.length >= 100
               ? "Close"
               : TextButton(
-                  onPressed: () {
-                    addItemDialog().then((value) async {
-                      if (value != null &&
-                          editableItems.indexWhere(
-                                  (element) => element.value == value) !=
-                              -1) {
-                        Navigator.pop(
-                            MyApp.navKey.currentState?.overlay?.context ??
-                                context);
-                        updateParent(value);
-                      }
-                    });
-                  },
-                  child: Text("Add and select item"),
-                ));
+            onPressed: () {
+              addItemDialog().then((value) async {
+                if (value != null &&
+                    editableItems.indexWhere(
+                            (element) => element.value == value) !=
+                        -1) {
+                  Navigator.pop(
+                      MyApp.navKey.currentState?.overlay?.context ??
+                          context);
+                  updateParent(value);
+                }
+              });
+            },
+            child: Text("Add and select item"),
+          ));
         },
         onChanged: (String? value) {
           setState(() {
@@ -622,13 +624,13 @@ class _MyAppState extends State<MyApp> {
           return (Row(children: [
             selected
                 ? Icon(
-                    Icons.check,
-                    color: Colors.green,
-                  )
+              Icons.check,
+              color: Colors.green,
+            )
                 : Icon(
-                    Icons.check_box_outline_blank,
-                    color: Colors.transparent,
-                  ),
+              Icons.check_box_outline_blank,
+              color: Colors.transparent,
+            ),
             SizedBox(width: 7),
             Expanded(
               child: item,
@@ -673,23 +675,23 @@ class _MyAppState extends State<MyApp> {
           return (editableItems.length >= 100
               ? "Close"
               : TextButton(
-                  onPressed: () {
-                    addItemDialog().then((value) async {
-                      if (value != null) {
-                        int itemIndex = editableItems
-                            .indexWhere((element) => element.value == value);
-                        if (itemIndex != -1) {
-                          editableSelectedItems.add(itemIndex);
-                          Navigator.pop(
-                              MyApp.navKey.currentState?.overlay?.context ??
-                                  context);
-                          updateParent(editableSelectedItems);
-                        }
-                      }
-                    });
-                  },
-                  child: Text("Add and select item"),
-                ));
+            onPressed: () {
+              addItemDialog().then((value) async {
+                if (value != null) {
+                  int itemIndex = editableItems
+                      .indexWhere((element) => element.value == value);
+                  if (itemIndex != -1) {
+                    editableSelectedItems.add(itemIndex);
+                    Navigator.pop(
+                        MyApp.navKey.currentState?.overlay?.context ??
+                            context);
+                    updateParent(editableSelectedItems);
+                  }
+                }
+              });
+            },
+            child: Text("Add and select item"),
+          ));
         },
         onChanged: (values) {
           setState(() {
@@ -702,13 +704,13 @@ class _MyAppState extends State<MyApp> {
           return (Row(children: [
             selected
                 ? Icon(
-                    Icons.check_box,
-                    color: Colors.black,
-                  )
+              Icons.check_box,
+              color: Colors.black,
+            )
                 : Icon(
-                    Icons.check_box_outline_blank,
-                    color: Colors.black,
-                  ),
+              Icons.check_box_outline_blank,
+              color: Colors.black,
+            ),
             SizedBox(width: 7),
             Expanded(
               child: item,
@@ -789,7 +791,7 @@ class _MyAppState extends State<MyApp> {
               overflow: TextOverflow.ellipsis,
             ),
             value:
-                "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I wouldn't want to go right now",
+            "way too long text for a smartphone at least one that goes in a normal sized pair of trousers but maybe not for a gigantic screen like there is one at my cousin's home in a very remote country where I wouldn't want to go right now",
           )
         ],
         value: selectedValueSingleDialogEllipsis,
@@ -850,13 +852,13 @@ class _MyAppState extends State<MyApp> {
           return (Row(textDirection: TextDirection.rtl, children: [
             selected
                 ? Icon(
-                    Icons.radio_button_checked,
-                    color: Colors.grey,
-                  )
+              Icons.radio_button_checked,
+              color: Colors.grey,
+            )
                 : Icon(
-                    Icons.radio_button_unchecked,
-                    color: Colors.grey,
-                  ),
+              Icons.radio_button_unchecked,
+              color: Colors.grey,
+            ),
             SizedBox(width: 7),
             item,
             Expanded(
@@ -940,7 +942,7 @@ class _MyAppState extends State<MyApp> {
             margin: const EdgeInsets.all(15.0),
             padding: const EdgeInsets.all(3.0),
             decoration:
-                BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+            BoxDecoration(border: Border.all(color: Colors.blueAccent)),
             child: Text(
               item,
               overflow: TextOverflow.ellipsis,
@@ -990,15 +992,15 @@ class _MyAppState extends State<MyApp> {
           });
         },
         isExpanded: true,
-        buildDropDownDialog: (
-          Widget titleBar,
-          Widget searchBar,
-          Widget list,
-          Widget closeButton,
-          BuildContext dropDownContext,
-        ) {
+        buildDropDownDialog: (Widget titleBar,
+            Widget searchBar,
+            Widget list,
+            Widget closeButton,
+            BuildContext dropDownContext,) {
           return (AnimatedContainer(
-            padding: MediaQuery.of(dropDownContext).viewInsets,
+            padding: MediaQuery
+                .of(dropDownContext)
+                .viewInsets,
             duration: const Duration(milliseconds: 300),
             child: Card(
               margin: EdgeInsets.symmetric(vertical: 30, horizontal: 40),
@@ -1089,13 +1091,13 @@ class _MyAppState extends State<MyApp> {
           return (Row(textDirection: TextDirection.rtl, children: [
             selected
                 ? Icon(
-                    Icons.radio_button_checked,
-                    color: Colors.grey,
-                  )
+              Icons.radio_button_checked,
+              color: Colors.grey,
+            )
                 : Icon(
-                    Icons.radio_button_unchecked,
-                    color: Colors.grey,
-                  ),
+              Icons.radio_button_unchecked,
+              color: Colors.grey,
+            ),
             SizedBox(width: 7),
             item,
             Expanded(
@@ -1135,38 +1137,40 @@ class _MyAppState extends State<MyApp> {
             Function updateSearchPage) {
           return (Expanded(
               child: Column(children: [
-            listWidget,
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(children: [
-                Text("Page:"),
-                SizedBox(
-                  width: 10,
-                ),
-                Wrap(
-                  spacing: 10,
-                  children:
+                listWidget,
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(children: [
+                    Text("Page:"),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Wrap(
+                      spacing: 10,
+                      children:
                       Iterable<int>.generate((totalFilteredItemsNb / 5).ceil())
                           .toList()
                           .map((i) {
-                    return (SizedBox(
-                      width: (31 + 9 * (i + 1).toString().length) + 0.0,
-                      height: 30.0,
-                      child: ElevatedButton(
-                        child: Text("${i + 1}"),
-                        onPressed: (i + 1) == currentPage.value
-                            ? null
-                            : () {
-                                currentPage.value = i + 1;
-                                updateSearchPage();
-                              },
-                      ),
-                    ));
-                  }).toList(),
+                        return (SizedBox(
+                          width: (31 + 9 * (i + 1)
+                              .toString()
+                              .length) + 0.0,
+                          height: 30.0,
+                          child: ElevatedButton(
+                            child: Text("${i + 1}"),
+                            onPressed: (i + 1) == currentPage.value
+                                ? null
+                                : () {
+                              currentPage.value = i + 1;
+                              updateSearchPage();
+                            },
+                          ),
+                        ));
+                      }).toList(),
+                    ),
+                  ]),
                 ),
-              ]),
-            ),
-          ])));
+              ])));
         },
       ),
       "Single menu paged": SearchChoices.single(
@@ -1195,62 +1199,139 @@ class _MyAppState extends State<MyApp> {
           });
         },
         isExpanded: true,
-        itemsPerPage: 5,
+        itemsPerPage: 10,
         currentPage: currentPage,
         selectedValueWidgetFn: (item) {
           return (Center(
               child: Card(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(4),
                     side: BorderSide(
-                      color: Colors.brown,
-                      width: 0.5,
+                      color: Colors.grey,
+                      width: 1,
                     ),
                   ),
-                  margin: EdgeInsets.all(12),
+                  margin: EdgeInsets.all(1),
                   child: Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(6),
                     child: Text(item["capital"]),
                   ))));
         },
-        futureSearchFn:(String? keyword, String? orderBy, bool? orderAsc, Map<String,String>? filters, int? pageNb) async{
-          Response response=await get(Uri.parse("https://searchchoices.jod.li/exampleList.php?page=${pageNb??1},5${orderBy==null?"":"&order="+orderBy+","+(orderAsc??true?"asc":"desc")}${keyword==null?"":"&filter=capital,"+keyword}"))
-              .timeout(Duration(seconds:10,))
+        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
+            List<Tuple2<String, String>>? filters, int? pageNb) async {
+          String filtersString = "";
+          int i = 1;
+          filters?.forEach((element) {
+            filtersString +=
+                "&filter" + i.toString() + "=" + element.item1 + "," +
+                    element.item2;
+            i++;
+          });
+          Response response = await get(Uri.parse(
+              "https://searchchoices.jod.li/exampleList.php?page=${pageNb ??
+                  1},10${orderBy == null ? "" : "&order=" + orderBy + "," +
+                  (orderAsc ?? true ? "asc" : "desc")}${(keyword == null ||
+                  keyword.isEmpty) ? "" : "&filter=capital,cs," +
+                  keyword}$filtersString"))
+              .timeout(Duration(seconds: 10,))
           ;
-          if(response.statusCode!=200){
+          if (response.statusCode != 200) {
             throw Exception("failed to get data from internet");
           }
-          dynamic data=jsonDecode(response.body);
-          int nbResults=data["results"];
-          List<DropdownMenuItem> results=(data["records"] as List<dynamic>).map<DropdownMenuItem>((item)=>
+          dynamic data = jsonDecode(response.body);
+          int nbResults = data["results"];
+          List<DropdownMenuItem> results = (data["records"] as List<dynamic>)
+              .map<DropdownMenuItem>((item) =>
               DropdownMenuItem(
-                value:item,
+                value: item,
                 child: Card(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(4),
                     side: BorderSide(
-                      color: Colors.brown,
-                      width: 0.5,
+                      color: Colors.blue,
+                      width: 1,
                     ),
                   ),
-                  margin: EdgeInsets.all(12),
+                  margin: EdgeInsets.all(1),
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
+                    padding: const EdgeInsets.all(6),
+                    child: Text(
+                        "${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
                   ),
                 ),
               )).toList();
-          return(Tuple2<List<DropdownMenuItem>,int>(results,nbResults));
+          return (Tuple2<List<DropdownMenuItem>, int>(results, nbResults));
         },
-        futureSearchOrderOptions:{
-          "country":{"icon":Wrap(children:[Icon(Icons.flag),Text("Country")]),"asc":true},
-          "capital":{"icon":Wrap(children:[Icon(Icons.location_city),Text("Capital")]),"asc":true},
-          "continent":{"icon":"Continent","asc":true},
-          "population":{"icon":Wrap(children:[Icon(Icons.people),Text("Population")]),"asc":false},
-        },
-        futureSearchFilterOptions:{
-          "continent":{"icon":Text("Continent"),"values":["Africa","Americas","Asia","Australia",{"Europe":Wrap(children:[Text("Europe"),Icon(Icons.stars,)])},"Oceania"]},
+        futureSearchOrderOptions: {
+          "country": {
+            "icon": Wrap(children: [Icon(Icons.flag), Text("Country",)]),
+            "asc": true
           },
+          "capital": {
+            "icon": Wrap(
+                children: [Icon(Icons.location_city), Text("Capital")]),
+            "asc": true
+          },
+          "continent": {"icon": "Continent", "asc": true},
+          "population": {
+            "icon": Wrap(children: [Icon(Icons.people), Text("Population")]),
+            "asc": false
+          },
+        },
+        futureSearchFilterOptions: {
+          "continent": {
+            "icon": Text("Continent"),
+            "exclusive": true,
+            "values": [
+              {"eq,Africa": "Africa"},
+              {"eq,Americas": "Americas"},
+              {"eq,Asia": "Asia"},
+              {"eq,Australia": "Australia"},
+              {"eq,Europe": "Europe"},
+              {"eq,Oceania": "Oceania"}
+            ]
+          },
+          "population": {
+            "icon": Wrap(children: [Icon(Icons.people), Text("Population")]),
+            "exclusive": true,
+            "values": [
+              {"lt,1000": Wrap(children: [Icon(Icons.person), Text("<1,000")])},
+              {
+                "lt,100000": Wrap(
+                    children: [Icon(Icons.person_add), Text("<100,000")])
+              },
+              {
+                "lt,1000000": Wrap(
+                    children: [Icon(Icons.nature_people), Text("<1,000,000")])
+              },
+              {
+                "gt,1000000": Wrap(
+                    children: [Icon(Icons.people), Text(">1,000,000")])
+              },
+              {
+                "gt,10000000": Wrap(
+                    children: [Icon(Icons.location_city), Text(">10,000,000")])
+              },
+            ]
+          },
+        },
+        closeButton: (selectedItemsDone, doneContext) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SizedBox(
+                height: 25,
+                width: 48,
+                child: (ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(doneContext);
+                      setState(() {});
+                    },
+                    child: Icon(Icons.close, size: 17,))),
+              ),
+            ],
+          );
+        },
       ),
     };
 
@@ -1258,88 +1339,89 @@ class _MyAppState extends State<MyApp> {
       navigatorKey: MyApp.navKey,
       home: asTabs
           ? DefaultTabController(
-              length: widgets.length,
-              child: Scaffold(
-                appBar: AppBar(
-                  title: const Text(appTitle),
-                  actions: appBarActions,
-                  bottom: TabBar(
-                    isScrollable: true,
-                    tabs: Iterable<int>.generate(widgets.length)
-                        .toList()
-                        .map((i) {
-                      return (Tab(
-                        text: (i + 1).toString(),
-                      ));
-                    }).toList(),
-                  ),
-                ),
-                body: Container(
-                  padding: EdgeInsets.all(20),
-                  child: TabBarView(
-                    children: widgets
-                        .map((k, v) {
-                          return (MapEntry(
-                              k,
-                              SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                child: Column(children: [
-                                  Text(k),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  v,
-                                ]),
-                              )));
-                        })
-                        .values
-                        .toList(),
-                  ),
-                ),
-              ),
-            )
-          : Scaffold(
-              appBar: AppBar(
-                title: const Text(appTitle),
-                actions: appBarActions,
-              ),
-              body: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  children:
-                    [
-                    widgets
-                      .map((k, v) {
-                        return (MapEntry(
-                            k,
-                            Center(
-                                child: Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      side: BorderSide(
-                                        color: Colors.grey,
-                                        width: 1.0,
-                                      ),
-                                    ),
-                                    margin: EdgeInsets.all(20),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(20.0),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Text("$k:"),
-                                          v,
-                                        ],
-                                      ),
-                                    )))));
-                      })
-                      .values
-                      .toList()
-                      .last]
-//                      .first]
-                  ,
-                ),
-              ),
+        length: widgets.length,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text(appTitle),
+            actions: appBarActions,
+            bottom: TabBar(
+              isScrollable: true,
+              tabs: Iterable<int>.generate(widgets.length)
+                  .toList()
+                  .map((i) {
+                return (Tab(
+                  text: (i + 1).toString(),
+                ));
+              }).toList(),
             ),
+          ),
+          body: Container(
+            padding: EdgeInsets.all(20),
+            child: TabBarView(
+              children: widgets
+                  .map((k, v) {
+                return (MapEntry(
+                    k,
+                    SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Column(children: [
+                        Text(k),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        v,
+                      ]),
+                    )));
+              })
+                  .values
+                  .toList(),
+            ),
+          ),
+        ),
+      )
+          : Scaffold(
+        appBar: AppBar(
+          title: const Text(appTitle),
+          actions: appBarActions,
+        ),
+        body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children:
+            [
+              widgets
+                  .map((k, v) {
+                return (MapEntry(
+                    k,
+                    Center(
+                        child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              side: BorderSide(
+                                color: Colors.grey,
+                                width: 1.0,
+                              ),
+                            ),
+                            margin: EdgeInsets.all(20),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                children: <Widget>[
+                                  Text("$k:"),
+                                  v,
+                                ],
+                              ),
+                            )))));
+              })
+                  .values
+                  .toList()
+                  .last
+            ]
+//                      .first]
+            ,
+          ),
+        ),
+      ),
     );
   }
 }
