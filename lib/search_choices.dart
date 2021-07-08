@@ -572,7 +572,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [futureSelectedValues] [List<T>] contains the list of selected values in case of future search in multiple selection mode.
   factory SearchChoices.multiple({
     Key? key,
-    required List<DropdownMenuItem<T>> items,
+    List<DropdownMenuItem<T>>? items,
     Function? onChanged,
     List<int> selectedItems = const [],
     TextStyle? style,
@@ -1465,10 +1465,12 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                 PopupMenuItem(child: SizedBox(
                   height: 30,
                   child: ElevatedButton(onPressed: () {
-                    widget.currentPage?.value = 1;
-                    orderBy = null;
-                    orderAsc = null;
                     Navigator.pop(context);
+                    setState(() {
+                      widget.currentPage?.value = 1;
+                      orderBy = null;
+                      orderAsc = null;
+                    });
                   }, child: Icon(Icons.clear, size: 17,)),
                 ),)));
     };
@@ -1594,6 +1596,9 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                                           filters!.add(Tuple2(k, fk));
                                         }
                                         Navigator.pop(context);
+                                        if(!widget.dialogBox){
+                                          setState(() {});
+                                        }
                                       },
                                     )),
                               )),
@@ -1619,6 +1624,9 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                             widget.currentPage?.value = 1;
                             filters?.clear();
                             Navigator.pop(context);
+                            if(!widget.dialogBox){
+                              setState(() {});
+                            }
                           }, child: Icon(Icons.clear, size: 17,)),
                         ),)));
             },
