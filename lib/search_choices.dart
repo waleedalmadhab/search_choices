@@ -1589,7 +1589,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                               assert((value).length == 1,
                                   "filter object not well built");
                               fk = (value).keys.first;
-                              dynamic? fv = (value).values.first ?? null;
+                              dynamic fv = (value).values.first ?? null;
 
                               inner = (prepareWidget(
                                     fv ?? fk,

@@ -68,8 +68,8 @@ class _MyAppState extends State<MyApp> {
   String? selectedValueSingleDialogEllipsis;
   String? selectedValueSingleDialogRightToLeft;
   String? selectedValueUpdateFromOutsideThePlugin;
-  dynamic? selectedValueSingleDialogPaged;
-  dynamic? selectedValueSingleDialogPagedFuture;
+  dynamic selectedValueSingleDialogPaged;
+  dynamic selectedValueSingleDialogPagedFuture;
   ExampleNumber? selectedNumber;
   List<int> selectedItemsMultiDialog = [];
   List<int> selectedItemsMultiCustomDisplayDialog = [];

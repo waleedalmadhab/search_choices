@@ -1,7 +1,6 @@
 name: search_choices_example
 description: Demonstrates how to use the search_choices plugin.
 version: 0.0.1
-author: flutter@jod.li
 publish_to: 'none'
 
 environment:
