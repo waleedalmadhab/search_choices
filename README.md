@@ -114,6 +114,21 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
       ),
       contentPadding: EdgeInsets.symmetric(vertical: 12),
     ),
+    int? itemsPerPage,
+    PointerThisPlease<int>? currentPage,
+    Widget Function(Widget listWidget, int totalFilteredItemsNb,
+            Function updateSearchPage)?
+        customPaginationDisplay,
+    Future<Tuple2<List<DropdownMenuItem>, int>> Function(
+            String? keyword,
+            String? orderBy,
+            bool? orderAsc,
+            List<Tuple2<String, String>>? filters,
+            int? pageNb)?
+        futureSearchFn,
+    Map<String, Map<String, dynamic>>? futureSearchOrderOptions,
+    Map<String, Map<String, Object>>? futureSearchFilterOptions,
+    List<T>? futureSelectedValues,
   })
 ```
 
@@ -154,6 +169,12 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
 * setOpenDialog Function sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
 * buildDropDownDialog Function controls the layout of the dropdown dialog.
 * searchInputDecoration InputDecoration sets the search bar decoration.
+* itemsPerPage int if set, organizes the search list per page with the given number of items displayed per page.
+* currentPage PointerThisPlease<int> if itemsPerPage is set, holds the page number for the search items to be displayed.
+* customPaginationDisplay Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage) if itemsPerPage is set, customizes the display and the handling of the pagination on the search list.
+* futureSearchFn Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb) used to search items from the network. Must return items (up to itemsPerPage if set). Must return an int with the total number of results (allows the handling of pagination).
+* futureSearchOrderOptions Map<String, Map<String,dynamic>> when futureSearchFn is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+* futureSearchFilterOptions Map<String, Map<String, Object>> when futureSearchFn is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
 
 
 #### Multiple choice constructor
@@ -205,6 +226,21 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
       ),
       contentPadding: EdgeInsets.symmetric(vertical: 12),
     ),
+    int? itemsPerPage,
+    PointerThisPlease<int>? currentPage,
+    Widget Function(Widget listWidget, int totalFilteredItemsNb,
+            Function updateSearchPage)?
+        customPaginationDisplay,
+    Future<Tuple2<List<DropdownMenuItem>, int>> Function(
+            String? keyword,
+            String? orderBy,
+            bool? orderAsc,
+            List<Tuple2<String, String>>? filters,
+            int? pageNb)?
+        futureSearchFn,
+    Map<String, Map<String, dynamic>>? futureSearchOrderOptions,
+    Map<String, Map<String, Object>>? futureSearchFilterOptions,
+    List<T>? futureSelectedValues,
   })
 ```
 
@@ -244,6 +280,12 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
 * setOpenDialog Function sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
 * buildDropDownDialog Function controls the layout of the dropdown dialog.
 * searchInputDecoration InputDecoration sets the search bar decoration.
+* itemsPerPage int if set, organizes the search list per page with the given number of items displayed per page.
+* currentPage PointerThisPlease<int> if itemsPerPage is set, holds the page number for the search items to be displayed.
+* customPaginationDisplay Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage) if itemsPerPage is set, customizes the display and the handling of the pagination on the search list.
+* futureSearchFn Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb) used to search items from the network. Must return items (up to itemsPerPage if set). Must return an int with the total number of results (allows the handling of pagination).
+* futureSearchOrderOptions Map<String, Map<String,dynamic>> when futureSearchFn is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+* futureSearchFilterOptions Map<String, Map<String, Object>> when futureSearchFn is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
 
 #### Example app usage
 

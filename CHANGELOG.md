@@ -1,3 +1,8 @@
+## 2.0.4
+
+* Added pagination with itemsPerPage, currentPage and customPaginationDisplay parameters
+* Added possibility to perform future/network searches with order and filter selections through the addition of the futureSearchFn, futureSearchOrderOptions, futureSearchFilterOptions and futureSelectedValues parameters
+
 ## 2.0.3
 
 * New searchInputDecoration parameter, thanks @develogo https://github.com/lcuis/search_choices/pull/35
