@@ -6,58 +6,6 @@ const EdgeInsetsGeometry _kAlignedButtonPadding =
     EdgeInsetsDirectional.only(start: 16.0, end: 4.0);
 const EdgeInsets _kUnalignedButtonPadding = EdgeInsets.zero;
 
-class DropdownButtonNoSelDisp<T> extends DropdownButton {
-  DropdownButtonNoSelDisp({
-    Key? key,
-    required List<DropdownMenuItem<T>>? items,
-    DropdownButtonBuilder? selectedItemBuilder,
-    T? value,
-    Widget? hint,
-    Widget? disabledHint,
-    ValueChanged<dynamic>? onChanged,
-    VoidCallback? onTap,
-    int elevation = 8,
-    TextStyle? style,
-    Widget? underline,
-    Widget? icon,
-    Color? iconDisabledColor,
-    Color? iconEnabledColor,
-    double iconSize = 24.0,
-    bool isDense = false,
-    bool isExpanded = false,
-    double? itemHeight = kMinInteractiveDimension,
-    Color? focusColor,
-    FocusNode? focusNode,
-    bool autofocus = false,
-    Color? dropdownColor,
-    double? menuMaxHeight,
-  }) : super(
-          key: key,
-          items: items,
-          selectedItemBuilder: selectedItemBuilder,
-          value: value,
-          hint: hint,
-          disabledHint: disabledHint,
-          onChanged: onChanged,
-          onTap: onTap,
-          elevation: elevation,
-          style: style,
-          underline: underline,
-          icon: icon,
-          iconDisabledColor: iconDisabledColor,
-          iconEnabledColor: iconEnabledColor,
-          iconSize: iconSize,
-          isDense: isDense,
-          isExpanded: isExpanded,
-          itemHeight: itemHeight,
-          focusColor: focusColor,
-          focusNode: focusNode,
-          autofocus: autofocus,
-          dropdownColor: dropdownColor,
-          menuMaxHeight: menuMaxHeight,
-        );
-}
-
 /// Class mainly used internally to set a value to NotGiven by its type
 class NotGiven {
   /// Simplest constructor ever
