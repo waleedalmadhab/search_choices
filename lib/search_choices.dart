@@ -1353,7 +1353,7 @@ class DropdownDialog<T> extends StatefulWidget {
   final List<T>? futureSelectedValues;
 
   /// Allows to reset the scroll to the top of the list after changing the page
-  ScrollController listScrollController = ScrollController();
+  final ScrollController listScrollController = ScrollController();
 
   DropdownDialog({
     Key? key,

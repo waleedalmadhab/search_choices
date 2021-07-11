@@ -1568,7 +1568,7 @@ SearchChoices.single(
       )
 ```
 ### Single dialog paged future
-Future/network/internet/web/API/webservice call displayed paged in a dialog. This example doesn't work on web because of the `get` function call, though, the plugin features should work on web.
+Future/network/internet/web/API/webservice call displayed paged in a dialog. This example doesn't work on web because of the `get` function call, though, the plugin features should work on web. This example shows that this would work with PHP-CRUD-API.
 ```dart
 SearchChoices.single(
         value: selectedValueSingleDialogPagedFuture,
@@ -1728,7 +1728,7 @@ SearchChoices.single(
       )
 ```
 ### Multi menu paged future
-Future/network/internet/web/API/webservice call displayed paged in a menu. This example doesn't work on web because of the `get` function call, though, the plugin features should work on web.
+Future/network/internet/web/API/webservice call displayed paged in a menu. This example doesn't work on web because of the `get` function call, though, the plugin features should work on web. This example shows that this would work with PHP-CRUD-API.
 ```dart
 SearchChoices.multiple(
         futureSelectedValues: selectedItemsMultiMenuPagedFuture,
