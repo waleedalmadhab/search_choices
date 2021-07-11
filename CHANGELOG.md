@@ -1,3 +1,8 @@
+## 2.0.5
+
+* Corrected bug on pagination: scroll down and move to next page or type a new keyword, the scroll remained down.
+* Improved documentation.
+
 ## 2.0.4
 
 * Added pagination with itemsPerPage, currentPage and customPaginationDisplay parameters

@@ -1352,6 +1352,9 @@ class DropdownDialog<T> extends StatefulWidget {
   /// See SearchChoices class.
   final List<T>? futureSelectedValues;
 
+  /// Allows to reset the scroll to the top of the list after changing the page
+  ScrollController listScrollController = ScrollController();
+
   DropdownDialog({
     Key? key,
     this.items,
@@ -1912,6 +1915,9 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     } else {
       _updateShownIndexes(keyword);
     }
+    if (widget.listScrollController.hasClients) {
+      widget.listScrollController.jumpTo(0);
+    }
   }
 
   /// Refreshes the displayed list with the network search results.
@@ -2117,7 +2123,10 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       List<Tuple3<int, DropdownMenuItem<dynamic>, bool>> itemsToDisplay) {
     return Expanded(
       child: Scrollbar(
+        controller: widget.listScrollController,
+        isAlwaysShown: widget.itemsPerPage == null ? false : true,
         child: ListView.builder(
+          controller: widget.listScrollController,
           itemBuilder: (context, index) {
             int itemIndex = itemsToDisplay[index].item1;
             DropdownMenuItem item = itemsToDisplay[index].item2;

@@ -1,6 +1,6 @@
 # search_choices
 
-Widget to let the user search through a keyword string typed on a customizable keyboard in a single or multiple choices list presented as a dropdown in a dialog box or a menu.
+Highly versatile Widget to let the user search through a keyword string typed on a customizable keyboard in a single or multiple choices list presented as a dropdown in a dialog box or a menu. Supports pagination and future/network/API/webservice searches.
 
 ## Platforms
 
@@ -36,6 +36,18 @@ See code below.
 | [Single dialog dark<br>mode](#Single-dialog-dark-mode) | ![Single dialog dark mode](https://searchchoices.jod.li/Single%20dialog%20dark%20mode.gif) |
 | [Single dialog ellipsis](#Single-dialog-ellipsis) | ![Single dialog ellipsis](https://searchchoices.jod.li/Single%20dialog%20ellipsis.gif) |
 | [Single dialog right<br>to left](#Single-dialog-right-to-left) | ![Single dialog right to left](https://searchchoices.jod.li/Single%20dialog%20right%20to%20left.gif) |
+| [Update value from<br>outside the plugin](#Update-value-from-outside-the-plugin) | ![Update value from outside the plugin](https://searchchoices.jod.li/Update%20value%20from%20outside%20the%20plugin.gif) |
+| [Multi select 3 menu<br>no-autofocus](#Multi-select-3-menu-no-autofocus) | ![Multi select 3 menu no-autofocus](https://searchchoices.jod.li/Multi%20select%203%20menu%20no-autofocus.gif) |
+| [Multi dialog with<br>count and wrap](#Multi-dialog-with-count-and-wrap) | ![Multi dialog with count and wrap](https://searchchoices.jod.li/Multi%20dialog%20with%20count%20and%20wrap.gif) |
+| [Single dialog open<br>and set search terms](#Single-dialog-open-and-set-search-terms) | ![Single dialog open and set search terms](https://searchchoices.jod.li/Single%20dialog%20open%20and%20set%20search%20terms.gif) |
+| [Single dialog custom<br>dialog](#Single-dialog-custom-dialog) | ![Single dialog custom dialog](https://searchchoices.jod.li/Single%20dialog%20custom%20dialog.gif) |
+| [Single dialog custom<br>searchInputDecoration](#Single-dialog-custom-searchInputDecoration) | ![Single dialog custom searchInputDecoration](https://searchchoices.jod.li/Single%20dialog%20custom%20searchInputDecoration.gif) |
+| [Single dialog paged](#Single-dialog-paged) | ![Single dialog paged](https://searchchoices.jod.li/Single%20dialog%20paged.gif) |
+| [Multi dialog paged<br>rtl](#Multi-dialog-paged-rtl) | ![Multi dialog paged rtl](https://searchchoices.jod.li/Multi%20dialog%20paged%20rtl.gif) |
+| [Single dialog paged<br>custom pagination](#Single-dialog-paged-custom-pagination) | ![Single dialog paged custom pagination](https://searchchoices.jod.li/Single%20dialog%20paged%20custom%20pagination.gif) |
+| [Single menu paged](#Single-menu-paged) | ![Single menu paged](https://searchchoices.jod.li/Single%20menu%20paged.gif) |
+| [Single dialog<br>paged future](#Single-dialog-paged-future) | ![Single dialog paged future](https://searchchoices.jod.li/Single%20dialog%20paged%20future.gif) |
+| [Multi menu paged<br>future](#Multi-menu-paged-future) | ![Multi menu paged future](https://searchchoices.jod.li/Multi%20menu%20paged%20future.gif) |
 
 
 ### Demonstration
@@ -170,11 +182,11 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
 * buildDropDownDialog Function controls the layout of the dropdown dialog.
 * searchInputDecoration InputDecoration sets the search bar decoration.
 * itemsPerPage int if set, organizes the search list per page with the given number of items displayed per page.
-* currentPage PointerThisPlease<int> if itemsPerPage is set, holds the page number for the search items to be displayed.
+* currentPage PointerThisPlease of an int if itemsPerPage is set, holds the page number for the search items to be displayed.
 * customPaginationDisplay Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage) if itemsPerPage is set, customizes the display and the handling of the pagination on the search list.
-* futureSearchFn Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb) used to search items from the network. Must return items (up to itemsPerPage if set). Must return an int with the total number of results (allows the handling of pagination).
-* futureSearchOrderOptions Map<String, Map<String,dynamic>> when futureSearchFn is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
-* futureSearchFilterOptions Map<String, Map<String, Object>> when futureSearchFn is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+* futureSearchFn Function used to search items from the network. Must return items (up to itemsPerPage if set). Must return an int with the total number of results (allows the handling of pagination).
+* futureSearchOrderOptions Map when futureSearchFn is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+* futureSearchFilterOptions Map when futureSearchFn is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
 
 
 #### Multiple choice constructor
@@ -1204,6 +1216,657 @@ SearchChoices.single(
             ],
           );
         },
+      )
+```
+### Update value from outside the plugin
+A button external to the plugin can be used to set the selected value.
+```dart
+Column(
+        children: [
+          SearchChoices.single(
+            items: items,
+            value: selectedValueUpdateFromOutsideThePlugin,
+            hint: Text('Select One'),
+            searchHint: new Text(
+              'Select One',
+              style: new TextStyle(fontSize: 20),
+            ),
+            onChanged: (value) {
+              setState(() {
+                selectedValueUpdateFromOutsideThePlugin = value;
+              });
+            },
+            isExpanded: true,
+          ),
+          TextButton(
+            child: Text("Select dolor sit"),
+            onPressed: () {
+              setState(() {
+                selectedValueUpdateFromOutsideThePlugin = "dolor sit";
+              });
+            },
+          ),
+        ],
+      )
+```
+### Multi select 3 menu no-autofocus
+Doesn't bring up the keyboard automatically.
+```dart
+SearchChoices.multiple(
+        items: items,
+        selectedItems: selectedItemsMultiSelect3Menu,
+        hint: "Select 3 items",
+        searchHint: "Select 3",
+        validator: (selectedItemsForValidatorWithMenu) {
+          if (selectedItemsForValidatorWithMenu.length != 3) {
+            return ("Must select 3");
+          }
+          return (null);
+        },
+        onChanged: (value) {
+          setState(() {
+            selectedItemsMultiSelect3Menu = value;
+          });
+        },
+        isExpanded: true,
+        dialogBox: false,
+        menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
+        autofocus: false,
+      )
+```
+### Multi dialog with count and wrap
+Customization of the way the selection is displayed.
+```dart
+SearchChoices.multiple(
+        items: items,
+        selectedItems: selectedItemsMultiDialogWithCountAndWrap,
+        hint: "Select items",
+        searchHint: "Select items",
+        onChanged: (value) {
+          setState(() {
+            selectedItemsMultiDialogWithCountAndWrap = value;
+          });
+        },
+        isExpanded: true,
+        selectedValueWidgetFn: (item) {
+          return (Container(
+            margin: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(3.0),
+            decoration:
+                BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+            child: Text(
+              item,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ));
+        },
+        selectedAggregateWidgetFn: (List<Widget> list) {
+          return (Column(children: [
+            Text("${list.length} items selected"),
+            Wrap(children: list),
+          ]));
+        },
+      )
+```
+### Single dialog open and set search terms
+A button external to the plugin can be used to open the dialog and set the search terms.
+```dart
+SearchChoices.single(
+        label: Column(
+          children: items.map((item) {
+            return (ElevatedButton(
+              child: item.child,
+              onPressed: () {
+                openDialog!(item.value.toString());
+              },
+            ));
+          }).toList(),
+        ),
+        items: items,
+        value: selectedValueSingleDialog,
+        hint: "Select one",
+        searchHint: "Select one",
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialog = value;
+          });
+        },
+        isExpanded: true,
+        setOpenDialog: (externalOpenDialog) {
+          openDialog = externalOpenDialog;
+        },
+      )
+```
+### Single dialog custom dialog
+Customize the way the dialog is displayed to define how to show the title bar, the search bar, the list and the close button.
+```dart
+SearchChoices.single(
+        items: items,
+        value: selectedValueSingleDialog,
+        hint: "Select one",
+        searchHint: "Select one",
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialog = value;
+          });
+        },
+        isExpanded: true,
+        buildDropDownDialog: (
+          Widget titleBar,
+          Widget searchBar,
+          Widget list,
+          Widget closeButton,
+          BuildContext dropDownContext,
+        ) {
+          return (AnimatedContainer(
+            padding: MediaQuery.of(dropDownContext).viewInsets,
+            duration: const Duration(milliseconds: 300),
+            child: Card(
+              margin: EdgeInsets.symmetric(vertical: 30, horizontal: 40),
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 35, horizontal: 45),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    titleBar,
+                    searchBar,
+                    list,
+                    closeButton,
+                  ],
+                ),
+              ),
+            ),
+          ));
+        },
+      )
+```
+### Single dialog custom searchInputDecoration
+Can customize the way the search bar is displayed.
+```dart
+SearchChoices.single(
+        items: items,
+        value: selectedValueSingleDialog,
+        hint: "Select one",
+        searchHint: "Select one",
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialog = value;
+          });
+        },
+        isExpanded: true,
+        searchInputDecoration: InputDecoration(
+            icon: Icon(Icons.airline_seat_flat), border: OutlineInputBorder()),
+      )
+```
+### Single dialog paged
+Useful when displaying a huge amount of items.
+```dart
+SearchChoices.single(
+        items: items,
+        value: selectedValueSingleDialogPaged,
+        hint: "Select one",
+        searchHint: "Search one",
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialogPaged = value;
+          });
+        },
+        isExpanded: true,
+        itemsPerPage: 5,
+        currentPage: currentPage,
+      )
+```
+### Multi dialog paged rtl
+Pagination also works on multiple selection and with right to left languages such as Arabic and Hebrew. Useful when displaying a huge amount of items.
+```dart
+SearchChoices.multiple(
+        items: ["طنجة", "فاس‎", "أكادير‎", "تزنيت‎", "آكــلــو", "سيدي بيبي"]
+            .map<DropdownMenuItem<String>>((string) {
+          return (DropdownMenuItem<String>(
+            child: Text(
+              string,
+              textDirection: TextDirection.rtl,
+            ),
+            value: string,
+          ));
+        }).toList(),
+        selectedItems: selectedItemsMultiDialogPaged,
+        hint: Text(
+          "ختار",
+          textDirection: TextDirection.rtl,
+        ),
+        searchHint: Text(
+          "ختار",
+          textDirection: TextDirection.rtl,
+        ),
+        closeButton: TextButton(
+          onPressed: () {
+            Navigator.pop(
+                MyApp.navKey.currentState?.overlay?.context ?? context);
+          },
+          child: Text(
+            "سدّ",
+            textDirection: TextDirection.rtl,
+          ),
+        ),
+        onChanged: (value) {
+          setState(() {
+            selectedItemsMultiDialogPaged = value;
+          });
+        },
+        isExpanded: true,
+        rightToLeft: true,
+        displayItem: (item, selected) {
+          return (Row(textDirection: TextDirection.rtl, children: [
+            selected
+                ? Icon(
+                    Icons.radio_button_checked,
+                    color: Colors.grey,
+                  )
+                : Icon(
+                    Icons.radio_button_unchecked,
+                    color: Colors.grey,
+                  ),
+            SizedBox(width: 7),
+            item,
+            Expanded(
+              child: SizedBox.shrink(),
+            ),
+          ]));
+        },
+        selectedValueWidgetFn: (item) {
+          return Row(
+            textDirection: TextDirection.rtl,
+            children: <Widget>[
+              (Text(
+                item,
+                textDirection: TextDirection.rtl,
+              )),
+            ],
+          );
+        },
+        itemsPerPage: 5,
+        currentPage: currentPage,
+        doneButton: "قريب",
+      )
+```
+### Single dialog paged custom pagination
+Custom pagination can let the user choose which page to display instead of having next and previous buttons. Useful when displaying a huge amount of items.
+```dart
+SearchChoices.single(
+        items: items,
+        value: selectedValueSingleDialogPaged,
+        hint: "Select one",
+        searchHint: "Search one",
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialogPaged = value;
+          });
+        },
+        isExpanded: true,
+        itemsPerPage: 5,
+        currentPage: currentPage,
+        customPaginationDisplay: (Widget listWidget, int totalFilteredItemsNb,
+            Function updateSearchPage) {
+          return (Expanded(
+              child: Column(children: [
+            listWidget,
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(children: [
+                Text("Page:"),
+                SizedBox(
+                  width: 10,
+                ),
+                Wrap(
+                  spacing: 10,
+                  children:
+                      Iterable<int>.generate((totalFilteredItemsNb / 5).ceil())
+                          .toList()
+                          .map((i) {
+                    return (SizedBox(
+                      width: (31 + 9 * (i + 1).toString().length) + 0.0,
+                      height: 30.0,
+                      child: ElevatedButton(
+                        child: Text("${i + 1}"),
+                        onPressed: (i + 1) == currentPage.value
+                            ? null
+                            : () {
+                                currentPage.value = i + 1;
+                                updateSearchPage();
+                              },
+                      ),
+                    ));
+                  }).toList(),
+                ),
+              ]),
+            ),
+          ])));
+        },
+      )
+```
+### Single menu paged
+Showing pagination in a single selection menu. Useful when displaying a huge amount of items.
+```dart
+SearchChoices.single(
+        items: items,
+        value: selectedValueSingleDialogPaged,
+        hint: "Select one",
+        searchHint: null,
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialogPaged = value;
+          });
+        },
+        dialogBox: false,
+        isExpanded: true,
+        menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
+        itemsPerPage: 5,
+        currentPage: currentPage,
+      )
+```
+### Single dialog paged future
+Future/network/internet/web/API/webservice call displayed paged in a dialog. This example doesn't work on web because of the `get` function call, though, the plugin features should work on web.
+```dart
+SearchChoices.single(
+        value: selectedValueSingleDialogPagedFuture,
+        hint: kIsWeb ? "Example not for web" : "Select one capital",
+        searchHint: "Search capitals",
+        onChanged: kIsWeb
+            ? null
+            : (value) {
+                setState(() {
+                  selectedValueSingleDialogPagedFuture = value;
+                });
+              },
+        isExpanded: true,
+        itemsPerPage: 10,
+        currentPage: currentPage,
+        selectedValueWidgetFn: (item) {
+          return (Center(
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    side: BorderSide(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                  ),
+                  margin: EdgeInsets.all(1),
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Text(item["capital"]),
+                  ))));
+        },
+        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
+            List<Tuple2<String, String>>? filters, int? pageNb) async {
+          String filtersString = "";
+          int i = 1;
+          filters?.forEach((element) {
+            filtersString += "&filter" +
+                i.toString() +
+                "=" +
+                element.item1 +
+                "," +
+                element.item2;
+            i++;
+          });
+          Response response = await get(Uri.parse(
+                  "https://searchchoices.jod.li/exampleList.php?page=${pageNb ?? 1},10${orderBy == null ? "" : "&order=" + orderBy + "," + (orderAsc ?? true ? "asc" : "desc")}${(keyword == null || keyword.isEmpty) ? "" : "&filter=capital,cs," + keyword}$filtersString"))
+              .timeout(Duration(
+            seconds: 10,
+          ));
+          if (response.statusCode != 200) {
+            throw Exception("failed to get data from internet");
+          }
+          dynamic data = jsonDecode(response.body);
+          int nbResults = data["results"];
+          List<DropdownMenuItem> results = (data["records"] as List<dynamic>)
+              .map<DropdownMenuItem>((item) => DropdownMenuItem(
+                    value: item,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: BorderSide(
+                          color: Colors.blue,
+                          width: 1,
+                        ),
+                      ),
+                      margin: EdgeInsets.all(1),
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: Text(
+                            "${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
+                      ),
+                    ),
+                  ))
+              .toList();
+          return (Tuple2<List<DropdownMenuItem>, int>(results, nbResults));
+        },
+        futureSearchOrderOptions: {
+          "country": {
+            "icon": Wrap(children: [
+              Icon(Icons.flag),
+              Text(
+                "Country",
+              )
+            ]),
+            "asc": true
+          },
+          "capital": {
+            "icon":
+                Wrap(children: [Icon(Icons.location_city), Text("Capital")]),
+            "asc": true
+          },
+          "continent": {"icon": "Continent", "asc": true},
+          "population": {
+            "icon": Wrap(children: [Icon(Icons.people), Text("Population")]),
+            "asc": false
+          },
+        },
+        futureSearchFilterOptions: {
+          "continent": {
+            "icon": Text("Continent"),
+            "exclusive": true,
+            "values": [
+              {"eq,Africa": "Africa"},
+              {"eq,Americas": "Americas"},
+              {"eq,Asia": "Asia"},
+              {"eq,Australia": "Australia"},
+              {"eq,Europe": "Europe"},
+              {"eq,Oceania": "Oceania"}
+            ]
+          },
+          "population": {
+            "icon": Wrap(children: [Icon(Icons.people), Text("Population")]),
+            "exclusive": true,
+            "values": [
+              {
+                "lt,1000": Wrap(children: [Icon(Icons.person), Text("<1,000")])
+              },
+              {
+                "lt,100000":
+                    Wrap(children: [Icon(Icons.person_add), Text("<100,000")])
+              },
+              {
+                "lt,1000000": Wrap(
+                    children: [Icon(Icons.nature_people), Text("<1,000,000")])
+              },
+              {
+                "gt,1000000":
+                    Wrap(children: [Icon(Icons.people), Text(">1,000,000")])
+              },
+              {
+                "gt,10000000": Wrap(
+                    children: [Icon(Icons.location_city), Text(">10,000,000")])
+              },
+            ]
+          },
+        },
+        closeButton: (selectedItemsDone, doneContext) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SizedBox(
+                height: 25,
+                width: 48,
+                child: (ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(doneContext);
+                      setState(() {});
+                    },
+                    child: Icon(
+                      Icons.close,
+                      size: 17,
+                    ))),
+              ),
+            ],
+          );
+        },
+      )
+```
+### Multi menu paged future
+Future/network/internet/web/API/webservice call displayed paged in a menu. This example doesn't work on web because of the `get` function call, though, the plugin features should work on web.
+```dart
+SearchChoices.multiple(
+        futureSelectedValues: selectedItemsMultiMenuPagedFuture,
+        hint: kIsWeb ? "Example not for web" : "Select capitals",
+        searchHint: "",
+        dialogBox: false,
+        onChanged: kIsWeb
+            ? null
+            : (value) {
+                setState(() {
+                  selectedItemsMultiMenuPagedFuture = value;
+                });
+              },
+        isExpanded: true,
+        itemsPerPage: 10,
+        currentPage: currentPage,
+        selectedValueWidgetFn: (item) {
+          return (Center(
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    side: BorderSide(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                  ),
+                  margin: EdgeInsets.all(1),
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Text(item["capital"]),
+                  ))));
+        },
+        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
+            List<Tuple2<String, String>>? filters, int? pageNb) async {
+          String filtersString = "";
+          int i = 1;
+          filters?.forEach((element) {
+            filtersString += "&filter" +
+                i.toString() +
+                "=" +
+                element.item1 +
+                "," +
+                element.item2;
+            i++;
+          });
+          Response response = await get(Uri.parse(
+                  "https://searchchoices.jod.li/exampleList.php?page=${pageNb ?? 1},10${orderBy == null ? "" : "&order=" + orderBy + "," + (orderAsc ?? true ? "asc" : "desc")}${(keyword == null || keyword.isEmpty) ? "" : "&filter=capital,cs," + keyword}$filtersString"))
+              .timeout(Duration(
+            seconds: 10,
+          ));
+          if (response.statusCode != 200) {
+            throw Exception("failed to get data from internet");
+          }
+          dynamic data = jsonDecode(response.body);
+          int nbResults = data["results"];
+          List<DropdownMenuItem> results = (data["records"] as List<dynamic>)
+              .map<DropdownMenuItem>((item) => DropdownMenuItem(
+                    value: item,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: BorderSide(
+                          color: Colors.blue,
+                          width: 1,
+                        ),
+                      ),
+                      margin: EdgeInsets.all(1),
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: Text(
+                            "${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
+                      ),
+                    ),
+                  ))
+              .toList();
+          return (Tuple2<List<DropdownMenuItem>, int>(results, nbResults));
+        },
+        futureSearchOrderOptions: {
+          "country": {
+            "icon": Wrap(children: [
+              Icon(Icons.flag),
+              Text(
+                "Country",
+              )
+            ]),
+            "asc": true
+          },
+          "capital": {
+            "icon":
+                Wrap(children: [Icon(Icons.location_city), Text("Capital")]),
+            "asc": true
+          },
+          "continent": {"icon": "Continent", "asc": true},
+          "population": {
+            "icon": Wrap(children: [Icon(Icons.people), Text("Population")]),
+            "asc": false
+          },
+        },
+        futureSearchFilterOptions: {
+          "continent": {
+            "icon": Text("Continent"),
+            "exclusive": true,
+            "values": [
+              {"eq,Africa": "Africa"},
+              {"eq,Americas": "Americas"},
+              {"eq,Asia": "Asia"},
+              {"eq,Australia": "Australia"},
+              {"eq,Europe": "Europe"},
+              {"eq,Oceania": "Oceania"}
+            ]
+          },
+          "population": {
+            "icon": Wrap(children: [Icon(Icons.people), Text("Population")]),
+            "exclusive": true,
+            "values": [
+              {
+                "lt,1000": Wrap(children: [Icon(Icons.person), Text("<1,000")])
+              },
+              {
+                "lt,100000":
+                    Wrap(children: [Icon(Icons.person_add), Text("<100,000")])
+              },
+              {
+                "lt,1000000": Wrap(
+                    children: [Icon(Icons.nature_people), Text("<1,000,000")])
+              },
+              {
+                "gt,1000000":
+                    Wrap(children: [Icon(Icons.people), Text(">1,000,000")])
+              },
+              {
+                "gt,10000000": Wrap(
+                    children: [Icon(Icons.location_city), Text(">10,000,000")])
+              },
+            ]
+          },
+        },
+        menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
       )
 ```
 
