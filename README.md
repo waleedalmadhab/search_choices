@@ -48,7 +48,9 @@ See code below.
 | [Single menu paged](#Single-menu-paged) | ![Single menu paged](https://searchchoices.jod.li/Single%20menu%20paged.gif) |
 | [Single dialog<br>paged future](#Single-dialog-paged-future) | ![Single dialog paged future](https://searchchoices.jod.li/Single%20dialog%20paged%20future.gif) |
 | [Multi menu paged<br>future](#Multi-menu-paged-future) | ![Multi menu paged future](https://searchchoices.jod.li/Multi%20menu%20paged%20future.gif) |
-
+| [Single dialog<br>custom empty list](#Single-dialog-custom-empty-list) | ![Single dialog custom empty list](https://searchchoices.jod.li/Single%20dialog%20custom%20empty%20list.gif) |
+| [Single dialog future custom empty list](#Single-dialog-future-custom-empty-list) | ![Single dialog future custom empty list](https://searchchoices.jod.li/Single%20dialog%20future%20custom%20empty%20list.gif) |
+| [Single dialog onTap](#Single-dialog-onTap) | ![Single dialog onTap](https://searchchoices.jod.li/Single%20dialog%20onTap.gif) |
 
 ### Demonstration
 
@@ -140,7 +142,8 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
         futureSearchFn,
     Map<String, Map<String, dynamic>>? futureSearchOrderOptions,
     Map<String, Map<String, Object>>? futureSearchFilterOptions,
-    List<T>? futureSelectedValues,
+    dynamic emptyListWidget,
+    Function? onTap,
   })
 ```
 
@@ -187,6 +190,8 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
 * futureSearchFn Function used to search items from the network. Must return items (up to itemsPerPage if set). Must return an int with the total number of results (allows the handling of pagination).
 * futureSearchOrderOptions Map when futureSearchFn is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
 * futureSearchFilterOptions Map when futureSearchFn is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+* emptyListWidget String|Widget|Function with parameter: keyword returning String|Widget displayed instead of the list of items in case it is empty.
+* onTap Function called when the user clicks on the Widget before it opens the dialog or the menu. Note that this is not called in case the Widget is disabled.
 
 
 #### Multiple choice constructor
@@ -253,6 +258,8 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
     Map<String, Map<String, dynamic>>? futureSearchOrderOptions,
     Map<String, Map<String, Object>>? futureSearchFilterOptions,
     List<T>? futureSelectedValues,
+    dynamic emptyListWidget,
+    Function? onTap,
   })
 ```
 
@@ -298,6 +305,9 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
 * futureSearchFn Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb) used to search items from the network. Must return items (up to itemsPerPage if set). Must return an int with the total number of results (allows the handling of pagination).
 * futureSearchOrderOptions Map<String, Map<String,dynamic>> when futureSearchFn is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
 * futureSearchFilterOptions Map<String, Map<String, Object>> when futureSearchFn is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+* futureSelectedValues List contains the list of selected values in case of future search in multiple selection mode.
+* emptyListWidget String|Widget|Function with parameter: keyword returning String|Widget displayed instead of the list of items in case it is empty.
+* onTap Function called when the user clicks on the Widget before it opens the dialog or the menu. Note that this is not called in case the Widget is disabled.
 
 #### Example app usage
 
@@ -1867,6 +1877,131 @@ SearchChoices.multiple(
           },
         },
         menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
+      )
+```
+### Single dialog custom empty list
+When the list gets empty after the keyword is typed, the dialog displays the given text with the keyword as a parameter.
+```dart
+SearchChoices.single(
+        items: items,
+        value: selectedValueSingleDialog,
+        hint: "Select one",
+        searchHint: "Select one",
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialog = value;
+          });
+        },
+        isExpanded: true,
+        emptyListWidget: (String keyword) =>
+            "No result with the \"$keyword\" keyword",
+      )
+```
+### Single dialog future custom empty list
+When the future/network search keyword filters out all the results, the given emptyListWidget is displayed.
+```dart
+SearchChoices.single(
+        value: selectedValueSingleDialogFuture,
+        hint: kIsWeb ? "Example not for web" : "Select one capital",
+        searchHint: "Search capitals",
+        onChanged: kIsWeb
+            ? null
+            : (value) {
+                setState(() {
+                  selectedValueSingleDialogFuture = value;
+                });
+              },
+        isExpanded: true,
+        selectedValueWidgetFn: (item) {
+          return (Center(
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    side: BorderSide(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                  ),
+                  margin: EdgeInsets.all(1),
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Text(item["capital"]),
+                  ))));
+        },
+        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
+            List<Tuple2<String, String>>? filters, int? pageNb) async {
+          String filtersString = "";
+          int i = 1;
+          filters?.forEach((element) {
+            // This example doesn't have any futureSearchFilterOptions parameter, thus, this loop will never run anything.
+            filtersString += "&filter" +
+                i.toString() +
+                "=" +
+                element.item1 +
+                "," +
+                element.item2;
+            i++;
+          });
+          Response response = await get(Uri.parse(
+                  "https://searchchoices.jod.li/exampleList.php?page=${pageNb ?? 1},10${orderBy == null ? "" : "&order=" + orderBy + "," + (orderAsc ?? true ? "asc" : "desc")}${(keyword == null || keyword.isEmpty) ? "" : "&filter=capital,cs," + keyword}$filtersString"))
+              .timeout(Duration(
+            seconds: 10,
+          ));
+          if (response.statusCode != 200) {
+            throw Exception("failed to get data from internet");
+          }
+          dynamic data = jsonDecode(response.body);
+          int nbResults = data["results"];
+          List<DropdownMenuItem> results = (data["records"] as List<dynamic>)
+              .map<DropdownMenuItem>((item) => DropdownMenuItem(
+                    value: item,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: BorderSide(
+                          color: Colors.blue,
+                          width: 1,
+                        ),
+                      ),
+                      margin: EdgeInsets.all(1),
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: Text(
+                            "${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
+                      ),
+                    ),
+                  ))
+              .toList();
+          return (Tuple2<List<DropdownMenuItem>, int>(results, nbResults));
+        },
+        emptyListWidget: () => Text(
+          "No result",
+          style: TextStyle(
+            fontStyle: FontStyle.italic,
+            color: Colors.grey,
+          ),
+        ),
+      )
+```
+### Single dialog onTap
+onTap parameter can be used to clear the selected value or to unfocus as shown in https://github.com/lcuis/search_choices/issues/26
+```dart
+SearchChoices.single(
+        items: items,
+        value: selectedValueSingleDialog,
+        hint: "Select one",
+        searchHint: "Select one",
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialog = value;
+          });
+        },
+        isExpanded: true,
+        onTap: () {
+          setState(() {
+            selectedValueSingleDialog = null;
+          });
+        },
       )
 ```
 
