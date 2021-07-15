@@ -1,6 +1,6 @@
 # search_choices
 
-Highly versatile Widget to let the user search through a keyword string typed on a customizable keyboard in a single or multiple choices list presented as a dropdown in a dialog box or a menu. Supports pagination and future/network/API/webservice searches.
+Highly versatile Widget to search through a single or multiple choices list in a dialog box or a menu. Supports pagination and future/network/API/webservice searches with sort and filter.
 
 ## Platforms
 

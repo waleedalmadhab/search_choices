@@ -328,6 +328,12 @@ class SearchChoices<T> extends StatefulWidget {
   /// [futureSelectedValues] [List<T>] contains the list of selected values in case of future search in multiple selection mode.
   final List<T>? futureSelectedValues;
 
+  /// [emptyListWidget] [String]|[Widget]|[Function] with parameter: __keyword__ returning [String]|[Widget] displayed instead of the list of items in case it is empty.
+  final dynamic emptyListWidget;
+
+  /// [onTap] [Function] called when the user clicks on the Widget before it opens the dialog or the menu. Note that this is not called in case the Widget is disabled.
+  final Function? onTap;
+
   /// Search choices Widget with a single choice that opens a dialog or a menu to let the user do the selection conveniently with a search.
   ///
   /// * [items] with __child__: [Widget] displayed ; __value__: any object with .toString() used to match search keyword.
@@ -373,6 +379,8 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [futureSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must return items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
   /// * [futureSearchOrderOptions] [Map<String, Map<String,dynamic>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   /// * [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  /// * [emptyListWidget] [String]|[Widget]|[Function] with parameter: __keyword__ returning [String]|[Widget] displayed instead of the list of items in case it is empty.
+  /// * [onTap] [Function] called when the user clicks on the Widget before it opens the dialog or the menu. Note that this is not called in case the Widget is disabled.
   factory SearchChoices.single({
     Key? key,
     List<DropdownMenuItem<T>>? items,
@@ -433,6 +441,8 @@ class SearchChoices<T> extends StatefulWidget {
         futureSearchFn,
     Map<String, Map<String, dynamic>>? futureSearchOrderOptions,
     Map<String, Map<String, Object>>? futureSearchFilterOptions,
+    dynamic emptyListWidget,
+    Function? onTap,
   }) {
     return (SearchChoices._(
       key: key,
@@ -479,6 +489,8 @@ class SearchChoices<T> extends StatefulWidget {
       futureSearchFn: futureSearchFn,
       futureSearchOrderOptions: futureSearchOrderOptions,
       futureSearchFilterOptions: futureSearchFilterOptions,
+      emptyListWidget: emptyListWidget,
+      onTap: onTap,
     ));
   }
 
@@ -527,6 +539,8 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [futureSearchOrderOptions] [Map<String, Map<String,dynamic>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   /// * [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   /// * [futureSelectedValues] [List<T>] contains the list of selected values in case of future search in multiple selection mode.
+  /// * [emptyListWidget] [String]|[Widget]|[Function] with parameter: __keyword__ returning [String]|[Widget] displayed instead of the list of items in case it is empty.
+  /// * [onTap] [Function] called when the user clicks on the Widget before it opens the dialog or the menu. Note that this is not called in case the Widget is disabled.
   factory SearchChoices.multiple({
     Key? key,
     List<DropdownMenuItem<T>>? items,
@@ -587,6 +601,8 @@ class SearchChoices<T> extends StatefulWidget {
     Map<String, Map<String, dynamic>>? futureSearchOrderOptions,
     Map<String, Map<String, Object>>? futureSearchFilterOptions,
     List<T>? futureSelectedValues,
+    dynamic emptyListWidget,
+    Function? onTap,
   }) {
     return (SearchChoices._(
       key: key,
@@ -634,6 +650,8 @@ class SearchChoices<T> extends StatefulWidget {
       futureSearchOrderOptions: futureSearchOrderOptions,
       futureSearchFilterOptions: futureSearchFilterOptions,
       futureSelectedValues: futureSelectedValues,
+      emptyListWidget: emptyListWidget,
+      onTap: onTap,
     ));
   }
 
@@ -684,6 +702,8 @@ class SearchChoices<T> extends StatefulWidget {
     this.futureSearchOrderOptions,
     this.futureSearchFilterOptions,
     this.futureSelectedValues,
+    this.emptyListWidget,
+    this.onTap,
   })  : assert(!multipleSelection || doneButton != null),
         assert(menuConstraints == null || !dialogBox),
         assert(itemsPerPage == null || currentPage != null,
@@ -954,6 +974,8 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         futureSearchOrderOptions: widget.futureSearchOrderOptions,
         futureSearchFilterOptions: widget.futureSearchFilterOptions,
         futureSelectedValues: futureSelectedValues,
+        emptyListWidget: widget.emptyListWidget,
+        onTap: widget.onTap,
       ));
     });
   }
@@ -1045,6 +1067,9 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
             onTap: widget.readOnly || !_enabled
                 ? null
                 : () async {
+                    if (widget.onTap != null) {
+                      widget.onTap!();
+                    }
                     await showDialogOrMenu("");
                   },
             child: Row(
@@ -1300,6 +1325,12 @@ class DropdownDialog<T> extends StatefulWidget {
   /// See SearchChoices class.
   final List<T>? futureSelectedValues;
 
+  /// See SearchChoices class.
+  final dynamic emptyListWidget;
+
+  /// See SearchChoices class.
+  final Function? onTap;
+
   /// Allows to reset the scroll to the top of the list after changing the page
   final ScrollController listScrollController = ScrollController();
 
@@ -1337,6 +1368,8 @@ class DropdownDialog<T> extends StatefulWidget {
     this.futureSearchOrderOptions,
     this.futureSearchFilterOptions,
     this.futureSelectedValues,
+    this.emptyListWidget,
+    this.onTap,
   }) : super(key: key);
 
   _DropdownDialogState<T> createState() => _DropdownDialogState<T>();
@@ -2073,52 +2106,55 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       child: Scrollbar(
         controller: widget.listScrollController,
         isAlwaysShown: widget.itemsPerPage == null ? false : true,
-        child: ListView.builder(
-          controller: widget.listScrollController,
-          itemBuilder: (context, index) {
-            int itemIndex = itemsToDisplay[index].item1;
-            DropdownMenuItem item = itemsToDisplay[index].item2;
-            bool isItemSelected = itemsToDisplay[index].item3;
-            Widget? displayItemResult;
-            if (widget.displayItem != null) {
-              try {
-                displayItemResult = widget.displayItem!(item, isItemSelected);
-              } on NoSuchMethodError {
-                displayItemResult =
-                    widget.displayItem!(item, isItemSelected, (value) {
-                  widget.updateParent!(value);
-                  widget.currentPage?.value = 1;
-                  searchForKeyword(null);
-                });
-              }
-            }
-            return InkWell(
-              onTap: () {
-                itemTapped(itemIndex, item.value, isItemSelected);
-              },
-              child: widget.displayItem == null
-                  ? widget.multipleSelection
-                      ? (Row(
-                          textDirection: widget.rightToLeft
-                              ? TextDirection.rtl
-                              : TextDirection.ltr,
-                          children: [
-                              Icon(
-                                isItemSelected
-                                    ? Icons.check_box
-                                    : Icons.check_box_outline_blank,
-                              ),
-                              SizedBox(
-                                width: 7,
-                              ),
-                              Flexible(child: item),
-                            ]))
-                      : item
-                  : displayItemResult,
-            );
-          },
-          itemCount: itemsToDisplay.length,
-        ),
+        child: itemsToDisplay.length == 0
+            ? emptyList()
+            : ListView.builder(
+                controller: widget.listScrollController,
+                itemBuilder: (context, index) {
+                  int itemIndex = itemsToDisplay[index].item1;
+                  DropdownMenuItem item = itemsToDisplay[index].item2;
+                  bool isItemSelected = itemsToDisplay[index].item3;
+                  Widget? displayItemResult;
+                  if (widget.displayItem != null) {
+                    try {
+                      displayItemResult =
+                          widget.displayItem!(item, isItemSelected);
+                    } on NoSuchMethodError {
+                      displayItemResult =
+                          widget.displayItem!(item, isItemSelected, (value) {
+                        widget.updateParent!(value);
+                        widget.currentPage?.value = 1;
+                        searchForKeyword(null);
+                      });
+                    }
+                  }
+                  return InkWell(
+                    onTap: () {
+                      itemTapped(itemIndex, item.value, isItemSelected);
+                    },
+                    child: widget.displayItem == null
+                        ? widget.multipleSelection
+                            ? (Row(
+                                textDirection: widget.rightToLeft
+                                    ? TextDirection.rtl
+                                    : TextDirection.ltr,
+                                children: [
+                                    Icon(
+                                      isItemSelected
+                                          ? Icons.check_box
+                                          : Icons.check_box_outline_blank,
+                                    ),
+                                    SizedBox(
+                                      width: 7,
+                                    ),
+                                    Flexible(child: item),
+                                  ]))
+                            : item
+                        : displayItemResult,
+                  );
+                },
+                itemCount: itemsToDisplay.length,
+              ),
       ),
     );
   }
@@ -2191,6 +2227,33 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       ]),
       scrollBar,
     ])));
+  }
+
+  /// Returns what is displayed in case the list is empty
+  Widget emptyList() {
+    if (widget.emptyListWidget != null) {
+      Widget? ret = prepareWidget(
+        widget.emptyListWidget,
+        parameter: latestKeyword,
+        updateParent: () {
+          setState(() {});
+        },
+        context: context,
+        stringToWidgetFunction: (String message) => Center(
+          child: Text(
+            message,
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
+        ),
+      );
+      if (ret != null) {
+        return (ret);
+      }
+    }
+    if (futureSearch) {
+      return (Text("-"));
+    }
+    return (SizedBox.shrink());
   }
 
   /// Displays the list of items filtered based on the search terms with pagination.
@@ -2271,7 +2334,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
               return (Column(children: [
                 SizedBox(height: 15),
                 Center(
-                  child: Text("-"),
+                  child: emptyList(),
                 )
               ])); //no results
             }

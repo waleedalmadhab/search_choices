@@ -1,3 +1,9 @@
+## 2.0.6
+
+* Added emptyListWidget parameter. Thanks @KhatibFX https://github.com/lcuis/search_choices/issues/42
+* Added onTap parameter. Thanks @KhatibFX https://github.com/lcuis/search_choices/issues/26
+* Removed useless DropdownButtonNoSelDisp class.
+
 ## 2.0.5
 
 * Corrected bug on pagination: scroll down and move to next page or type a new keyword, the scroll remained down.
