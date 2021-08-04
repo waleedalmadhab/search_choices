@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:core';
@@ -307,7 +308,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// [currentPage] [PointerThisPlease<int>] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
   final PointerThisPlease<int>? currentPage;
 
-  /// [customPaginationDisplay] [Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage)] if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
+  /// [customPaginationDisplay] Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage) if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
   final Widget Function(Widget listWidget, int totalFilteredItemsNb,
       Function updateSearchPage)? customPaginationDisplay;
 
@@ -375,7 +376,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [searchInputDecoration] [InputDecoration] sets the search bar decoration.
   /// * [itemsPerPage] [int] if set, organizes the search list per page with the given number of items displayed per page.
   /// * [currentPage] [PointerThisPlease<int>] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
-  /// * [customPaginationDisplay] [Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage)] if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
+  /// * [customPaginationDisplay] Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage) if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
   /// * [futureSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must return items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
   /// * [futureSearchOrderOptions] [Map<String, Map<String,dynamic>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   /// * [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
@@ -534,7 +535,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [searchInputDecoration] [InputDecoration] sets the search bar decoration.
   /// * [itemsPerPage] [int] if set, organizes the search list per page with the given number of items displayed per page.
   /// * [currentPage] [int] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
-  /// * [customPaginationDisplay] [Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage)] if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
+  /// * [customPaginationDisplay] Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage) if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
   /// * [futureSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must return items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
   /// * [futureSearchOrderOptions] [Map<String, Map<String,dynamic>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   /// * [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
@@ -1641,6 +1642,9 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                                       }
                                       filters!.add(Tuple2(k, fk));
                                     }
+                                    if (widget.dialogBox) {
+                                      setState(() {});
+                                    }
                                     Navigator.pop(context);
                                     if (!widget.dialogBox) {
                                       setState(() {});
@@ -2055,7 +2059,12 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
 
   void deselectItem(int index, T value) {
     if (futureSearch) {
-      widget.futureSelectedValues?.remove(value);
+      if (value is Map) {
+        widget.futureSelectedValues
+            ?.removeWhere((element) => mapEquals(element, value));
+      } else {
+        widget.futureSelectedValues?.remove(value);
+      }
     } else {
       widget.selectedItems?.remove(index);
     }
@@ -2094,9 +2103,49 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   /// Returns whether an item is selected. Relies on index in case of non future list of items.
   bool isItemSelected(int index, T value) {
     if (futureSearch) {
+      if (value is Map) {
+        return (widget.futureSelectedValues!
+            .any((element) => mapEquals(element, value)));
+      }
       return (widget.futureSelectedValues!.contains(value));
     }
     return (widget.selectedItems?.contains(index) ?? false);
+  }
+
+  /// Returns the Widget as displayed in the list of items from the selected or non selected DropdownMenuItem.
+  Widget displayItem(
+    DropdownMenuItem item,
+    bool isItemSelected,
+  ) {
+    Widget? displayItemResult;
+    if (widget.displayItem != null) {
+      try {
+        displayItemResult = widget.displayItem!(item, isItemSelected);
+      } on NoSuchMethodError {
+        displayItemResult = widget.displayItem!(item, isItemSelected, (value) {
+          widget.updateParent!(value);
+          widget.currentPage?.value = 1;
+          searchForKeyword(null);
+        });
+      }
+      return (displayItemResult!);
+    }
+    return widget.multipleSelection
+        ? (Row(
+            textDirection:
+                widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
+            children: [
+                Icon(
+                  isItemSelected
+                      ? Icons.check_box
+                      : Icons.check_box_outline_blank,
+                ),
+                SizedBox(
+                  width: 7,
+                ),
+                Flexible(child: item),
+              ]))
+        : item;
   }
 
   /// Builds the list display from the given list of [DropdownMenuItem] along with the [bool] indicating whether the item is selected or not and the [int] as the index in the [selectedItems] list.
@@ -2114,43 +2163,18 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                   int itemIndex = itemsToDisplay[index].item1;
                   DropdownMenuItem item = itemsToDisplay[index].item2;
                   bool isItemSelected = itemsToDisplay[index].item3;
-                  Widget? displayItemResult;
-                  if (widget.displayItem != null) {
-                    try {
-                      displayItemResult =
-                          widget.displayItem!(item, isItemSelected);
-                    } on NoSuchMethodError {
-                      displayItemResult =
-                          widget.displayItem!(item, isItemSelected, (value) {
-                        widget.updateParent!(value);
-                        widget.currentPage?.value = 1;
-                        searchForKeyword(null);
-                      });
-                    }
-                  }
                   return InkWell(
                     onTap: () {
-                      itemTapped(itemIndex, item.value, isItemSelected);
+                      itemTapped(
+                        itemIndex,
+                        item.value,
+                        isItemSelected,
+                      );
                     },
-                    child: widget.displayItem == null
-                        ? widget.multipleSelection
-                            ? (Row(
-                                textDirection: widget.rightToLeft
-                                    ? TextDirection.rtl
-                                    : TextDirection.ltr,
-                                children: [
-                                    Icon(
-                                      isItemSelected
-                                          ? Icons.check_box
-                                          : Icons.check_box_outline_blank,
-                                    ),
-                                    SizedBox(
-                                      width: 7,
-                                    ),
-                                    Flexible(child: item),
-                                  ]))
-                            : item
-                        : displayItemResult,
+                    child: displayItem(
+                      item,
+                      isItemSelected,
+                    ),
                   );
                 },
                 itemCount: itemsToDisplay.length,

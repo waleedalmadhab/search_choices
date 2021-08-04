@@ -1,3 +1,9 @@
+## 2.0.7
+
+* Fixed bug: Multi future selected items did not appear as selected when reopening the list. Thanks @bhimpratapsingh https://github.com/lcuis/search_choices/issues/44
+* Fixed bug: future search dialog box iOS: filter doesn't change list. https://github.com/lcuis/search_choices/issues/46
+* Added an example: Multi dialog paged future
+
 ## 2.0.6
 
 * Added emptyListWidget parameter. Thanks @KhatibFX https://github.com/lcuis/search_choices/issues/42
