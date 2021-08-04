@@ -49,8 +49,9 @@ See code below.
 | [Single dialog<br>paged future](#Single-dialog-paged-future) | ![Single dialog paged future](https://searchchoices.jod.li/Single%20dialog%20paged%20future.gif) |
 | [Multi menu paged<br>future](#Multi-menu-paged-future) | ![Multi menu paged future](https://searchchoices.jod.li/Multi%20menu%20paged%20future.gif) |
 | [Single dialog<br>custom empty list](#Single-dialog-custom-empty-list) | ![Single dialog custom empty list](https://searchchoices.jod.li/Single%20dialog%20custom%20empty%20list.gif) |
-| [Single dialog future custom empty list](#Single-dialog-future-custom-empty-list) | ![Single dialog future custom empty list](https://searchchoices.jod.li/Single%20dialog%20future%20custom%20empty%20list.gif) |
+| [Single dialog future<br>custom empty list](#Single-dialog-future-custom-empty-list) | ![Single dialog future custom empty list](https://searchchoices.jod.li/Single%20dialog%20future%20custom%20empty%20list.gif) |
 | [Single dialog onTap](#Single-dialog-onTap) | ![Single dialog onTap](https://searchchoices.jod.li/Single%20dialog%20onTap.gif) |
+| [Multi dialog paged<br>future](#Multi-dialog-paged-future) | ![Multi dialog paged future](https://searchchoices.jod.li/Multi%20dialog%20paged%20future.gif) |
 
 ### Demonstration
 
