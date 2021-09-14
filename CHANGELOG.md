@@ -1,3 +1,9 @@
+## 2.0.8
+
+* Calling non future items onTap if not null when list item is tapped. Thanks @EbrahimMosaaed https://github.com/lcuis/search_choices/issues/49
+* Fixed some typos.
+* Added the following example code to the README: Multi dialog paged future
+
 ## 2.0.7
 
 * Fixed bug: Multi future selected items did not appear as selected when reopening the list. Thanks @bhimpratapsingh https://github.com/lcuis/search_choices/issues/44

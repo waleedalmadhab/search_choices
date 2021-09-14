@@ -1817,13 +1817,13 @@ class _MyAppState extends State<MyApp> {
                       })
                       .values
                       .toList()
-                        ..add(
-                          Center(
-                            child: SizedBox(
-                              height: 500,
-                            ),
-                          ),
-                        ), //prevents scrolling issues at the end of the list of Widgets
+                    ..add(
+                      Center(
+                        child: SizedBox(
+                          height: 500,
+                        ),
+                      ),
+                    ), //prevents scrolling issues at the end of the list of Widgets
                 ),
               ),
             ),

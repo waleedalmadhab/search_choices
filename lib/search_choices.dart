@@ -1009,7 +1009,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         (!_enabled &&
             prepareWidget(widget.disabledHint, parameter: updateParent) !=
                 null)) {
-      final Widget? emplacedHint = _enabled
+      final Widget? positionedHint = _enabled
           ? prepareWidget(widget.hint)
           : DropdownMenuItem<Widget>(
               child:
@@ -1020,7 +1020,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
       items.add(DefaultTextStyle(
         style: _textStyle.copyWith(color: Theme.of(context).hintColor),
         child: IgnorePointer(
-          child: emplacedHint,
+          child: positionedHint,
           ignoringSemantics: false,
         ),
       ));
@@ -1260,7 +1260,7 @@ class DropdownDialog<T> extends StatefulWidget {
   /// See SearchChoices class.
   final BoxConstraints? menuConstraints;
 
-  /// Function to be called whenever the dialogbox is poped or the menu gets closed.
+  /// Function to be called whenever the dialogBox is popped or the menu gets closed.
   final Function? callOnPop;
 
   /// See SearchChoices class.
@@ -1284,7 +1284,7 @@ class DropdownDialog<T> extends StatefulWidget {
   /// See SearchChoices class.
   final bool autofocus;
 
-  /// Used for the setOpenDialog. This allows the dialogbox to be opened with search terms preset from an external button as shown in example `Single dialog open and set search terms`.
+  /// Used for the setOpenDialog. This allows the dialogBox to be opened with search terms preset from an external button as shown in example `Single dialog open and set search terms`.
   final String initialSearchTerms;
 
   /// See SearchChoices class.
@@ -1480,26 +1480,26 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
               })
               .values
               .toList()
-                ..insert(
-                    0,
-                    PopupMenuItem(
-                      child: SizedBox(
-                        height: 30,
-                        child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              setState(() {
-                                widget.currentPage?.value = 1;
-                                orderBy = null;
-                                orderAsc = null;
-                              });
-                            },
-                            child: Icon(
-                              Icons.clear,
-                              size: 17,
-                            )),
-                      ),
-                    )));
+            ..insert(
+                0,
+                PopupMenuItem(
+                  child: SizedBox(
+                    height: 30,
+                    child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          setState(() {
+                            widget.currentPage?.value = 1;
+                            orderBy = null;
+                            orderAsc = null;
+                          });
+                        },
+                        child: Icon(
+                          Icons.clear,
+                          size: 17,
+                        )),
+                  ),
+                )));
     };
 
     return SizedBox(
@@ -1654,45 +1654,45 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                               )),
                             ));
                           }).toList()
-                                ..insert(
-                                  0,
-                                  PopupMenuItem(
-                                    child: SizedBox(
-                                      height: 30,
-                                      child: prepareWidget(
-                                            v["icon"] ?? k,
-                                            parameter: filters,
-                                            updateParent: widget.updateParent,
-                                            context: context,
-                                          ) ??
-                                          Text(k),
-                                    ),
-                                  ),
+                            ..insert(
+                              0,
+                              PopupMenuItem(
+                                child: SizedBox(
+                                  height: 30,
+                                  child: prepareWidget(
+                                        v["icon"] ?? k,
+                                        parameter: filters,
+                                        updateParent: widget.updateParent,
+                                        context: context,
+                                      ) ??
+                                      Text(k),
                                 ),
+                              ),
+                            ),
                         ))));
                   })
                   .values
                   .toList()
-                    ..insert(
-                        0,
-                        PopupMenuItem(
-                          child: SizedBox(
-                            height: 30,
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  widget.currentPage?.value = 1;
-                                  filters?.clear();
-                                  Navigator.pop(context);
-                                  if (!widget.dialogBox) {
-                                    setState(() {});
-                                  }
-                                },
-                                child: Icon(
-                                  Icons.clear,
-                                  size: 17,
-                                )),
-                          ),
-                        )));
+                ..insert(
+                    0,
+                    PopupMenuItem(
+                      child: SizedBox(
+                        height: 30,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              widget.currentPage?.value = 1;
+                              filters?.clear();
+                              Navigator.pop(context);
+                              if (!widget.dialogBox) {
+                                setState(() {});
+                              }
+                            },
+                            child: Icon(
+                              Icons.clear,
+                              size: 17,
+                            )),
+                      ),
+                    )));
         },
       )),
     );
@@ -2086,6 +2086,11 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   }
 
   void itemTapped(int index, T value, bool itemSelected) {
+    if (!futureSearch) {
+      if (widget.items?[index].onTap != null) {
+        widget.items?[index].onTap!();
+      }
+    }
     if (widget.multipleSelection && itemSelected) {
       setState(() {
         deselectItem(index, value);
