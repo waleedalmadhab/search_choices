@@ -1,3 +1,7 @@
+## 2.0.9
+
+* Trying to comply with the pub.dev formatting unmentioned requirements.
+
 ## 2.0.8
 
 * Calling non future items onTap if not null when list item is tapped. Thanks @EbrahimMosaaed https://github.com/lcuis/search_choices/issues/49

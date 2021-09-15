@@ -36,17 +36,21 @@ class Tuple3<E1, E2, E3> {
   Tuple3(this.item1, this.item2, this.item3);
 }
 
-/// Class used to send pointers to variables instead of the variable directly so that the called function can update the variable value
+/// Class used to send pointers to variables instead of the variable directly so
+/// that the called function can update the variable value
 class PointerThisPlease<T> {
   /// Value to be pointed to that can be changed by the called method.
   T value;
 
-  /// Simple constructor that sets the value that can be updated by a called method.
+  /// Simple constructor that sets the value that can be updated by a called
+  /// method.
   PointerThisPlease(this.value);
 }
 
-/// Function mainly called internally to transform an [object] (either a Widget, a String or a Function returning a Widget or a String) to a Widget
-/// If a Function is passed as [object], it can have as arguments either nothing or:
+/// Function mainly called internally to transform an [object] (either a Widget,
+/// a String or a Function returning a Widget or a String) to a Widget
+/// If a Function is passed as [object], it can have as arguments either nothing
+/// or:
 /// * [parameter], [context], [updateParent]
 /// * [parameter], [context]
 /// * [parameter], [updateParent]
@@ -149,13 +153,17 @@ Widget? prepareWidget(dynamic object,
 }
 
 /// SearchChoices widget that allows the opening of a searchable dropdown.
-/// Use the [SearchChoices.single] factory if only one item needs to be selected.
-/// Use the [SearchChoices.multiple] factory if user must be able to select multiple items at once.
+/// Use the [SearchChoices.single] factory if only one item needs to be
+/// selected.
+/// Use the [SearchChoices.multiple] factory if user must be able to select
+/// multiple items at once.
 class SearchChoices<T> extends StatefulWidget {
-  /// [items] with __child__: [Widget] displayed ; __value__: any object with .toString() used to match search keyword.
+  /// [items] with __child__: [Widget] displayed ; __value__: any object with
+  /// .toString() used to match search keyword.
   final List<DropdownMenuItem<T>>? items;
 
-  /// [onChanged] [Function] with parameter: __value__ not returning executed after the selection is done.
+  /// [onChanged] [Function] with parameter: __value__ not returning executed
+  /// after the selection is done.
   final Function? onChanged;
 
   /// [value] value to be preselected.
@@ -164,31 +172,43 @@ class SearchChoices<T> extends StatefulWidget {
   /// [style] used for the hint if it is given is [String].
   final TextStyle? style;
 
-  /// [searchHint] [String]|[Widget]|[Function] with no parameter returning [String]|[Widget] displayed at the top of the search dialog box.
+  /// [searchHint] [String]|[Widget]|[Function] with no parameter returning
+  /// [String]|[Widget] displayed at the top of the search dialog box.
   final dynamic searchHint;
 
-  /// [hint] [String]|[Widget]|[Function] with no parameter returning [String]|[Widget] displayed before any value is selected or after the selection is cleared.
+  /// [hint] [String]|[Widget]|[Function] with no parameter returning
+  /// [String]|[Widget] displayed before any value is selected or after the
+  /// selection is cleared.
   final dynamic hint;
 
-  /// [disabledHint] [String]|[Widget]|[Function] with no parameter returning [String]|[Widget] displayed instead of hint when the widget is displayed.
+  /// [disabledHint] [String]|[Widget]|[Function] with no parameter returning
+  /// [String]|[Widget] displayed instead of hint when the widget is displayed.
   final dynamic disabledHint;
 
-  /// [icon] [String]|[Widget]|[Function] with parameter: __value__ returning [String]|[Widget] displayed next to the selected item or the hint if none.
+  /// [icon] [String]|[Widget]|[Function] with parameter: __value__ returning
+  /// [String]|[Widget] displayed next to the selected item or the hint if none.
   final dynamic icon;
 
-  /// [underline] [String]|[Widget]|[Function] with parameter: __value__ returning [String]|[Widget] displayed below the selected item or the hint if none.
+  /// [underline] [String]|[Widget]|[Function] with parameter: __value__
+  /// returning [String]|[Widget] displayed below the selected item or the hint
+  /// if none.
   final dynamic underline;
 
-  /// [doneButton] [String]|[Widget]|[Function] with parameter: __value__ returning [String]|[Widget] displayed at the top of the search dialog box.
+  /// [doneButton] [String]|[Widget]|[Function] with parameter: __value__
+  /// returning [String]|[Widget] displayed at the top of the search dialog box.
   final dynamic doneButton;
 
-  /// [label] [String]|[Widget]|[Function] with parameter: __value__ returning [String]|[Widget] displayed above the selected item or the hint if none.
+  /// [label] [String]|[Widget]|[Function] with parameter: __value__ returning
+  /// [String]|[Widget] displayed above the selected item or the hint if none.
   final dynamic label;
 
-  /// [closeButton] [String]|[Widget]|[Function] with parameter: __value__ returning [String]|[Widget] displayed at the bottom of the search dialog box.
+  /// [closeButton] [String]|[Widget]|[Function] with parameter: __value__
+  /// returning [String]|[Widget] displayed at the bottom of the search dialog
+  /// box.
   final dynamic closeButton;
 
-  /// [displayClearIcon] whether or not to display an icon to clear the selected value.
+  /// [displayClearIcon] whether or not to display an icon to clear the selected
+  /// value.
   final bool displayClearIcon;
 
   /// [clearIcon] [Icon] to be used for clearing the selected value.
@@ -209,19 +229,23 @@ class SearchChoices<T> extends StatefulWidget {
   /// [isCaseSensitiveSearch] only used when searchFn is not specified.
   final bool isCaseSensitiveSearch;
 
-  /// [searchFn] [Function] with parameters: __keyword__, __items__ returning [List<int>] as the list of indexes for the items to be displayed.
+  /// [searchFn] [Function] with parameters: __keyword__, __items__ returning
+  /// [List<int>] as the list of indexes for the items to be displayed.
   final Function? searchFn;
 
-  /// [onClear] [Function] with no parameter not returning executed when the clear icon is tapped.
+  /// [onClear] [Function] with no parameter not returning executed when the
+  /// clear icon is tapped.
   final Function? onClear;
 
-  /// [selectedValueWidgetFn] [Function] with parameter: __item__ returning [Widget] to be used to display the selected value.
+  /// [selectedValueWidgetFn] [Function] with parameter: __item__ returning
+  /// [Widget] to be used to display the selected value.
   final Function? selectedValueWidgetFn;
 
   /// [keyboardType] used for the search.
   final TextInputType keyboardType;
 
-  /// [validator] [Function] with parameter: __value__ returning [String] displayed below selected value when not valid and null when valid.
+  /// [validator] [Function] with parameter: __value__ returning [String]
+  /// displayed below selected value when not valid and null when valid.
   final Function? validator;
 
   /// [multipleSelection] indicates whether user can select one or more items.
@@ -230,40 +254,56 @@ class SearchChoices<T> extends StatefulWidget {
   /// [selectedItems] indexes of items to be preselected.
   final List<int> selectedItems;
 
-  /// [displayItem] [Function] with parameters: __item__, __selected__ returning [Widget] to be displayed in the search list.
+  /// [displayItem] [Function] with parameters: __item__, __selected__ returning
+  /// [Widget] to be displayed in the search list.
   final Function? displayItem;
 
-  /// [dialogBox] whether the search should be displayed as a dialog box or as a menu below the selected value if any.
+  /// [dialogBox] whether the search should be displayed as a dialog box or as a
+  /// menu below the selected value if any.
   final bool dialogBox;
 
-  /// [menuConstraints] [BoxConstraints] used to define the zone where to display the search menu. Example: BoxConstraints.tight(Size.fromHeight(250)) . Not to be used for dialogBox = true.
+  /// [menuConstraints] [BoxConstraints] used to define the zone where to
+  /// display the search menu. Example:
+  /// BoxConstraints.tight(Size.fromHeight(250)) .
+  /// Not to be used for dialogBox = true.
   final BoxConstraints? menuConstraints;
 
-  /// [readOnly] [bool] whether to let the user choose the value to select or just present the selected value if any.
+  /// [readOnly] [bool] whether to let the user choose the value to select or
+  /// just present the selected value if any.
   final bool readOnly;
 
-  /// [menuBackgroundColor] [Color] background color of the menu whether in dialog box or menu mode.
+  /// [menuBackgroundColor] [Color] background color of the menu whether in
+  /// dialog box or menu mode.
   final Color? menuBackgroundColor;
 
-  /// [rightToLeft] [bool] mirrors the widgets display for right to left languages defaulted to false.
+  /// [rightToLeft] [bool] mirrors the widgets display for right to left
+  /// languages defaulted to false.
   final bool rightToLeft;
 
-  /// [autofocus] [bool] automatically focuses on the search field bringing up the keyboard defaulted to true.
+  /// [autofocus] [bool] automatically focuses on the search field bringing up
+  /// the keyboard defaulted to true.
   final bool autofocus;
 
-  /// [selectedAggregateWidgetFn] [Function] with parameter: __list of widgets presenting selected values__ , returning [Widget] to be displayed to present the selected items.
+  /// [selectedAggregateWidgetFn] [Function] with parameter: __list of widgets
+  /// presenting selected values__ , returning [Widget] to be displayed to
+  /// present the selected items.
   final Function? selectedAggregateWidgetFn;
 
-  /// [padding] [double] sets the padding around the DropdownButton, defaulted to 10.0.
+  /// [padding] [double] sets the padding around the DropdownButton, defaulted
+  /// to 10.0.
   final double padding;
 
-  /// [setOpenDialog] [Function] sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
+  /// [setOpenDialog] [Function] sets the function to call to set the function
+  /// to call in order to open the dialog with the search terms string as a
+  /// parameter, defaulted to null.
   final Function? setOpenDialog;
 
-  /// [buildDropDownDialog] [Function] controls the layout of the dropdown dialog.
+  /// [buildDropDownDialog] [Function] controls the layout of the dropdown
+  /// dialog.
   /// If null, equivalent to:
   /// ```
-  /// (Widget titleBar, Widget searchBar, Widget list, Widget closeButton, BuildContext dropDownContext,){
+  /// (Widget titleBar, Widget searchBar, Widget list, Widget closeButton,
+  /// BuildContext dropDownContext,){
   /// return AnimatedContainer(
   ///      padding: MediaQuery.of(dropDownContext).viewInsets,
   ///      duration: const Duration(milliseconds: 300),
@@ -302,17 +342,26 @@ class SearchChoices<T> extends StatefulWidget {
   /// [searchInputDecoration] [InputDecoration] sets the search bar decoration.
   final InputDecoration? searchInputDecoration;
 
-  /// [itemsPerPage] [int] if set, organizes the search list per page with the given number of items displayed per page. Must give [currentPage].
+  /// [itemsPerPage] [int] if set, organizes the search list per page with the
+  /// given number of items displayed per page. Must give [currentPage].
   final int? itemsPerPage;
 
-  /// [currentPage] [PointerThisPlease<int>] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
+  /// [currentPage] [PointerThisPlease<int>] if [itemsPerPage] is set, holds the
+  /// page number for the search items to be displayed.
   final PointerThisPlease<int>? currentPage;
 
-  /// [customPaginationDisplay] Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage) if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
+  /// [customPaginationDisplay] Widget Function(Widget listWidget, int
+  /// totalFilteredItemsNb, Function updateSearchPage) if [itemsPerPage] is set,
+  /// customizes the display and the handling of the pagination on the search
+  /// list.
   final Widget Function(Widget listWidget, int totalFilteredItemsNb,
       Function updateSearchPage)? customPaginationDisplay;
 
-  /// [futureSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must return items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
+  /// [futureSearchFn] [Future<int> Function(String keyword,
+  /// List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to
+  /// search items from the network. Must return items (up to [itemsPerPage] if
+  /// set). Must return an [int] with the total number of results (allows the
+  /// handling of pagination).
   final Future<Tuple2<List<DropdownMenuItem>, int>> Function(
       String? keyword,
       String? orderBy,
@@ -320,68 +369,147 @@ class SearchChoices<T> extends StatefulWidget {
       List<Tuple2<String, String>>? filters,
       int? pageNb)? futureSearchFn;
 
-  /// [futureSearchOrderOptions] [Map<String, Map<String,dynamic>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  /// [futureSearchOrderOptions] [Map<String, Map<String,dynamic>>] when
+  /// [futureSearchFn] is set, can be used to display search order options
+  /// specified in the form
+  /// {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the
+  /// documentation example:
+  /// https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   final Map<String, Map<String, dynamic>>? futureSearchOrderOptions;
 
-  /// [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  /// [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when
+  /// [futureSearchFn] is set, can be used to display search filters specified
+  /// in the form
+  /// {"filter1Name":
+  /// {"icon":filter1IconWidget,
+  /// "values":["value1",{"value2":filter1Value2Widget}}}.
+  /// Please refer to the documentation example:
+  /// https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
   final Map<String, Map<String, Object>>? futureSearchFilterOptions;
 
-  /// [futureSelectedValues] [List<T>] contains the list of selected values in case of future search in multiple selection mode.
+  /// [futureSelectedValues] [List<T>] contains the list of selected values in
+  /// case of future search in multiple selection mode.
   final List<T>? futureSelectedValues;
 
-  /// [emptyListWidget] [String]|[Widget]|[Function] with parameter: __keyword__ returning [String]|[Widget] displayed instead of the list of items in case it is empty.
+  /// [emptyListWidget] [String]|[Widget]|[Function] with parameter: __keyword__
+  /// returning [String]|[Widget] displayed instead of the list of items in case
+  /// it is empty.
   final dynamic emptyListWidget;
 
-  /// [onTap] [Function] called when the user clicks on the Widget before it opens the dialog or the menu. Note that this is not called in case the Widget is disabled.
+  /// [onTap] [Function] called when the user clicks on the Widget before it
+  /// opens the dialog or the menu. Note that this is not called in case the
+  /// Widget is disabled.
   final Function? onTap;
 
-  /// Search choices Widget with a single choice that opens a dialog or a menu to let the user do the selection conveniently with a search.
+  /// Search choices Widget with a single choice that opens a dialog or a menu
+  /// to let the user do the selection conveniently with a search.
   ///
-  /// * [items] with __child__: [Widget] displayed ; __value__: any object with .toString() used to match search keyword.
-  /// * [onChanged] [Function] with parameter: __value__ not returning executed after the selection is done.
+  /// * [items] with __child__: [Widget] displayed ; __value__: any object with
+  /// .toString() used to match search keyword.
+  /// * [onChanged] [Function] with parameter: __value__ not returning executed
+  /// after the selection is done.
   /// * [value] value to be preselected.
   /// * [style] used for the hint if it is given is [String].
-  /// * [searchHint] [String]|[Widget]|[Function] with no parameter returning [String]|[Widget] displayed at the top of the search dialog box.
-  /// * [hint] [String]|[Widget]|[Function] with no parameter returning [String]|[Widget] displayed before any value is selected or after the selection is cleared.
-  /// * [disabledHint] [String]|[Widget]|[Function] with no parameter returning [String]|[Widget] displayed instead of hint when the widget is displayed.
-  /// * [icon] [String]|[Widget]|[Function] with parameter: __value__ returning [String]|[Widget] displayed next to the selected item or the hint if none.
-  /// * [underline] [String]|[Widget]|[Function] with parameter: __value__ returning [String]|[Widget] displayed below the selected item or the hint if none.
-  /// * [doneButton] [String]|[Widget]|[Function] with parameter: __value__ returning [String]|[Widget] displayed at the top of the search dialog box.
-  /// * [label] [String]|[Widget]|[Function] with parameter: __value__ returning [String]|[Widget] displayed above the selected item or the hint if none.
-  /// * [closeButton] [String]|[Widget]|[Function] with parameter: __value__ returning [String]|[Widget] displayed at the bottom of the search dialog box.
-  /// * [displayClearIcon] whether or not to display an icon to clear the selected value.
+  /// * [searchHint] [String]|[Widget]|[Function] with no parameter returning
+  /// [String]|[Widget] displayed at the top of the search dialog box.
+  /// * [hint] [String]|[Widget]|[Function] with no parameter returning
+  /// [String]|[Widget] displayed before any value is selected or after the
+  /// selection is cleared.
+  /// * [disabledHint] [String]|[Widget]|[Function] with no parameter returning
+  /// [String]|[Widget] displayed instead of hint when the widget is displayed.
+  /// * [icon] [String]|[Widget]|[Function] with parameter: __value__ returning
+  /// [String]|[Widget] displayed next to the selected item or the hint if none.
+  /// * [underline] [String]|[Widget]|[Function] with parameter: __value__
+  /// returning [String]|[Widget] displayed below the selected item or the hint
+  /// if none.
+  /// * [doneButton] [String]|[Widget]|[Function] with parameter: __value__
+  /// returning [String]|[Widget] displayed at the top of the search dialog box.
+  /// * [label] [String]|[Widget]|[Function] with parameter: __value__ returning
+  /// [String]|[Widget] displayed above the selected item or the hint if none.
+  /// * [closeButton] [String]|[Widget]|[Function] with parameter: __value__
+  /// returning [String]|[Widget] displayed at the bottom of the search dialog
+  /// box.
+  /// * [displayClearIcon] whether or not to display an icon to clear the
+  /// selected value.
   /// * [clearIcon] [Icon] to be used for clearing the selected value.
   /// * [iconEnabledColor] [Color] to be used for enabled icons.
   /// * [iconDisabledColor] [Color] to be used for disabled icons.
-  /// * [iconSize] for the icons next to the selected value (icon and clearIcon).
+  /// * [iconSize] for the icons next to the selected value
+  /// (icon and clearIcon).
   /// * [isExpanded] can be necessary to avoid pixel overflows (zebra symptom).
   /// * [isCaseSensitiveSearch] only used when searchFn is not specified.
-  /// * [searchFn] [Function] with parameters: __keyword__, __items__ returning [List<int>] as the list of indexes for the items to be displayed.
-  /// * [onClear] [Function] with no parameter not returning executed when the clear icon is tapped.
-  /// * [selectedValueWidgetFn] [Function] with parameter: __item__ returning [Widget] to be used to display the selected value.
+  /// * [searchFn] [Function] with parameters: __keyword__, __items__ returning
+  /// [List<int>] as the list of indexes for the items to be displayed.
+  /// * [onClear] [Function] with no parameter not returning executed when the
+  /// clear icon is tapped.
+  /// * [selectedValueWidgetFn] [Function] with parameter: __item__ returning
+  /// [Widget] to be used to display the selected value.
   /// * [keyboardType] used for the search.
-  /// * [validator] [Function] with parameter: __value__ returning [String] displayed below selected value when not valid and null when valid.
-  /// * [assertUniqueValue] whether to run a consistency check of the list of items.
-  /// * [displayItem] [Function] with parameters: __item__, __selected__ returning [Widget] to be displayed in the search list.
-  /// * [dialogBox] whether the search should be displayed as a dialog box or as a menu below the selected value if any.
-  /// * [menuConstraints] [BoxConstraints] used to define the zone where to display the search menu. Example: BoxConstraints.tight(Size.fromHeight(250)) . Not to be used for dialogBox = true.
-  /// * [readOnly] [bool] whether to let the user choose the value to select or just present the selected value if any.
-  /// * [menuBackgroundColor] [Color] background color of the menu whether in dialog box or menu mode.
-  /// * [rightToLeft] [bool] mirrors the widgets display for right to left languages defaulted to false.
-  /// * [autofocus] [bool] automatically focuses on the search field bringing up the keyboard defaulted to true.
-  /// * [selectedAggregateWidgetFn] [Function] with parameter: __list of widgets presenting selected values__ , returning [Widget] to be displayed to present the selected items.
-  /// * [padding] [double] sets the padding around the DropdownButton, defaulted to 10.0.
-  /// * [setOpenDialog] [Function] sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
-  /// * [buildDropDownDialog] [Function] controls the layout of the dropdown dialog.
-  /// * [searchInputDecoration] [InputDecoration] sets the search bar decoration.
-  /// * [itemsPerPage] [int] if set, organizes the search list per page with the given number of items displayed per page.
-  /// * [currentPage] [PointerThisPlease<int>] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
-  /// * [customPaginationDisplay] Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage) if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
-  /// * [futureSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must return items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
-  /// * [futureSearchOrderOptions] [Map<String, Map<String,dynamic>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
-  /// * [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
-  /// * [emptyListWidget] [String]|[Widget]|[Function] with parameter: __keyword__ returning [String]|[Widget] displayed instead of the list of items in case it is empty.
-  /// * [onTap] [Function] called when the user clicks on the Widget before it opens the dialog or the menu. Note that this is not called in case the Widget is disabled.
+  /// * [validator] [Function] with parameter: __value__ returning [String]
+  /// displayed below selected value when not valid and null when valid.
+  /// * [assertUniqueValue] whether to run a consistency check of the list of
+  /// items.
+  /// * [displayItem] [Function] with parameters: __item__, __selected__
+  /// returning [Widget] to be displayed in the search list.
+  /// * [dialogBox] whether the search should be displayed as a dialog box or as
+  /// a menu below the selected value if any.
+  /// * [menuConstraints] [BoxConstraints] used to define the zone where to
+  /// display the search menu. Example:
+  /// BoxConstraints.tight(Size.fromHeight(250)) .
+  /// Not to be used for dialogBox = true.
+  /// * [readOnly] [bool] whether to let the user choose the value to select or
+  /// just present the selected value if any.
+  /// * [menuBackgroundColor] [Color] background color of the menu whether in
+  /// dialog box or menu mode.
+  /// * [rightToLeft] [bool] mirrors the widgets display for right to left
+  /// languages defaulted to false.
+  /// * [autofocus] [bool] automatically focuses on the search field bringing up
+  /// the keyboard defaulted to true.
+  /// * [selectedAggregateWidgetFn] [Function] with parameter: __list of widgets
+  /// presenting selected values__ , returning [Widget] to be displayed to
+  /// present the selected items.
+  /// * [padding] [double] sets the padding around the DropdownButton, defaulted
+  /// to 10.0.
+  /// * [setOpenDialog] [Function] sets the function to call to set the function
+  /// to call in order to open the dialog with the search terms string as a
+  /// parameter, defaulted to null.
+  /// * [buildDropDownDialog] [Function] controls the layout of the dropdown
+  /// dialog.
+  /// * [searchInputDecoration] [InputDecoration] sets the search bar
+  /// decoration.
+  /// * [itemsPerPage] [int] if set, organizes the search list per page with the
+  /// given number of items displayed per page.
+  /// * [currentPage] [PointerThisPlease<int>] if [itemsPerPage] is set, holds
+  /// the page number for the search items to be displayed.
+  /// * [customPaginationDisplay] Widget Function(Widget listWidget,
+  /// int totalFilteredItemsNb, Function updateSearchPage)
+  /// if [itemsPerPage] is set, customizes the display and the handling of the
+  /// pagination on the search list.
+  /// * [futureSearchFn] [Future<int> Function(String keyword,
+  /// List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to
+  /// search items from the network. Must return items(up to [itemsPerPage] if
+  /// set). Must return an [int] with the total number of results (allows the
+  /// handling of pagination).
+  /// * [futureSearchOrderOptions] [Map<String, Map<String,dynamic>>] when
+  /// [futureSearchFn] is set, can be used to display search order options
+  /// specified in the form
+  /// {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the
+  /// documentation example:
+  /// https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  /// * [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when
+  /// [futureSearchFn] is set, can be used to display search filters specified
+  /// in the form
+  /// {"filter1Name":
+  /// {"icon":filter1IconWidget,
+  /// "values":["value1",{"value2":filter1Value2Widget}}}.
+  /// Please refer to the documentation example:
+  /// https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  /// * [emptyListWidget] [String]|[Widget]|[Function] with parameter:
+  /// __keyword__ returning [String]|[Widget] displayed instead of the list of
+  /// items in case it is empty.
+  /// * [onTap] [Function] called when the user clicks on the Widget before it
+  /// opens the dialog or the menu. Note that this is not called in case the
+  /// Widget is disabled.
   factory SearchChoices.single({
     Key? key,
     List<DropdownMenuItem<T>>? items,
@@ -495,53 +623,119 @@ class SearchChoices<T> extends StatefulWidget {
     ));
   }
 
-  /// Search choices Widget with a multiple choice that opens a dialog or a menu to let the user do the selection conveniently with a search.
+  /// Search choices Widget with a multiple choice that opens a dialog or a menu
+  /// to let the user do the selection conveniently with a search.
   ///
-  /// * [items] with __child__: [Widget] displayed ; __value__: any object with .toString() used to match search keyword.
-  /// * [onChanged] [Function] with parameter: __selectedItems__ not returning executed after the selection is done.
+  /// * [items] with __child__: [Widget] displayed ; __value__: any object with
+  /// .toString() used to match search keyword.
+  /// * [onChanged] [Function] with parameter: __selectedItems__ not returning
+  /// executed after the selection is done.
   /// * [selectedItems] indexes of items to be preselected.
   /// * [style] used for the hint if it is given is [String].
-  /// * [searchHint] [String]|[Widget]|[Function] with no parameter returning [String]|[Widget] displayed at the top of the search dialog box.
-  /// * [hint] [String]|[Widget]|[Function] with no parameter returning [String]|[Widget] displayed before any value is selected or after the selection is cleared.
-  /// * [disabledHint] [String]|[Widget]|[Function] with no parameter returning [String]|[Widget] displayed instead of hint when the widget is displayed.
-  /// * [icon] [String]|[Widget]|[Function] with parameter: __selectedItems__ returning [String]|[Widget] displayed next to the selected items or the hint if none.
-  /// * [underline] [String]|[Widget]|[Function] with parameter: __selectedItems__ returning [String]|[Widget] displayed below the selected items or the hint if none.
-  /// * [doneButton] [String]|[Widget]|[Function] with parameter: __selectedItems__ returning [String]|[Widget] displayed at the top of the search dialog box. Cannot be null in multiple selection mode.
-  /// * [label] [String]|[Widget]|[Function] with parameter: __selectedItems__ returning [String]|[Widget] displayed above the selected items or the hint if none.
-  /// * [closeButton] [String]|[Widget]|[Function] with parameter: __selectedItems__ returning [String]|[Widget] displayed at the bottom of the search dialog box.
-  /// * [displayClearIcon] whether or not to display an icon to clear the selected values.
+  /// * [searchHint] [String]|[Widget]|[Function] with no parameter returning
+  /// [String]|[Widget] displayed at the top of the search dialog box.
+  /// * [hint] [String]|[Widget]|[Function] with no parameter returning
+  /// [String]|[Widget] displayed before any value is selected or after the
+  /// selection is cleared.
+  /// * [disabledHint] [String]|[Widget]|[Function] with no parameter returning
+  /// [String]|[Widget] displayed instead of hint when the widget is displayed.
+  /// * [icon] [String]|[Widget]|[Function] with parameter: __selectedItems__
+  /// returning [String]|[Widget] displayed next to the selected items or the
+  /// hint if none.
+  /// * [underline] [String]|[Widget]|[Function] with parameter:
+  /// __selectedItems__ returning [String]|[Widget] displayed below the selected
+  /// items or the hint if none.
+  /// * [doneButton] [String]|[Widget]|[Function] with parameter:
+  /// __selectedItems__ returning [String]|[Widget] displayed at the top of the
+  /// search dialog box. Cannot be null in multiple selection mode.
+  /// * [label] [String]|[Widget]|[Function] with parameter: __selectedItems__
+  /// returning [String]|[Widget] displayed above the selected items or the hint
+  /// if none.
+  /// * [closeButton] [String]|[Widget]|[Function] with parameter:
+  /// __selectedItems__ returning [String]|[Widget] displayed at the bottom of
+  /// the search dialog box.
+  /// * [displayClearIcon] whether or not to display an icon to clear the
+  /// selected values.
   /// * [clearIcon] [Icon] to be used for clearing the selected values.
   /// * [iconEnabledColor] [Color] to be used for enabled icons.
   /// * [iconDisabledColor] [Color] to be used for disabled icons.
-  /// * [iconSize] for the icons next to the selected values (icon and clearIcon).
+  /// * [iconSize] for the icons next to the selected values (icon and
+  /// clearIcon).
   /// * [isExpanded] can be necessary to avoid pixel overflows (zebra symptom).
   /// * [isCaseSensitiveSearch] only used when searchFn is not specified.
-  /// * [searchFn] [Function] with parameters: __keyword__, __items__ returning [List<int>] as the list of indexes for the items to be displayed.
-  /// * [onClear] [Function] with no parameter not returning executed when the clear icon is tapped.
-  /// * [selectedValueWidgetFn] [Function] with parameter: __item__ returning [Widget] to be used to display the selected values.
+  /// * [searchFn] [Function] with parameters: __keyword__, __items__ returning
+  /// [List<int>] as the list of indexes for the items to be displayed.
+  /// * [onClear] [Function] with no parameter not returning executed when the
+  /// clear icon is tapped.
+  /// * [selectedValueWidgetFn] [Function] with parameter: __item__ returning
+  /// [Widget] to be used to display the selected values.
   /// * [keyboardType] used for the search.
-  /// * [validator] [Function] with parameter: __selectedItems__ returning [String] displayed below selected values when not valid and null when valid.
-  /// * [displayItem] [Function] with parameters: __item__, __selected__ returning [Widget] to be displayed in the search list.
-  /// * [dialogBox] whether the search should be displayed as a dialog box or as a menu below the selected values if any.
-  /// * [menuConstraints] [BoxConstraints] used to define the zone where to display the search menu. Example: BoxConstraints.tight(Size.fromHeight(250)) . Not to be used for dialogBox = true.
-  /// * [readOnly] [bool] whether to let the user choose the value to select or just present the selected value if any.
-  /// * [menuBackgroundColor] [Color] background color of the menu whether in dialog box or menu mode.
-  /// * [rightToLeft] [bool] mirrors the widgets display for right to left languages defaulted to false.
-  /// * [autofocus] [bool] automatically focuses on the search field bringing up the keyboard defaulted to true.
-  /// * [selectedAggregateWidgetFn] [Function] with parameter: __list of widgets presenting selected values__ , returning [Widget] to be displayed to present the selected items.
-  /// * [padding] [double] sets the padding around the DropdownButton, defaulted to 10.0.
-  /// * [setOpenDialog] [Function] sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
-  /// * [buildDropDownDialog] [Function] controls the layout of the dropdown dialog.
-  /// * [searchInputDecoration] [InputDecoration] sets the search bar decoration.
-  /// * [itemsPerPage] [int] if set, organizes the search list per page with the given number of items displayed per page.
-  /// * [currentPage] [int] if [itemsPerPage] is set, holds the page number for the search items to be displayed.
-  /// * [customPaginationDisplay] Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage) if [itemsPerPage] is set, customizes the display and the handling of the pagination on the search list.
-  /// * [futureSearchFn] [Future<int> Function(String keyword, List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to search items from the network. Must return items (up to [itemsPerPage] if set). Must return an [int] with the total number of results (allows the handling of pagination).
-  /// * [futureSearchOrderOptions] [Map<String, Map<String,dynamic>>] when [futureSearchFn] is set, can be used to display search order options specified in the form {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
-  /// * [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when [futureSearchFn] is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
-  /// * [futureSelectedValues] [List<T>] contains the list of selected values in case of future search in multiple selection mode.
-  /// * [emptyListWidget] [String]|[Widget]|[Function] with parameter: __keyword__ returning [String]|[Widget] displayed instead of the list of items in case it is empty.
-  /// * [onTap] [Function] called when the user clicks on the Widget before it opens the dialog or the menu. Note that this is not called in case the Widget is disabled.
+  /// * [validator] [Function] with parameter: __selectedItems__ returning
+  /// [String] displayed below selected values when not valid and null when
+  /// valid.
+  /// * [displayItem] [Function] with parameters: __item__, __selected__
+  /// returning [Widget] to be displayed in the search list.
+  /// * [dialogBox] whether the search should be displayed as a dialog box or as
+  /// a menu below the selected values if any.
+  /// * [menuConstraints] [BoxConstraints] used to define the zone where to
+  /// display the search menu. Example:
+  /// BoxConstraints.tight(Size.fromHeight(250)) . Not to be used for
+  /// dialogBox = true.
+  /// * [readOnly] [bool] whether to let the user choose the value to select or
+  /// just present the selected value if any.
+  /// * [menuBackgroundColor] [Color] background color of the menu whether in
+  /// dialog box or menu mode.
+  /// * [rightToLeft] [bool] mirrors the widgets display for right to left
+  /// languages defaulted to false.
+  /// * [autofocus] [bool] automatically focuses on the search field bringing up
+  /// the keyboard defaulted to true.
+  /// * [selectedAggregateWidgetFn] [Function] with parameter: __list of widgets
+  /// presenting selected values__ , returning [Widget] to be displayed to
+  /// present the selected items.
+  /// * [padding] [double] sets the padding around the DropdownButton, defaulted
+  /// to 10.0.
+  /// * [setOpenDialog] [Function] sets the function to call to set the function
+  /// to call in order to open the dialog with the search terms string as a
+  /// parameter, defaulted to null.
+  /// * [buildDropDownDialog] [Function] controls the layout of the dropdown
+  /// dialog.
+  /// * [searchInputDecoration] [InputDecoration] sets the search bar
+  /// decoration.
+  /// * [itemsPerPage] [int] if set, organizes the search list per page with the
+  /// given number of items displayed per page.
+  /// * [currentPage] [int] if [itemsPerPage] is set, holds the page number for
+  /// the search items to be displayed.
+  /// * [customPaginationDisplay] Widget Function(Widget listWidget,
+  /// int totalFilteredItemsNb, Function updateSearchPage) if [itemsPerPage] is
+  /// set, customizes the display and the handling of the pagination on the
+  /// search list.
+  /// * [futureSearchFn] [Future<int> Function(String keyword,
+  /// List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to
+  /// search items from the network. Must return items (up to [itemsPerPage] if
+  /// set). Must return an [int] with the total number of results (allows the
+  /// handling of pagination).
+  /// * [futureSearchOrderOptions] [Map<String, Map<String,dynamic>>] when
+  /// [futureSearchFn] is set, can be used to display search order options
+  /// specified in the form
+  /// {"order1Name":{"icon":order1IconWidget,"asc":true},}. Please refer to the
+  /// documentation example:
+  /// https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  /// * [futureSearchFilterOptions] [Map<String, Map<String, Object>>] when
+  /// [futureSearchFn] is set, can be used to display search filters specified
+  /// in the form
+  /// {"filter1Name":
+  /// {"icon":filter1IconWidget,
+  /// "values":["value1",{"value2":filter1Value2Widget}}}.
+  /// Please refer to the documentation example:
+  /// https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
+  /// * [futureSelectedValues] [List<T>] contains the list of selected values in
+  /// case of future search in multiple selection mode.
+  /// * [emptyListWidget] [String]|[Widget]|[Function] with parameter:
+  /// __keyword__ returning [String]|[Widget] displayed instead of the list of
+  /// items in case it is empty.
+  /// * [onTap] [Function] called when the user clicks on the Widget before it
+  /// opens the dialog or the menu. Note that this is not called in case the
+  /// Widget is disabled.
   factory SearchChoices.multiple({
     Key? key,
     List<DropdownMenuItem<T>>? items,
@@ -709,10 +903,14 @@ class SearchChoices<T> extends StatefulWidget {
         assert(menuConstraints == null || !dialogBox),
         assert(itemsPerPage == null || currentPage != null,
             "currentPage must be given if itemsPerPage is given"),
-        assert(futureSearchOrderOptions == null || futureSearchFn != null,
-            "futureSearchOrderOptions is of no use if futureSearchFn is not set"),
-        assert(futureSearchFilterOptions == null || futureSearchFn != null,
-            "futureSearchFilterOptions is of no use if futureSearchFn is not set"),
+        assert(
+            futureSearchOrderOptions == null || futureSearchFn != null,
+            "futureSearchOrderOptions is of no use if futureSearchFn is not " +
+                "set"),
+        assert(
+            futureSearchFilterOptions == null || futureSearchFn != null,
+            "futureSearchFilterOptions is of no use if futureSearchFn is not " +
+                "set"),
         assert(futureSearchFn == null || searchFn == null,
             "futureSearchFn and searchFn cannot work together"),
         assert((futureSearchFn == null) != (items == null),
@@ -722,7 +920,12 @@ class SearchChoices<T> extends StatefulWidget {
                 (multipleSelection
                     ? (futureSelectedValues != null && value == null)
                     : (true && futureSelectedValues == null)),
-            "${multipleSelection ? "futureSelectedValues" : "value"} must be set if futureSearchFn is set in ${multipleSelection ? "multiple" : "single"} selection mode while ${multipleSelection ? "value" : "futureSelectedValues"} must not be set"),
+            "${multipleSelection ? "futureSelectedValues" : "value"} must be " +
+                "set if futureSearchFn is set in " +
+                "${multipleSelection ? "multiple" : "single"} selection mode " +
+                "while " +
+                "${multipleSelection ? "value" : "futureSelectedValues"} " +
+                "must not be set"),
         super(key: key);
 
   @override
@@ -1216,7 +1419,8 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
   }
 }
 
-/// Class mainly used internally to display the available choices. Cannot be made private because of automated testing.
+/// Class mainly used internally to display the available choices. Cannot be
+/// made private because of automated testing.
 class DropdownDialog<T> extends StatefulWidget {
   /// See SearchChoices class.
   final List<DropdownMenuItem<T>>? items;
@@ -1260,13 +1464,15 @@ class DropdownDialog<T> extends StatefulWidget {
   /// See SearchChoices class.
   final BoxConstraints? menuConstraints;
 
-  /// Function to be called whenever the dialogBox is popped or the menu gets closed.
+  /// Function to be called whenever the dialogBox is popped or the menu gets
+  /// closed.
   final Function? callOnPop;
 
   /// See SearchChoices class.
   final Color? menuBackgroundColor;
 
-  /// Function called to update the parent screen when necessary. Calls setState.
+  /// Function called to update the parent screen when necessary. Calls
+  /// setState.
   final Function? updateParent;
 
   /// See SearchChoices class.
@@ -1284,7 +1490,9 @@ class DropdownDialog<T> extends StatefulWidget {
   /// See SearchChoices class.
   final bool autofocus;
 
-  /// Used for the setOpenDialog. This allows the dialogBox to be opened with search terms preset from an external button as shown in example `Single dialog open and set search terms`.
+  /// Used for the setOpenDialog. This allows the dialogBox to be opened with
+  /// search terms preset from an external button as shown in example `Single
+  /// dialog open and set search terms`.
   final String initialSearchTerms;
 
   /// See SearchChoices class.
@@ -1711,8 +1919,10 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   void _updateShownIndexes(
     String? keyword,
   ) {
-    assert(!futureSearch,
-        "cannot update shown indexes while doing a network search as all returned are displayed (potentially with pagination)");
+    assert(
+        !futureSearch,
+        "cannot update shown indexes while doing a network search as all"
+        "returned are displayed (potentially with pagination)");
     if (keyword != null) {
       latestKeyword = keyword;
     }
@@ -1890,7 +2100,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
           );
   }
 
-  /// Basically splits the search between the searchFn and the futureSearchFn cases.
+  /// Basically splits the search between the searchFn and the futureSearchFn
+  /// cases.
   void searchForKeyword(String? keyword) {
     if (futureSearch) {
       if (keyword != null) {
@@ -2105,7 +2316,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     }
   }
 
-  /// Returns whether an item is selected. Relies on index in case of non future list of items.
+  /// Returns whether an item is selected. Relies on index in case of non future
+  /// list of items.
   bool isItemSelected(int index, T value) {
     if (futureSearch) {
       if (value is Map) {
@@ -2117,7 +2329,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     return (widget.selectedItems?.contains(index) ?? false);
   }
 
-  /// Returns the Widget as displayed in the list of items from the selected or non selected DropdownMenuItem.
+  /// Returns the Widget as displayed in the list of items from the selected or
+  /// non selected DropdownMenuItem.
   Widget displayItem(
     DropdownMenuItem item,
     bool isItemSelected,
@@ -2153,7 +2366,9 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
         : item;
   }
 
-  /// Builds the list display from the given list of [DropdownMenuItem] along with the [bool] indicating whether the item is selected or not and the [int] as the index in the [selectedItems] list.
+  /// Builds the list display from the given list of [DropdownMenuItem] along
+  /// with the [bool] indicating whether the item is selected or not and the
+  /// [int] as the index in the [selectedItems] list.
   Widget listDisplay(
       List<Tuple3<int, DropdownMenuItem<dynamic>, bool>> itemsToDisplay) {
     return Expanded(
@@ -2193,13 +2408,16 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     return (widget.currentPage!.value == 1);
   }
 
-  /// Is the current page the last one? The [totalNbItemsToPage] argument is the total number of items to be displayed once the filters are applied on all the pages.
+  /// Is the current page the last one? The [totalNbItemsToPage] argument is the
+  /// total number of items to be displayed once the filters are applied on all
+  /// the pages.
   bool isLastPage(int totalNbItemsToPage) {
     return (widget.currentPage!.value >=
         (totalNbItemsToPage / widget.itemsPerPage!).ceil());
   }
 
-  /// Provides a button to go to previous page taking into account the RTL. The button updates the search page through the given [updateSearchPage].
+  /// Provides a button to go to previous page taking into account the RTL. The
+  /// button updates the search page through the given [updateSearchPage].
   Widget previousPageButton(Function updateSearchPage) {
     return (IconButton(
       icon: Icon(
@@ -2215,7 +2433,10 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     ));
   }
 
-  /// Provides a button to go to next page taking into account the RTL. The button updates the search page through the given [updateSearchPage]. The [totalNbItemsToPage] argument is the total number of items to be displayed once the filters are applied on all the pages.
+  /// Provides a button to go to next page taking into account the RTL. The
+  /// button updates the search page through the given [updateSearchPage]. The
+  /// [totalNbItemsToPage] argument is the total number of items to be displayed
+  /// once the filters are applied on all the pages.
   Widget nextPageButton(Function updateSearchPage, int totalNbItemsToPage) {
     return (IconButton(
       icon: Icon(
@@ -2231,7 +2452,12 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     ));
   }
 
-  /// Returns the [Widget] with the given [scrollBar] paginated either through the widget.customPaginationDisplay function or through the standard pagination function which takes into account RTL. The button updates the search page through the given [updateSearchPage]. The [totalNbItemsToPage] argument is the total number of items to be displayed once the filters are applied on all the pages.
+  /// Returns the [Widget] with the given [scrollBar] paginated either through
+  /// the widget.customPaginationDisplay function or through the standard
+  /// pagination function which takes into account RTL. The button updates the
+  /// search page through the given [updateSearchPage]. The [totalNbItemsToPage]
+  /// argument is the total number of items to be displayed once the filters are
+  /// applied on all the pages.
   Widget paginatedResults(
       Widget scrollBar, Function updateSearchPage, int totalNbItemsToPage) {
     if (widget.customPaginationDisplay != null) {
@@ -2248,8 +2474,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
         widget.rightToLeft
             ? nextPageButton(updateSearchPage, totalNbItemsToPage)
             : previousPageButton(updateSearchPage),
-        Text(
-            "${widget.currentPage!.value}/${(totalNbItemsToPage / widget.itemsPerPage!).ceil()}"),
+        Text("${widget.currentPage!.value}" +
+            "/${(totalNbItemsToPage / widget.itemsPerPage!).ceil()}"),
         widget.rightToLeft
             ? previousPageButton(updateSearchPage)
             : nextPageButton(updateSearchPage, totalNbItemsToPage),
@@ -2285,7 +2511,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     return (SizedBox.shrink());
   }
 
-  /// Displays the list of items filtered based on the search terms with pagination.
+  /// Displays the list of items filtered based on the search terms with
+  /// pagination.
   Widget listWithPagination() {
     List<int> pagedShownIndexes = [];
     bool displayPages = true;
