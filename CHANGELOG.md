@@ -1,3 +1,8 @@
+## 2.0.11
+
+* Trying to comply with the pub.dev formatting.
+* Fixed some gradle problems: https://jeroenmols.com/blog/2021/02/04/migratingjcenter/
+
 ## 2.0.10
 
 * Trying to comply with the pub.dev formatting.
