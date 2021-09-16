@@ -1,3 +1,7 @@
+## 2.0.10
+
+* Trying to comply with the pub.dev formatting.
+
 ## 2.0.9
 
 * Trying to comply with the pub.dev formatting unmentioned requirements.
