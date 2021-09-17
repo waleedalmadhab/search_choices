@@ -204,6 +204,66 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     Map<String, Widget> widgets;
     widgets = {
+      "lcuis50": SearchChoices.single(
+        underline: Container(
+          // color: ThemeManager.current.theme.whiteColor,
+          color: Colors.white,
+        ),
+        padding: 12.0,
+        searchInputDecoration: InputDecoration(
+          prefixIcon: Icon(
+            Icons.search,
+            // color: ThemeManager.current.theme.mainColor,
+            color: Colors.black,
+          ),
+          border: InputBorder.none,
+          hintText: ' ... ',
+        ),
+        // items: parts['categories']!.map((snap) {
+        //   Category c = Category.fromMap(snap);
+        //   return DropdownMenuItem(
+        //     value: c.title,
+        //     child: Text(
+        //       c.title,
+        //       style: c.level == "1" || c.level == "2" ? context.bodyText1Bold : context.bodyText1,
+        //       overflow: TextOverflow.ellipsis,
+        //       maxLines: 1,
+        //     ),
+        //   );
+        // }).toList(),
+        items: items,
+        // value: _selectedCategoryTitle,
+        value: selectedValueSingleDialog,
+        // style: context.bodyText1,
+        style: TextStyle(),
+        hint: "Оберіть категорію",
+        onChanged: (value) => setState(() {
+          selectedValueSingleDialog = value;
+          // _selectedCategory = categories.where((c) => c.title == value);
+        }),
+        onClear: () => setState(() => selectedValueSingleDialog = ''),
+        closeButton: Padding(
+          padding: const EdgeInsets.only(top: 12.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  child: Text(
+                    'Закрити',
+                    // style: context.bodyText1WhiteColor,
+                    style: TextStyle(),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        isExpanded: true,
+      ),
       "Single dialog": SearchChoices.single(
         items: items,
         value: selectedValueSingleDialog,

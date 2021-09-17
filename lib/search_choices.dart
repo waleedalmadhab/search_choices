@@ -1688,26 +1688,26 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
               })
               .values
               .toList()
-                ..insert(
-                    0,
-                    PopupMenuItem(
-                      child: SizedBox(
-                        height: 30,
-                        child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              setState(() {
-                                widget.currentPage?.value = 1;
-                                orderBy = null;
-                                orderAsc = null;
-                              });
-                            },
-                            child: Icon(
-                              Icons.clear,
-                              size: 17,
-                            )),
-                      ),
-                    )));
+            ..insert(
+                0,
+                PopupMenuItem(
+                  child: SizedBox(
+                    height: 30,
+                    child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          setState(() {
+                            widget.currentPage?.value = 1;
+                            orderBy = null;
+                            orderAsc = null;
+                          });
+                        },
+                        child: Icon(
+                          Icons.clear,
+                          size: 17,
+                        )),
+                  ),
+                )));
     };
 
     return SizedBox(
@@ -1862,45 +1862,45 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                               )),
                             ));
                           }).toList()
-                                ..insert(
-                                  0,
-                                  PopupMenuItem(
-                                    child: SizedBox(
-                                      height: 30,
-                                      child: prepareWidget(
-                                            v["icon"] ?? k,
-                                            parameter: filters,
-                                            updateParent: widget.updateParent,
-                                            context: context,
-                                          ) ??
-                                          Text(k),
-                                    ),
-                                  ),
+                            ..insert(
+                              0,
+                              PopupMenuItem(
+                                child: SizedBox(
+                                  height: 30,
+                                  child: prepareWidget(
+                                        v["icon"] ?? k,
+                                        parameter: filters,
+                                        updateParent: widget.updateParent,
+                                        context: context,
+                                      ) ??
+                                      Text(k),
                                 ),
+                              ),
+                            ),
                         ))));
                   })
                   .values
                   .toList()
-                    ..insert(
-                        0,
-                        PopupMenuItem(
-                          child: SizedBox(
-                            height: 30,
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  widget.currentPage?.value = 1;
-                                  filters?.clear();
-                                  Navigator.pop(context);
-                                  if (!widget.dialogBox) {
-                                    setState(() {});
-                                  }
-                                },
-                                child: Icon(
-                                  Icons.clear,
-                                  size: 17,
-                                )),
-                          ),
-                        )));
+                ..insert(
+                    0,
+                    PopupMenuItem(
+                      child: SizedBox(
+                        height: 30,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              widget.currentPage?.value = 1;
+                              filters?.clear();
+                              Navigator.pop(context);
+                              if (!widget.dialogBox) {
+                                setState(() {});
+                              }
+                            },
+                            child: Icon(
+                              Icons.clear,
+                              size: 17,
+                            )),
+                      ),
+                    )));
         },
       )),
     );
