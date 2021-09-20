@@ -1,3 +1,7 @@
+## 2.0.13
+
+* Removed issue example from example project.
+
 ## 2.0.12
 
 * Trying to comply with the pub.dev formatting.
