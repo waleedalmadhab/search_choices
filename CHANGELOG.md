@@ -1,3 +1,7 @@
+## 2.0.14
+
+* Use of context for onChange was potentially breaking situations where Widget was already disposed. Thanks @bondjpf https://github.com/lcuis/search_choices/issues/51
+
 ## 2.0.13
 
 * Removed issue example from example project.

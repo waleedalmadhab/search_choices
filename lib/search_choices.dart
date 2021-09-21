@@ -1083,7 +1083,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
     }));
   }
 
-  sendSelection(dynamic selection, BuildContext onChangeContext) {
+  sendSelection(dynamic selection, [BuildContext? onChangeContext]) {
     try {
       widget.onChanged!(selection);
     } catch (e) {
@@ -1193,7 +1193,11 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
             return (menuWidget(searchTerms: searchTerms));
           });
       if (widget.onChanged != null && selectedResult != null) {
-        sendSelection(selectedResult, context);
+        try {
+          sendSelection(selectedResult, context);
+        } catch (e) {
+          sendSelection(selectedResult);
+        }
       }
     } else {
       displayMenu.value = true;
