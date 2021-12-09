@@ -52,6 +52,7 @@ See code below.
 | [Single dialog future<br>custom empty list](#Single-dialog-future-custom-empty-list) | ![Single dialog future custom empty list](https://searchchoices.jod.li/Single%20dialog%20future%20custom%20empty%20list.gif) |
 | [Single dialog onTap](#Single-dialog-onTap) | ![Single dialog onTap](https://searchchoices.jod.li/Single%20dialog%20onTap.gif) |
 | [Multi dialog paged<br>future](#Multi-dialog-paged-future) | ![Multi dialog paged future](https://searchchoices.jod.li/Multi%20dialog%20paged%20future.gif) |
+| [Single dialog future<br>custom error button](#Single-dialog-future-custom-error-button) | ![Single dialog future custom error button](https://searchchoices.jod.li/Single%20dialog%20future%20custom%20error%20button.gif) |
 
 ### Demonstration
 
@@ -145,6 +146,7 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
     Map<String, Map<String, Object>>? futureSearchFilterOptions,
     dynamic emptyListWidget,
     Function? onTap,
+    Function? futureSearchRetryButton,
   })
 ```
 
@@ -193,6 +195,7 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
 * futureSearchFilterOptions Map when futureSearchFn is set, can be used to display search filters specified in the form {"filter1Name":{"icon":filter1IconWidget,"values":["value1",{"value2":filter1Value2Widget}}}. Please refer to the documentation example: https://github.com/lcuis/search_choices/blob/master/example/lib/main.dart.
 * emptyListWidget String|Widget|Function with parameter: keyword returning String|Widget displayed instead of the list of items in case it is empty.
 * onTap Function called when the user clicks on the Widget before it opens the dialog or the menu. Note that this is not called in case the Widget is disabled.
+* futureSearchRetryButton Function called to customize the Error - retry button displayed when there is an issue with the future search.
 
 
 #### Multiple choice constructor
@@ -261,6 +264,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
     List<T>? futureSelectedValues,
     dynamic emptyListWidget,
     Function? onTap,
+    Function? futureSearchRetryButton,
   })
 ```
 
@@ -309,6 +313,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
 * futureSelectedValues List contains the list of selected values in case of future search in multiple selection mode.
 * emptyListWidget String|Widget|Function with parameter: keyword returning String|Widget displayed instead of the list of items in case it is empty.
 * onTap Function called when the user clicks on the Widget before it opens the dialog or the menu. Note that this is not called in case the Widget is disabled.
+* futureSearchRetryButton Function called to customize the Error - retry button displayed when there is an issue with the future search.
 
 #### Example app usage
 
@@ -2151,7 +2156,94 @@ SearchChoices.multiple(
         },
       )
 ```
-
+### Single dialog future custom error button
+Single choice dialog box search with intentional future search error to show an example of futureSearchRetryButton usa.
+```dart
+SearchChoices.single(
+        value: selectedValueSingleDialogFuture,
+        hint: kIsWeb ? "Example not for web" : "Select one capital",
+        searchHint: "Search capitals",
+        onChanged: kIsWeb
+            ? null
+            : (value) {
+          setState(() {
+            selectedValueSingleDialogFuture = value;
+          });
+        },
+        isExpanded: true,
+        selectedValueWidgetFn: (item) {
+          return (Center(
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    side: BorderSide(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                  ),
+                  margin: EdgeInsets.all(1),
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Text(item["capital"]),
+                  ))));
+        },
+        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
+            List<Tuple2<String, String>>? filters, int? pageNb) async {
+          String filtersString = "";
+          int i = 1;
+          filters?.forEach((element) {
+            // This example doesn't have any futureSearchFilterOptions parameter, thus, this loop will never run anything.
+            filtersString += "&filter" +
+                i.toString() +
+                "=" +
+                element.item1 +
+                "," +
+                element.item2;
+            i++;
+          });
+          Response response = await get(Uri.parse(
+              "https://FAULTYsearchchoices.jod.li/exampleList.php?page=${pageNb ?? 1},10${orderBy == null ? "" : "&order=" + orderBy + "," + (orderAsc ?? true ? "asc" : "desc")}${(keyword == null || keyword.isEmpty) ? "" : "&filter=capital,cs," + keyword}$filtersString"))
+              .timeout(Duration(
+            seconds: 10,
+          ));
+          if (response.statusCode != 200) {
+            throw Exception("failed to get data from internet");
+          }
+          dynamic data = jsonDecode(response.body);
+          int nbResults = data["results"];
+          List<DropdownMenuItem> results = (data["records"] as List<dynamic>)
+              .map<DropdownMenuItem>((item) => DropdownMenuItem(
+            value: item,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+                side: BorderSide(
+                  color: Colors.blue,
+                  width: 1,
+                ),
+              ),
+              margin: EdgeInsets.all(10),
+              child: Padding(
+                padding: const EdgeInsets.all(6),
+                child: Text(
+                    "${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
+              ),
+            ),
+          ))
+              .toList();
+          return (Tuple2<List<DropdownMenuItem>, int>(results, nbResults));
+        },
+        futureSearchRetryButton: (Function onPressed) => Column(children: [
+          SizedBox(height: 15),
+          Center(
+            child: ElevatedButton.icon(
+                onPressed: (){onPressed();},
+                icon: Icon(Icons.repeat),
+                label: Text("Intentional error - retry")),
+          )
+        ]),
+      )
+```
 ## Feature requests/comments/questions/bugs
 
 Feel free to log your feature requests/comments/questions/bugs here:

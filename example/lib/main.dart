@@ -1736,6 +1736,92 @@ class _MyAppState extends State<MyApp> {
           },
         },
       ),
+      "Single dialog future custom error button": SearchChoices.single(
+        value: selectedValueSingleDialogFuture,
+        hint: kIsWeb ? "Example not for web" : "Select one capital",
+        searchHint: "Search capitals",
+        onChanged: kIsWeb
+            ? null
+            : (value) {
+                setState(() {
+                  selectedValueSingleDialogFuture = value;
+                });
+              },
+        isExpanded: true,
+        selectedValueWidgetFn: (item) {
+          return (Center(
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    side: BorderSide(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                  ),
+                  margin: EdgeInsets.all(1),
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Text(item["capital"]),
+                  ))));
+        },
+        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
+            List<Tuple2<String, String>>? filters, int? pageNb) async {
+          String filtersString = "";
+          int i = 1;
+          filters?.forEach((element) {
+            // This example doesn't have any futureSearchFilterOptions parameter, thus, this loop will never run anything.
+            filtersString += "&filter" +
+                i.toString() +
+                "=" +
+                element.item1 +
+                "," +
+                element.item2;
+            i++;
+          });
+          Response response = await get(Uri.parse(
+                  "https://FAULTYsearchchoices.jod.li/exampleList.php?page=${pageNb ?? 1},10${orderBy == null ? "" : "&order=" + orderBy + "," + (orderAsc ?? true ? "asc" : "desc")}${(keyword == null || keyword.isEmpty) ? "" : "&filter=capital,cs," + keyword}$filtersString"))
+              .timeout(Duration(
+            seconds: 10,
+          ));
+          if (response.statusCode != 200) {
+            throw Exception("failed to get data from internet");
+          }
+          dynamic data = jsonDecode(response.body);
+          int nbResults = data["results"];
+          List<DropdownMenuItem> results = (data["records"] as List<dynamic>)
+              .map<DropdownMenuItem>((item) => DropdownMenuItem(
+                    value: item,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: BorderSide(
+                          color: Colors.blue,
+                          width: 1,
+                        ),
+                      ),
+                      margin: EdgeInsets.all(10),
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: Text(
+                            "${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
+                      ),
+                    ),
+                  ))
+              .toList();
+          return (Tuple2<List<DropdownMenuItem>, int>(results, nbResults));
+        },
+        futureSearchRetryButton: (Function onPressed) => Column(children: [
+          SizedBox(height: 15),
+          Center(
+            child: ElevatedButton.icon(
+                onPressed: () {
+                  onPressed();
+                },
+                icon: Icon(Icons.repeat),
+                label: Text("Intentional error - retry")),
+          )
+        ]),
+      ),
     };
 
     return MaterialApp(

@@ -1,3 +1,7 @@
+## 2.0.15
+
+* Customize error - retry button through new parameter futureSearchRetryButton. Thanks @rhernandez-itemsoft https://github.com/lcuis/search_choices/issues/56
+
 ## 2.0.14
 
 * Use of context for onChange was potentially breaking situations where Widget was already disposed. Thanks @bondjpf https://github.com/lcuis/search_choices/issues/51

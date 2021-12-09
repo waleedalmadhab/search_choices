@@ -357,8 +357,8 @@ class SearchChoices<T> extends StatefulWidget {
   final Widget Function(Widget listWidget, int totalFilteredItemsNb,
       Function updateSearchPage)? customPaginationDisplay;
 
-  /// [futureSearchFn] [Future<int> Function(String keyword,
-  /// List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to
+  /// [futureSearchFn] Future<int> Function(String keyword,
+  /// List<DropdownMenuItem> itemsListToClearAndFill, int pageNb) used to
   /// search items from the network. Must return items (up to [itemsPerPage] if
   /// set). Must return an [int] with the total number of results (allows the
   /// handling of pagination).
@@ -400,6 +400,10 @@ class SearchChoices<T> extends StatefulWidget {
   /// opens the dialog or the menu. Note that this is not called in case the
   /// Widget is disabled.
   final Function? onTap;
+
+  /// [futureSearchRetryButton] [Function] called to customize the Error - retry
+  /// button displayed when there is an issue with the future search.
+  final Function? futureSearchRetryButton;
 
   /// Search choices Widget with a single choice that opens a dialog or a menu
   /// to let the user do the selection conveniently with a search.
@@ -485,8 +489,8 @@ class SearchChoices<T> extends StatefulWidget {
   /// int totalFilteredItemsNb, Function updateSearchPage)
   /// if [itemsPerPage] is set, customizes the display and the handling of the
   /// pagination on the search list.
-  /// * [futureSearchFn] [Future<int> Function(String keyword,
-  /// List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to
+  /// * [futureSearchFn] Future<int> Function(String keyword,
+  /// List<DropdownMenuItem> itemsListToClearAndFill, int pageNb) used to
   /// search items from the network. Must return items(up to [itemsPerPage] if
   /// set). Must return an [int] with the total number of results (allows the
   /// handling of pagination).
@@ -510,6 +514,8 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [onTap] [Function] called when the user clicks on the Widget before it
   /// opens the dialog or the menu. Note that this is not called in case the
   /// Widget is disabled.
+  /// * [futureSearchRetryButton] [Function] called to customize the Error -
+  /// retry button displayed when there is an issue with the future search.
   factory SearchChoices.single({
     Key? key,
     List<DropdownMenuItem<T>>? items,
@@ -572,6 +578,7 @@ class SearchChoices<T> extends StatefulWidget {
     Map<String, Map<String, Object>>? futureSearchFilterOptions,
     dynamic emptyListWidget,
     Function? onTap,
+    Function? futureSearchRetryButton,
   }) {
     return (SearchChoices._(
       key: key,
@@ -620,6 +627,7 @@ class SearchChoices<T> extends StatefulWidget {
       futureSearchFilterOptions: futureSearchFilterOptions,
       emptyListWidget: emptyListWidget,
       onTap: onTap,
+      futureSearchRetryButton: futureSearchRetryButton,
     ));
   }
 
@@ -709,8 +717,8 @@ class SearchChoices<T> extends StatefulWidget {
   /// int totalFilteredItemsNb, Function updateSearchPage) if [itemsPerPage] is
   /// set, customizes the display and the handling of the pagination on the
   /// search list.
-  /// * [futureSearchFn] [Future<int> Function(String keyword,
-  /// List<DropdownMenuItem> itemsListToClearAndFill, int pageNb)] used to
+  /// * [futureSearchFn] Future<int> Function(String keyword,
+  /// List<DropdownMenuItem> itemsListToClearAndFill, int pageNb) used to
   /// search items from the network. Must return items (up to [itemsPerPage] if
   /// set). Must return an [int] with the total number of results (allows the
   /// handling of pagination).
@@ -736,69 +744,71 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [onTap] [Function] called when the user clicks on the Widget before it
   /// opens the dialog or the menu. Note that this is not called in case the
   /// Widget is disabled.
-  factory SearchChoices.multiple({
-    Key? key,
-    List<DropdownMenuItem<T>>? items,
-    Function? onChanged,
-    List<int> selectedItems = const [],
-    TextStyle? style,
-    dynamic searchHint,
-    dynamic hint,
-    dynamic disabledHint,
-    dynamic icon = const Icon(Icons.arrow_drop_down),
-    dynamic underline,
-    dynamic doneButton = "Done",
-    dynamic label,
-    dynamic closeButton = "Close",
-    bool displayClearIcon = true,
-    Icon clearIcon = const Icon(Icons.clear),
-    Color? iconEnabledColor,
-    Color? iconDisabledColor,
-    double iconSize = 24.0,
-    bool isExpanded = false,
-    bool isCaseSensitiveSearch = false,
-    Function? searchFn,
-    Function? onClear,
-    Function? selectedValueWidgetFn,
-    TextInputType keyboardType = TextInputType.text,
-    Function? validator,
-    Function? displayItem,
-    bool dialogBox = true,
-    BoxConstraints? menuConstraints,
-    bool readOnly = false,
-    Color? menuBackgroundColor,
-    bool rightToLeft = false,
-    bool autofocus = true,
-    Function? selectedAggregateWidgetFn,
-    double padding = 10.0,
-    Function? setOpenDialog,
-    Widget Function(
-      Widget titleBar,
-      Widget searchBar,
-      Widget list,
-      Widget closeButton,
-      BuildContext dropDownContext,
-    )?
-        buildDropDownDialog,
-    InputDecoration? searchInputDecoration,
-    int? itemsPerPage,
-    PointerThisPlease<int>? currentPage,
-    Widget Function(Widget listWidget, int totalFilteredItemsNb,
-            Function updateSearchPage)?
-        customPaginationDisplay,
-    Future<Tuple2<List<DropdownMenuItem>, int>> Function(
-            String? keyword,
-            String? orderBy,
-            bool? orderAsc,
-            List<Tuple2<String, String>>? filters,
-            int? pageNb)?
-        futureSearchFn,
-    Map<String, Map<String, dynamic>>? futureSearchOrderOptions,
-    Map<String, Map<String, Object>>? futureSearchFilterOptions,
-    List<T>? futureSelectedValues,
-    dynamic emptyListWidget,
-    Function? onTap,
-  }) {
+  /// * [futureSearchRetryButton] [Function] called to customize the Error -
+  /// retry button displayed when there is an issue with the future search.
+  factory SearchChoices.multiple(
+      {Key? key,
+      List<DropdownMenuItem<T>>? items,
+      Function? onChanged,
+      List<int> selectedItems = const [],
+      TextStyle? style,
+      dynamic searchHint,
+      dynamic hint,
+      dynamic disabledHint,
+      dynamic icon = const Icon(Icons.arrow_drop_down),
+      dynamic underline,
+      dynamic doneButton = "Done",
+      dynamic label,
+      dynamic closeButton = "Close",
+      bool displayClearIcon = true,
+      Icon clearIcon = const Icon(Icons.clear),
+      Color? iconEnabledColor,
+      Color? iconDisabledColor,
+      double iconSize = 24.0,
+      bool isExpanded = false,
+      bool isCaseSensitiveSearch = false,
+      Function? searchFn,
+      Function? onClear,
+      Function? selectedValueWidgetFn,
+      TextInputType keyboardType = TextInputType.text,
+      Function? validator,
+      Function? displayItem,
+      bool dialogBox = true,
+      BoxConstraints? menuConstraints,
+      bool readOnly = false,
+      Color? menuBackgroundColor,
+      bool rightToLeft = false,
+      bool autofocus = true,
+      Function? selectedAggregateWidgetFn,
+      double padding = 10.0,
+      Function? setOpenDialog,
+      Widget Function(
+        Widget titleBar,
+        Widget searchBar,
+        Widget list,
+        Widget closeButton,
+        BuildContext dropDownContext,
+      )?
+          buildDropDownDialog,
+      InputDecoration? searchInputDecoration,
+      int? itemsPerPage,
+      PointerThisPlease<int>? currentPage,
+      Widget Function(Widget listWidget, int totalFilteredItemsNb,
+              Function updateSearchPage)?
+          customPaginationDisplay,
+      Future<Tuple2<List<DropdownMenuItem>, int>> Function(
+              String? keyword,
+              String? orderBy,
+              bool? orderAsc,
+              List<Tuple2<String, String>>? filters,
+              int? pageNb)?
+          futureSearchFn,
+      Map<String, Map<String, dynamic>>? futureSearchOrderOptions,
+      Map<String, Map<String, Object>>? futureSearchFilterOptions,
+      List<T>? futureSelectedValues,
+      dynamic emptyListWidget,
+      Function? onTap,
+      Function? futureSearchRetryButton}) {
     return (SearchChoices._(
       key: key,
       items: items,
@@ -847,6 +857,7 @@ class SearchChoices<T> extends StatefulWidget {
       futureSelectedValues: futureSelectedValues,
       emptyListWidget: emptyListWidget,
       onTap: onTap,
+      futureSearchRetryButton: futureSearchRetryButton,
     ));
   }
 
@@ -899,6 +910,7 @@ class SearchChoices<T> extends StatefulWidget {
     this.futureSelectedValues,
     this.emptyListWidget,
     this.onTap,
+    this.futureSearchRetryButton,
   })  : assert(!multipleSelection || doneButton != null),
         assert(menuConstraints == null || !dialogBox),
         assert(itemsPerPage == null || currentPage != null,
@@ -1180,6 +1192,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         futureSelectedValues: futureSelectedValues,
         emptyListWidget: widget.emptyListWidget,
         onTap: widget.onTap,
+        futureSearchRetryButton: widget.futureSearchRetryButton,
       ));
     });
   }
@@ -1544,6 +1557,9 @@ class DropdownDialog<T> extends StatefulWidget {
   /// See SearchChoices class.
   final Function? onTap;
 
+  /// See SearchChoices class.
+  final Function? futureSearchRetryButton;
+
   /// Allows to reset the scroll to the top of the list after changing the page
   final ScrollController listScrollController = ScrollController();
 
@@ -1583,6 +1599,7 @@ class DropdownDialog<T> extends StatefulWidget {
     this.futureSelectedValues,
     this.emptyListWidget,
     this.onTap,
+    this.futureSearchRetryButton,
   }) : super(key: key);
 
   _DropdownDialogState<T> createState() => _DropdownDialogState<T>();
@@ -2552,23 +2569,33 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     };
 
     if (futureSearch) {
-      Widget errorRetryButton = Column(children: [
-        SizedBox(height: 15),
-        Center(
-          child: ElevatedButton.icon(
-              onPressed: () {
-                _doFutureSearch(latestKeyword, force: true);
-              },
-              icon: Icon(Icons.repeat),
-              label: Text("Error - retry")),
-        )
-      ]);
+      Widget? errorRetryButton;
+      if (widget.futureSearchRetryButton != null) {
+        errorRetryButton = prepareWidget(
+          widget.futureSearchRetryButton,
+          parameter: () {
+            _doFutureSearch(latestKeyword, force: true);
+          },
+        );
+      } else {
+        errorRetryButton = Column(children: [
+          SizedBox(height: 15),
+          Center(
+            child: ElevatedButton.icon(
+                onPressed: () {
+                  _doFutureSearch(latestKeyword, force: true);
+                },
+                icon: Icon(Icons.repeat),
+                label: Text("Error - retry")),
+          )
+        ]);
+      }
       return (FutureBuilder(
         future: _doFutureSearch(latestKeyword),
         builder: (context,
             AsyncSnapshot<Tuple2<List<DropdownMenuItem>, int>> snapshot) {
           if (snapshot.hasError) {
-            return (errorRetryButton);
+            return (errorRetryButton!);
           }
           if (!snapshot.hasData ||
               snapshot.connectionState == ConnectionState.waiting) {
@@ -2618,7 +2645,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             ));
           }
           print("connection state: ${snapshot.connectionState.toString()}");
-          return (errorRetryButton);
+          return (errorRetryButton!);
         },
       ));
     }
