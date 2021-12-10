@@ -33,9 +33,9 @@ jobs:
 #          flutter_package: false
 #          skip_test: true
 
-      - run: pushd example&&flutter build web
-      - run: sudo apt-get install -y knockd
-      - run: knock ${{ secrets.knockparameters }}
+#      - run: pushd example&&flutter build web
+#      - run: sudo apt-get install -y knockd
+#      - run: knock ${{ secrets.knockparameters }}
 #      - name: Deploy web
 #        uses: garygrossgarten/github-action-scp@release
 #        with:
@@ -45,7 +45,7 @@ jobs:
 #          username: ${{ secrets.jodsshuser }}
 #          password: ${{ secrets.jodsshpassword }}
 #          recursive: true
-      - run: pushd example&&flutter build apk --release
+#      - run: pushd example&&flutter build apk --release
 #      - run: knock ${{ secrets.knockparameters }}
 #      - name: Deploy apk
 #        uses: garygrossgarten/github-action-scp@release
