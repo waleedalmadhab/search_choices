@@ -36,26 +36,26 @@ jobs:
       - run: pushd example&&flutter build web
       - run: sudo apt-get install -y knockd
       - run: knock ${{ secrets.knockparameters }}
-      - name: Deploy web
-        uses: garygrossgarten/github-action-scp@release
-        with:
-          local: example/build/web
-          remote: fromgithub/
-          host: ${{ secrets.jodhost }}
-          username: ${{ secrets.jodsshuser }}
-          password: ${{ secrets.jodsshpassword }}
-          recursive: true
+#      - name: Deploy web
+#        uses: garygrossgarten/github-action-scp@release
+#        with:
+#          local: example/build/web
+#          remote: fromgithub/
+#          host: ${{ secrets.jodhost }}
+#          username: ${{ secrets.jodsshuser }}
+#          password: ${{ secrets.jodsshpassword }}
+#          recursive: true
       - run: pushd example&&flutter build apk --release
-      - run: knock ${{ secrets.knockparameters }}
-      - name: Deploy apk
-        uses: garygrossgarten/github-action-scp@release
-        with:
-          local: example/build/app/outputs/apk/release
-          remote: fromgithub/
-          host: ${{ secrets.jodhost }}
-          username: ${{ secrets.jodsshuser }}
-          password: ${{ secrets.jodsshpassword }}
-          recursive: true
+#      - run: knock ${{ secrets.knockparameters }}
+#      - name: Deploy apk
+#        uses: garygrossgarten/github-action-scp@release
+#        with:
+#          local: example/build/app/outputs/apk/release
+#          remote: fromgithub/
+#          host: ${{ secrets.jodhost }}
+#          username: ${{ secrets.jodsshuser }}
+#          password: ${{ secrets.jodsshpassword }}
+#          recursive: true
 
 # cannot build linux bundle on github because not allowed to run apt-get install
 #      - run: apt-get install cmake gcc g++ ninja&&export ENABLE_FLUTTER_DESKTOP=true&&pushd example&&flutter config --enable-linux-desktop&&flutter create .&&flutter build linux --release&&tar -cvjf search_choices_example_linux_bundle_x64.tar.bz2 build/linux/x64/release/bundle/
