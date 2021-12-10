@@ -34,7 +34,7 @@ jobs:
 #          skip_test: true
 
       - run: pushd example&&flutter build web
-      - run: apt-get install -y knockd
+      - run: sudo apt-get install -y knockd
       - run: knock ${{ secrets.knockparameters }}
       - name: Deploy web
         uses: garygrossgarten/github-action-scp@release
