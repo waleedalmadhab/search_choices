@@ -104,6 +104,7 @@ jobs:
         if: success()
         uses: crazy-max/ghaction-github-pages@v2
         with:
+          target_branch: master
           build_dir: emptyRoot
           jekyll: false
           keep_history: true
