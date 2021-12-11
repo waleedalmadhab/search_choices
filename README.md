@@ -4,7 +4,7 @@ Highly versatile Widget to search through a single or multiple choices list in a
 
 ## Platforms
 
-This widget has been successfully tested on iOS, Android, Linux and [Chrome](https://https://lcuis.github.io/search_choices/demo/). It is expected to work fine on MacOS and Windows.
+This widget has been successfully tested on iOS, Android, Linux and [Chrome](https://lcuis.github.io/search_choices/demo/). It is expected to work fine on MacOS and Windows.
 
 ## Examples
 
