@@ -97,8 +97,8 @@ jobs:
 
       - run: pushd example&&flutter build web
       - run: sed -i 's/<base href="\/">/<base href="\/search_choices\/demo\/">/g' example/build/web/index.html
-      - mkdir -p emptyRoot
-      - mv example/build/web/ emptyRoot/demo
+      - run: mkdir -p emptyRoot
+      - run: mv example/build/web/ emptyRoot/demo
       -
         name: Deploy to GitHub Pages
         if: success()
