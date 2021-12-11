@@ -4,7 +4,7 @@ Highly versatile Widget to search through a single or multiple choices list in a
 
 ## Platforms
 
-This widget has been successfully tested on iOS, [Android](https://searchchoices.jod.li/app-release.apk), Linux and [Chrome](https://searchchoices.jod.li). It is expected to work fine on MacOS and Windows.
+This widget has been successfully tested on iOS, Android, Linux and [Chrome](https://https://lcuis.github.io/search_choices/demo/). It is expected to work fine on MacOS and Windows.
 
 ## Examples
 
@@ -53,11 +53,9 @@ See code below.
 | [Single dialog onTap](#Single-dialog-onTap) | ![Single dialog onTap](https://searchchoices.jod.li/Single%20dialog%20onTap.gif) |
 | [Multi dialog paged<br>future](#Multi-dialog-paged-future) | ![Multi dialog paged future](https://searchchoices.jod.li/Multi%20dialog%20paged%20future.gif) |
 | [Single dialog future<br>custom error button](#Single-dialog-future-custom-error-button) | ![Single dialog future custom error button](https://searchchoices.jod.li/Single%20dialog%20future%20custom%20error%20button.gif) |
+| [Single dialog paged<br>delayed](#Single-dialog-paged-delayed) | ![Single dialog paged delayed](https://searchchoices.jod.li/Single%20dialog%20paged%20delayed.gif) |
+| [Single dialog paged<br>future delayed](#Single-dialog-paged-future-delayed) | ![Single dialog paged future delayed](https://searchchoices.jod.li/Single%20dialog%20paged%20future%20delayed.gif) |
 
-### Demonstration
-
-An Android demonstration is available here:
-https://searchchoices.jod.li/app-release.apk
 
 ### Code
 
@@ -147,6 +145,7 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
     dynamic emptyListWidget,
     Function? onTap,
     Function? futureSearchRetryButton,
+    int? searchDelay,
   })
 ```
 
@@ -196,6 +195,7 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
 * emptyListWidget String|Widget|Function with parameter: keyword returning String|Widget displayed instead of the list of items in case it is empty.
 * onTap Function called when the user clicks on the Widget before it opens the dialog or the menu. Note that this is not called in case the Widget is disabled.
 * futureSearchRetryButton Function called to customize the Error - retry button displayed when there is an issue with the future search.
+* searchDelay int in milliseconds applied before the search is initiated. This applies to future and non-future searches.
 
 
 #### Multiple choice constructor
@@ -265,6 +265,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
     dynamic emptyListWidget,
     Function? onTap,
     Function? futureSearchRetryButton,
+    int? searchDelay,
   })
 ```
 
@@ -314,6 +315,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
 * emptyListWidget String|Widget|Function with parameter: keyword returning String|Widget displayed instead of the list of items in case it is empty.
 * onTap Function called when the user clicks on the Widget before it opens the dialog or the menu. Note that this is not called in case the Widget is disabled.
 * futureSearchRetryButton Function called to customize the Error - retry button displayed when there is an issue with the future search.
+* searchDelay int in milliseconds applied before the search is initiated. This applies to future and non-future searches.
 
 #### Example app usage
 
@@ -2244,6 +2246,188 @@ SearchChoices.single(
         ]),
       )
 ```
+### Single dialog paged delayed
+Delayed search lets the user some time before calling the search function and work for Future and non-Future cases.
+```dart
+SearchChoices.single(
+            items: items,
+            value: selectedValueSingleDialogPaged,
+            hint: "Select one",
+            searchHint: "Search one",
+            onChanged: (value) {
+              setState(() {
+                selectedValueSingleDialogPaged = value;
+              });
+            },
+            isExpanded: true,
+            itemsPerPage: 5,
+            currentPage: currentPage,
+            searchDelay: 500,
+          )
+```
+### Single dialog paged future delayed
+Delayed search lets the user some time before calling the search function and work for Future and non-Future cases.
+```dart
+SearchChoices.single(
+            value: selectedValueSingleDialogPagedFuture,
+            hint: kIsWeb ? "Example not for web" : "Select one capital",
+            searchHint: "Search capitals",
+            onChanged: kIsWeb
+                ? null
+                : (value) {
+                    setState(() {
+                      selectedValueSingleDialogPagedFuture = value;
+                    });
+                  },
+            isExpanded: true,
+            itemsPerPage: 10,
+            currentPage: currentPage,
+            selectedValueWidgetFn: (item) {
+              return (Center(
+                  child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: BorderSide(
+                          color: Colors.grey,
+                          width: 1,
+                        ),
+                      ),
+                      margin: EdgeInsets.all(1),
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: Text(item["capital"]),
+                      ))));
+            },
+            futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
+                List<Tuple2<String, String>>? filters, int? pageNb) async {
+              print("searching for ${keyword ?? ""}");
+              String filtersString = "";
+              int i = 1;
+              filters?.forEach((element) {
+                filtersString += "&filter" +
+                    i.toString() +
+                    "=" +
+                    element.item1 +
+                    "," +
+                    element.item2;
+                i++;
+              });
+              Response response = await get(Uri.parse(
+                      "https://searchchoices.jod.li/exampleList.php?page=${pageNb ?? 1},10${orderBy == null ? "" : "&order=" + orderBy + "," + (orderAsc ?? true ? "asc" : "desc")}${(keyword == null || keyword.isEmpty) ? "" : "&filter=capital,cs," + keyword}$filtersString"))
+                  .timeout(Duration(
+                seconds: 10,
+              ));
+              if (response.statusCode != 200) {
+                throw Exception("failed to get data from internet");
+              }
+              dynamic data = jsonDecode(response.body);
+              int nbResults = data["results"];
+              List<DropdownMenuItem> results = (data["records"] as List<dynamic>)
+                  .map<DropdownMenuItem>((item) => DropdownMenuItem(
+                        value: item,
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            side: BorderSide(
+                              color: Colors.blue,
+                              width: 1,
+                            ),
+                          ),
+                          margin: EdgeInsets.all(10),
+                          child: Padding(
+                            padding: const EdgeInsets.all(6),
+                            child: Text(
+                                "${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
+                          ),
+                        ),
+                      ))
+                  .toList();
+              return (Tuple2<List<DropdownMenuItem>, int>(results, nbResults));
+            },
+            futureSearchOrderOptions: {
+              "country": {
+                "icon": Wrap(children: [
+                  Icon(Icons.flag),
+                  Text(
+                    "Country",
+                  )
+                ]),
+                "asc": true
+              },
+              "capital": {
+                "icon":
+                    Wrap(children: [Icon(Icons.location_city), Text("Capital")]),
+                "asc": true
+              },
+              "continent": {"icon": "Continent", "asc": true},
+              "population": {
+                "icon": Wrap(children: [Icon(Icons.people), Text("Population")]),
+                "asc": false
+              },
+            },
+            futureSearchFilterOptions: {
+              "continent": {
+                "icon": Text("Continent"),
+                "exclusive": true,
+                "values": [
+                  {"eq,Africa": "Africa"},
+                  {"eq,Americas": "Americas"},
+                  {"eq,Asia": "Asia"},
+                  {"eq,Australia": "Australia"},
+                  {"eq,Europe": "Europe"},
+                  {"eq,Oceania": "Oceania"}
+                ]
+              },
+              "population": {
+                "icon": Wrap(children: [Icon(Icons.people), Text("Population")]),
+                "exclusive": true,
+                "values": [
+                  {
+                    "lt,1000": Wrap(children: [Icon(Icons.person), Text("<1,000")])
+                  },
+                  {
+                    "lt,100000":
+                        Wrap(children: [Icon(Icons.person_add), Text("<100,000")])
+                  },
+                  {
+                    "lt,1000000": Wrap(
+                        children: [Icon(Icons.nature_people), Text("<1,000,000")])
+                  },
+                  {
+                    "gt,1000000":
+                        Wrap(children: [Icon(Icons.people), Text(">1,000,000")])
+                  },
+                  {
+                    "gt,10000000": Wrap(
+                        children: [Icon(Icons.location_city), Text(">10,000,000")])
+                  },
+                ],
+              },
+            },
+            closeButton: (selectedItemsDone, doneContext) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SizedBox(
+                    height: 25,
+                    width: 48,
+                    child: (ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(doneContext);
+                          setState(() {});
+                        },
+                        child: Icon(
+                          Icons.close,
+                          size: 17,
+                        ))),
+                  ),
+                ],
+              );
+            },
+            searchDelay: 500,
+          )
+```
+
 ## Feature requests/comments/questions/bugs
 
 Feel free to log your feature requests/comments/questions/bugs here:

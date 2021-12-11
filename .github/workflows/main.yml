@@ -93,3 +93,19 @@ jobs:
 ##          refreshToken: ${{ secrets.OAUTH_REFRESH_TOKEN }}
 #          credentialJson: ${{ secrets.CREDENTIAL_JSON }}
 #          skipTests: true
+
+
+      - run: pushd example&&flutter build web
+      - run: sed -i 's/<base href="\/">/<base href="\/search_choices\/demo\/">/g' example/build/web/index.html
+      - mkdir -p emptyRoot
+      - mv example/build/web/ emptyRoot/demo
+      -
+        name: Deploy to GitHub Pages
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          build_dir: emptyRoot
+          jekyll: false
+          keep_history: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}

@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'dart:core';
 
 const EdgeInsetsGeometry _kAlignedButtonPadding =
@@ -405,6 +404,10 @@ class SearchChoices<T> extends StatefulWidget {
   /// button displayed when there is an issue with the future search.
   final Function? futureSearchRetryButton;
 
+  /// [searchDelay] [int] in milliseconds applied before the search is
+  /// initiated. This applies to future and non-future searches.
+  final int? searchDelay;
+
   /// Search choices Widget with a single choice that opens a dialog or a menu
   /// to let the user do the selection conveniently with a search.
   ///
@@ -516,6 +519,8 @@ class SearchChoices<T> extends StatefulWidget {
   /// Widget is disabled.
   /// * [futureSearchRetryButton] [Function] called to customize the Error -
   /// retry button displayed when there is an issue with the future search.
+  /// * [searchDelay] [int] in milliseconds applied before the search is
+  /// initiated. This applies to future and non-future searches.
   factory SearchChoices.single({
     Key? key,
     List<DropdownMenuItem<T>>? items,
@@ -579,6 +584,7 @@ class SearchChoices<T> extends StatefulWidget {
     dynamic emptyListWidget,
     Function? onTap,
     Function? futureSearchRetryButton,
+    int? searchDelay,
   }) {
     return (SearchChoices._(
       key: key,
@@ -628,6 +634,7 @@ class SearchChoices<T> extends StatefulWidget {
       emptyListWidget: emptyListWidget,
       onTap: onTap,
       futureSearchRetryButton: futureSearchRetryButton,
+      searchDelay: searchDelay,
     ));
   }
 
@@ -746,69 +753,73 @@ class SearchChoices<T> extends StatefulWidget {
   /// Widget is disabled.
   /// * [futureSearchRetryButton] [Function] called to customize the Error -
   /// retry button displayed when there is an issue with the future search.
-  factory SearchChoices.multiple(
-      {Key? key,
-      List<DropdownMenuItem<T>>? items,
-      Function? onChanged,
-      List<int> selectedItems = const [],
-      TextStyle? style,
-      dynamic searchHint,
-      dynamic hint,
-      dynamic disabledHint,
-      dynamic icon = const Icon(Icons.arrow_drop_down),
-      dynamic underline,
-      dynamic doneButton = "Done",
-      dynamic label,
-      dynamic closeButton = "Close",
-      bool displayClearIcon = true,
-      Icon clearIcon = const Icon(Icons.clear),
-      Color? iconEnabledColor,
-      Color? iconDisabledColor,
-      double iconSize = 24.0,
-      bool isExpanded = false,
-      bool isCaseSensitiveSearch = false,
-      Function? searchFn,
-      Function? onClear,
-      Function? selectedValueWidgetFn,
-      TextInputType keyboardType = TextInputType.text,
-      Function? validator,
-      Function? displayItem,
-      bool dialogBox = true,
-      BoxConstraints? menuConstraints,
-      bool readOnly = false,
-      Color? menuBackgroundColor,
-      bool rightToLeft = false,
-      bool autofocus = true,
-      Function? selectedAggregateWidgetFn,
-      double padding = 10.0,
-      Function? setOpenDialog,
-      Widget Function(
-        Widget titleBar,
-        Widget searchBar,
-        Widget list,
-        Widget closeButton,
-        BuildContext dropDownContext,
-      )?
-          buildDropDownDialog,
-      InputDecoration? searchInputDecoration,
-      int? itemsPerPage,
-      PointerThisPlease<int>? currentPage,
-      Widget Function(Widget listWidget, int totalFilteredItemsNb,
-              Function updateSearchPage)?
-          customPaginationDisplay,
-      Future<Tuple2<List<DropdownMenuItem>, int>> Function(
-              String? keyword,
-              String? orderBy,
-              bool? orderAsc,
-              List<Tuple2<String, String>>? filters,
-              int? pageNb)?
-          futureSearchFn,
-      Map<String, Map<String, dynamic>>? futureSearchOrderOptions,
-      Map<String, Map<String, Object>>? futureSearchFilterOptions,
-      List<T>? futureSelectedValues,
-      dynamic emptyListWidget,
-      Function? onTap,
-      Function? futureSearchRetryButton}) {
+  /// * [searchDelay] [int] in milliseconds applied before the search is
+  /// initiated. This applies to future and non-future searches.
+  factory SearchChoices.multiple({
+    Key? key,
+    List<DropdownMenuItem<T>>? items,
+    Function? onChanged,
+    List<int> selectedItems = const [],
+    TextStyle? style,
+    dynamic searchHint,
+    dynamic hint,
+    dynamic disabledHint,
+    dynamic icon = const Icon(Icons.arrow_drop_down),
+    dynamic underline,
+    dynamic doneButton = "Done",
+    dynamic label,
+    dynamic closeButton = "Close",
+    bool displayClearIcon = true,
+    Icon clearIcon = const Icon(Icons.clear),
+    Color? iconEnabledColor,
+    Color? iconDisabledColor,
+    double iconSize = 24.0,
+    bool isExpanded = false,
+    bool isCaseSensitiveSearch = false,
+    Function? searchFn,
+    Function? onClear,
+    Function? selectedValueWidgetFn,
+    TextInputType keyboardType = TextInputType.text,
+    Function? validator,
+    Function? displayItem,
+    bool dialogBox = true,
+    BoxConstraints? menuConstraints,
+    bool readOnly = false,
+    Color? menuBackgroundColor,
+    bool rightToLeft = false,
+    bool autofocus = true,
+    Function? selectedAggregateWidgetFn,
+    double padding = 10.0,
+    Function? setOpenDialog,
+    Widget Function(
+      Widget titleBar,
+      Widget searchBar,
+      Widget list,
+      Widget closeButton,
+      BuildContext dropDownContext,
+    )?
+        buildDropDownDialog,
+    InputDecoration? searchInputDecoration,
+    int? itemsPerPage,
+    PointerThisPlease<int>? currentPage,
+    Widget Function(Widget listWidget, int totalFilteredItemsNb,
+            Function updateSearchPage)?
+        customPaginationDisplay,
+    Future<Tuple2<List<DropdownMenuItem>, int>> Function(
+            String? keyword,
+            String? orderBy,
+            bool? orderAsc,
+            List<Tuple2<String, String>>? filters,
+            int? pageNb)?
+        futureSearchFn,
+    Map<String, Map<String, dynamic>>? futureSearchOrderOptions,
+    Map<String, Map<String, Object>>? futureSearchFilterOptions,
+    List<T>? futureSelectedValues,
+    dynamic emptyListWidget,
+    Function? onTap,
+    Function? futureSearchRetryButton,
+    int? searchDelay,
+  }) {
     return (SearchChoices._(
       key: key,
       items: items,
@@ -858,6 +869,7 @@ class SearchChoices<T> extends StatefulWidget {
       emptyListWidget: emptyListWidget,
       onTap: onTap,
       futureSearchRetryButton: futureSearchRetryButton,
+      searchDelay: searchDelay,
     ));
   }
 
@@ -911,6 +923,7 @@ class SearchChoices<T> extends StatefulWidget {
     this.emptyListWidget,
     this.onTap,
     this.futureSearchRetryButton,
+    this.searchDelay,
   })  : assert(!multipleSelection || doneButton != null),
         assert(menuConstraints == null || !dialogBox),
         assert(itemsPerPage == null || currentPage != null,
@@ -1193,6 +1206,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         emptyListWidget: widget.emptyListWidget,
         onTap: widget.onTap,
         futureSearchRetryButton: widget.futureSearchRetryButton,
+        searchDelay: widget.searchDelay,
       ));
     });
   }
@@ -1563,6 +1577,9 @@ class DropdownDialog<T> extends StatefulWidget {
   /// Allows to reset the scroll to the top of the list after changing the page
   final ScrollController listScrollController = ScrollController();
 
+  /// See SearchChoices class.
+  final int? searchDelay;
+
   DropdownDialog({
     Key? key,
     this.items,
@@ -1600,6 +1617,7 @@ class DropdownDialog<T> extends StatefulWidget {
     this.emptyListWidget,
     this.onTap,
     this.futureSearchRetryButton,
+    this.searchDelay,
   }) : super(key: key);
 
   _DropdownDialogState<T> createState() => _DropdownDialogState<T>();
@@ -1625,6 +1643,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
 
   Future<Tuple2<List<DropdownMenuItem>, int>>? latestFutureResult;
   List<dynamic>? latestFutureSearchArgs;
+
+  int searchCount = 0;
 
   _DropdownDialogState();
 
@@ -1990,9 +2010,15 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     widget.currentPage?.value = 1;
     if (widget.initialSearchTerms.isNotEmpty) {
       txtSearch.text = widget.initialSearchTerms;
-      searchForKeyword(txtSearch.text);
+      searchForKeyword(
+        txtSearch.text,
+        immediate: true,
+      );
     } else {
-      searchForKeyword('');
+      searchForKeyword(
+        '',
+        immediate: true,
+      );
     }
     super.initState();
   }
@@ -2122,18 +2148,41 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   }
 
   /// Basically splits the search between the searchFn and the futureSearchFn
-  /// cases.
-  void searchForKeyword(String? keyword) {
-    if (futureSearch) {
-      if (keyword != null) {
-        latestKeyword = keyword;
+  /// cases. Also applies searchDelay if any unless immediate is true.
+  void searchForKeyword(
+    String? keyword, {
+    bool immediate = false,
+  }) {
+    Function doSearch = () {
+      if (futureSearch) {
+        if (keyword != null) {
+          latestKeyword = keyword;
+        }
+        _doFutureSearch(keyword);
+      } else {
+        _updateShownIndexes(keyword);
       }
-      _doFutureSearch(keyword);
+      if (widget.listScrollController.hasClients) {
+        widget.listScrollController.jumpTo(0);
+      }
+    };
+    if ((widget.searchDelay ?? 0) > 0) {
+      searchCount++;
+      if (!immediate) {
+        Future.delayed(Duration(milliseconds: widget.searchDelay ?? 0))
+            .whenComplete(() {
+          if (searchCount == 1) {
+            doSearch();
+            setState(() {});
+          }
+          searchCount--;
+        });
+      } else {
+        doSearch();
+        searchCount--;
+      }
     } else {
-      _updateShownIndexes(keyword);
-    }
-    if (widget.listScrollController.hasClients) {
-      widget.listScrollController.jumpTo(0);
+      doSearch();
     }
   }
 
@@ -2249,7 +2298,10 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                     child: InkWell(
                       onTap: () {
                         widget.currentPage?.value = 1;
-                        searchForKeyword('');
+                        searchForKeyword(
+                          '',
+                          immediate: true,
+                        );
                         setState(() {
                           txtSearch.text = '';
                         });
@@ -2364,7 +2416,10 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
         displayItemResult = widget.displayItem!(item, isItemSelected, (value) {
           widget.updateParent!(value);
           widget.currentPage?.value = 1;
-          searchForKeyword(null);
+          searchForKeyword(
+            null,
+            immediate: true,
+          );
         });
       }
       return (displayItemResult!);
@@ -2564,7 +2619,10 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     List<Tuple3<int, DropdownMenuItem<dynamic>, bool>> itemsToDisplay;
 
     Function updateSearchPage = () {
-      searchForKeyword(latestKeyword);
+      searchForKeyword(
+        latestKeyword,
+        immediate: true,
+      );
       setState(() {});
     };
 

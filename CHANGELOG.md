@@ -1,3 +1,7 @@
+## 2.0.16
+
+* Added searchDelay to give some time before search function is called in Future and non-Future cases. Thanks @rhernandez-itemsoft https://github.com/lcuis/search_choices/issues/58
+
 ## 2.0.15
 
 * Customize error - retry button through new parameter futureSearchRetryButton. Thanks @rhernandez-itemsoft https://github.com/lcuis/search_choices/issues/56
