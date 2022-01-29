@@ -1211,7 +1211,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
     });
   }
 
-  showDialogOrMenu(String searchTerms) async {
+  showDialogOrMenu(String searchTerms, {bool closeMenu = false}) async {
     if (widget.dialogBox) {
       await showDialog(
           context: context,
@@ -1227,7 +1227,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         }
       }
     } else {
-      displayMenu.value = true;
+      displayMenu.value = !closeMenu;
     }
     if (mounted) {
       setState(() {});
@@ -1305,7 +1305,8 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
                     if (widget.onTap != null) {
                       widget.onTap!();
                     }
-                    await showDialogOrMenu("");
+                    await showDialogOrMenu("",
+                        closeMenu: !widget.dialogBox && displayMenu.value);
                   },
             child: Row(
               textDirection:
