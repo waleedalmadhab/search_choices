@@ -1,3 +1,10 @@
+## 2.0.17
+
+* Bug 63 1.1 Click on dropdown button while menu is opened doesn't close menu. Thanks @Macacoazul01 https://github.com/lcuis/search_choices/issues/63
+* Enhancement 63 1.2 Pop menu from onChanged. Thanks @Macacoazul01 https://github.com/lcuis/search_choices/issues/63
+* Enhancement 63 2.2 Pop menu from updateParent. Thanks @Macacoazul01 https://github.com/lcuis/search_choices/issues/63
+* Bug 63 3. Delete last item from menu causes index error. Thanks @Macacoazul01 https://github.com/lcuis/search_choices/issues/63
+
 ## 2.0.16
 
 * Added searchDelay to give some time before search function is called in Future and non-Future cases. Thanks @rhernandez-itemsoft https://github.com/lcuis/search_choices/issues/58

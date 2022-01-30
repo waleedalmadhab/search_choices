@@ -1,1 +1,1 @@
-dartdoc --exclude /home/me/progs/flutter/
+dartdoc --exclude ~/progs/flutter/

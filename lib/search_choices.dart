@@ -964,6 +964,12 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
 
   List<T> futureSelectedValues = [];
 
+  Function? pop;
+
+  giveMeThePop(Function pop) {
+    this.pop = pop;
+  }
+
   TextStyle get _textStyle =>
       widget.style ??
       (_enabled && !(widget.readOnly)
@@ -1051,7 +1057,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         updatedSelectedItems = List<int>.from(widget.selectedItems);
       }
     } else {
-      T? val = !(sel is NotGiven) ? sel as T : widget.value;
+      T? val = !(sel is NotGiven) ? sel as T? : widget.value;
       if (val != null) {
         int? i = indexFromValue(val);
         if (i != null && i != -1) {
@@ -1112,7 +1118,17 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
     try {
       widget.onChanged!(selection);
     } catch (e) {
-      widget.onChanged!(selection, onChangeContext);
+      try {
+        widget.onChanged!(selection, onChangeContext);
+      } catch (e) {
+        try {
+          widget.onChanged!(selection, pop);
+        } catch (e) {
+          try {
+            widget.onChanged!(selection, onChangeContext, pop);
+          } catch (e) {}
+        }
+      }
     }
   }
 
@@ -1145,6 +1161,16 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
       updateSelectedItems();
     }
     super.initState();
+  }
+
+  updateParentWithOptionalPop(
+    value, [
+    bool pop = false,
+  ]) {
+    updateParent!(value);
+    if (pop && this.pop != null) {
+      this.pop!();
+    }
   }
 
   @override
@@ -1180,6 +1206,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         iconEnabledColor: widget.iconEnabledColor,
         iconDisabledColor: widget.iconDisabledColor,
         callOnPop: () {
+          giveMeThePop(() {});
           if (!widget.dialogBox &&
               widget.onChanged != null &&
               selectedResult != null) {
@@ -1207,6 +1234,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         onTap: widget.onTap,
         futureSearchRetryButton: widget.futureSearchRetryButton,
         searchDelay: widget.searchDelay,
+        giveMeThePop: giveMeThePop,
       ));
     });
   }
@@ -1241,15 +1269,16 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
     int? hintIndex;
     if (widget.hint != null ||
         (!_enabled &&
-            prepareWidget(widget.disabledHint, parameter: updateParent) !=
+            prepareWidget(widget.disabledHint,
+                    parameter: updateParentWithOptionalPop) !=
                 null)) {
       final Widget? positionedHint = _enabled
           ? prepareWidget(widget.hint)
           : DropdownMenuItem<Widget>(
-              child:
-                  prepareWidget(widget.disabledHint, parameter: updateParent) ??
-                      prepareWidget(widget.hint) ??
-                      SizedBox.shrink());
+              child: prepareWidget(widget.disabledHint,
+                      parameter: updateParentWithOptionalPop) ??
+                  prepareWidget(widget.hint) ??
+                  SizedBox.shrink());
       hintIndex = items.length;
       items.add(DefaultTextStyle(
         style: _textStyle.copyWith(color: Theme.of(context).hintColor),
@@ -1294,8 +1323,11 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         ? _kAlignedButtonPadding
         : _kUnalignedButtonPadding;
     Widget? clickable = !_enabled &&
-            prepareWidget(widget.disabledHint, parameter: updateParent) != null
-        ? prepareWidget(widget.disabledHint, parameter: updateParent)
+            prepareWidget(widget.disabledHint,
+                    parameter: updateParentWithOptionalPop) !=
+                null
+        ? prepareWidget(widget.disabledHint,
+            parameter: updateParentWithOptionalPop)
         : InkWell(
             key: Key("clickableResultPlaceHolder"),
             //this key is used for running automated tests
@@ -1581,6 +1613,9 @@ class DropdownDialog<T> extends StatefulWidget {
   /// See SearchChoices class.
   final int? searchDelay;
 
+  /// Assigns the pop function.
+  final Function giveMeThePop;
+
   DropdownDialog({
     Key? key,
     this.items,
@@ -1619,6 +1654,7 @@ class DropdownDialog<T> extends StatefulWidget {
     this.onTap,
     this.futureSearchRetryButton,
     this.searchDelay,
+    required this.giveMeThePop,
   }) : super(key: key);
 
   _DropdownDialogState<T> createState() => _DropdownDialogState<T>();
@@ -1714,7 +1750,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                               prepareWidget(
                                     v["icon"],
                                     parameter: orderAsc,
-                                    updateParent: widget.updateParent,
+                                    updateParent: updateParentWithOptionalPop,
                                     context: context,
                                   ) ??
                                   Text(k),
@@ -1829,7 +1865,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                               inner = (prepareWidget(
                                     fv ?? fk,
                                     parameter: filters,
-                                    updateParent: widget.updateParent,
+                                    updateParent: updateParentWithOptionalPop,
                                     context: context,
                                   ) ??
                                   fk) as Widget;
@@ -1838,7 +1874,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                               inner = prepareWidget(
                                     value,
                                     parameter: filters,
-                                    updateParent: widget.updateParent,
+                                    updateParent: updateParentWithOptionalPop,
                                     context: context,
                                   ) ??
                                   value;
@@ -1912,7 +1948,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                                   child: prepareWidget(
                                         v["icon"] ?? k,
                                         parameter: filters,
-                                        updateParent: widget.updateParent,
+                                        updateParent:
+                                            updateParentWithOptionalPop,
                                         context: context,
                                       ) ??
                                       Text(k),
@@ -1975,6 +2012,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
 
   @override
   void initState() {
+    widget.giveMeThePop(pop);
     if (widget.futureSearchFn != null) {
       futureSearch = true;
     } else {
@@ -2087,7 +2125,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             ? prepareWidget(widget.doneButton,
                 parameter: selectedResult,
                 context: context,
-                updateParent: widget.updateParent,
+                updateParent: updateParentWithOptionalPop,
                 stringToWidgetFunction: (string) {
                 return (TextButton.icon(
                     onPressed: !valid
@@ -2414,8 +2452,11 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       try {
         displayItemResult = widget.displayItem!(item, isItemSelected);
       } on NoSuchMethodError {
-        displayItemResult = widget.displayItem!(item, isItemSelected, (value) {
-          widget.updateParent!(value);
+        displayItemResult = widget.displayItem!(item, isItemSelected, (
+          value, [
+          bool pop = false,
+        ]) {
+          updateParentWithOptionalPop(value, pop);
           widget.currentPage?.value = 1;
           searchForKeyword(
             null,
@@ -2732,8 +2773,11 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   /// Returns the close button after the list of items or its replacement.
   Widget closeButtonWrapper() {
     return (prepareWidget(widget.closeButton,
-            parameter: selectedResult, context: context, updateParent: (sel) {
-          widget.updateParent!(sel);
+            parameter: selectedResult, context: context, updateParent: (
+          sel, [
+          bool pop = false,
+        ]) {
+          updateParentWithOptionalPop(sel, pop);
           setState(() {});
         }, stringToWidgetFunction: (string) {
           return (Container(
@@ -2764,5 +2808,15 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
           ));
         }) ??
         SizedBox.shrink());
+  }
+
+  updateParentWithOptionalPop(
+    value, [
+    bool pop = false,
+  ]) {
+    widget.updateParent!(value);
+    if (pop) {
+      this.pop();
+    }
   }
 }
