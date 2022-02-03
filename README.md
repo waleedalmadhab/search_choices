@@ -32,6 +32,7 @@ See code below.
 | [Single dialog readOnly](#Single-dialog-readOnly) | ![Single dialog readOnly](https://searchchoices.jod.li/Single%20dialog%20readOnly.png) |
 | [Single dialog disabled](#Single-dialog-disabled) | ![Single dialog disabled](https://searchchoices.jod.li/Single%20dialog%20disabled.png) |
 | [Single dialog<br>editable items](#Single-dialog-editable-items) | ![Single dialog editable items](https://searchchoices.jod.li/Single%20dialog%20editable%20items.gif) |
+| [Single menu<br>editable items](#Single-menu-editable-items) | ![Single menu editable items](https://searchchoices.jod.li/Single%20menu%20editable%20items.gif) |
 | [Multi dialog<br>editable items](#Multi-dialog-editable-items) | ![Multi dialog editable items](https://searchchoices.jod.li/Multi%20dialog%20editable%20items.gif) |
 | [Single dialog dark<br>mode](#Single-dialog-dark-mode) | ![Single dialog dark mode](https://searchchoices.jod.li/Single%20dialog%20dark%20mode.gif) |
 | [Single dialog ellipsis](#Single-dialog-ellipsis) | ![Single dialog ellipsis](https://searchchoices.jod.li/Single%20dialog%20ellipsis.gif) |
@@ -808,7 +809,7 @@ SearchChoices.single(
       )
 ```
 #### Single dialog editable items
-This example lets the user add and remove items to and from the list of choices. One can limit the number of items that can be added (100 here).
+This example lets the user add and remove items to and from the list of choices within a dialog. One can limit the number of items that can be added (100 here).
 ```dart
     input = TextFormField(
       validator: (value) {
@@ -822,8 +823,6 @@ This example lets the user add and remove items to and from the list of choices.
       },
       autofocus: true,
     );
-    super.initState();
-  }
 ...
   addItemDialog() async {
     return await showDialog(
@@ -939,6 +938,97 @@ SearchChoices.single(
         dialogBox: true,
         isExpanded: true,
         doneButton: "Done",
+      )
+```
+#### Single menu editable items
+This example lets the user add and remove items to and from the list of choices within a menu. One can limit the number of items that can be added (100 here).
+```dart
+SearchChoices.single(
+        items: editableItems,
+        value: selectedValueSingleMenuEditableItems,
+        hint: "Select one",
+        searchHint: "Select one",
+        disabledHint: (Function updateParent) {
+          return (TextButton(
+            onPressed: () {
+              addItemDialog().then((value) async {
+                updateParent(value);
+              });
+            },
+            child: Text("No choice, click to add one"),
+          ));
+        },
+        closeButton:
+            (String? value, BuildContext closeContext, Function updateParent) {
+          return (editableItems.length >= 100
+              ? "Close"
+              : TextButton(
+                  onPressed: () {
+                    addItemDialog().then((value) async {
+                      if (value != null &&
+                          editableItems.indexWhere(
+                                  (element) => element.value == value) !=
+                              -1) {
+                        updateParent(value, true);
+                      }
+                    });
+                  },
+                  child: Text("Add and select item"),
+                ));
+        },
+        onChanged: (String? value, Function? pop) {
+          setState(() {
+            if (!(value is NotGiven)) {
+              selectedValueSingleMenuEditableItems = value;
+            }
+          });
+          if (pop != null && !(value is NotGiven) && value != null) {
+            pop();
+          }
+        },
+        displayItem: (DropdownMenuItem item, selected, Function updateParent) {
+          bool deleteRequested = false;
+          return (GestureDetector(
+            onTapUp: (tap) {
+              Future.delayed(Duration(milliseconds: 300)).whenComplete(() {
+                if (!deleteRequested) {
+                  updateParent(item.value, true);
+                }
+              });
+            },
+            child: (Row(children: [
+              selected
+                  ? Icon(
+                      Icons.check,
+                      color: Colors.green,
+                    )
+                  : Icon(
+                      Icons.check_box_outline_blank,
+                      color: Colors.transparent,
+                    ),
+              SizedBox(width: 7),
+              Expanded(
+                child: item,
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+                onPressed: () {
+                  deleteRequested = true;
+                  editableItems.removeWhere((element) => item == element);
+                  updateParent(selected ? null : NotGiven(), false);
+                  setState(() {});
+                },
+              ),
+            ])),
+          ));
+        },
+        dialogBox: false,
+        isExpanded: true,
+        doneButton: "Done",
+        menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
       )
 ```
 #### Multi dialog editable items

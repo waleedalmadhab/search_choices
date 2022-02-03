@@ -63,6 +63,7 @@ class _MyAppState extends State<MyApp> {
   String? selectedValueSingleDialogCustomKeyboard;
   String? selectedValueSingleDialogOverflow;
   String? selectedValueSingleDialogEditableItems;
+  String? selectedValueSingleMenuEditableItems;
   String? selectedValueSingleDialogDarkMode;
   String? selectedValueSingleDialogEllipsis;
   String? selectedValueSingleDialogRightToLeft;
@@ -655,6 +656,93 @@ class _MyAppState extends State<MyApp> {
         dialogBox: true,
         isExpanded: true,
         doneButton: "Done",
+      ),
+      "Single menu editable items": SearchChoices.single(
+        items: editableItems,
+        value: selectedValueSingleMenuEditableItems,
+        hint: "Select one",
+        searchHint: "Select one",
+        disabledHint: (Function updateParent) {
+          return (TextButton(
+            onPressed: () {
+              addItemDialog().then((value) async {
+                updateParent(value);
+              });
+            },
+            child: Text("No choice, click to add one"),
+          ));
+        },
+        closeButton:
+            (String? value, BuildContext closeContext, Function updateParent) {
+          return (editableItems.length >= 100
+              ? "Close"
+              : TextButton(
+                  onPressed: () {
+                    addItemDialog().then((value) async {
+                      if (value != null &&
+                          editableItems.indexWhere(
+                                  (element) => element.value == value) !=
+                              -1) {
+                        updateParent(value, true);
+                      }
+                    });
+                  },
+                  child: Text("Add and select item"),
+                ));
+        },
+        onChanged: (String? value, Function? pop) {
+          setState(() {
+            if (!(value is NotGiven)) {
+              selectedValueSingleMenuEditableItems = value;
+            }
+          });
+          if (pop != null && !(value is NotGiven) && value != null) {
+            pop();
+          }
+        },
+        displayItem: (DropdownMenuItem item, selected, Function updateParent) {
+          bool deleteRequested = false;
+          return (GestureDetector(
+            onTapUp: (tap) {
+              Future.delayed(Duration(milliseconds: 300)).whenComplete(() {
+                if (!deleteRequested) {
+                  updateParent(item.value, true);
+                }
+              });
+            },
+            child: (Row(children: [
+              selected
+                  ? Icon(
+                      Icons.check,
+                      color: Colors.green,
+                    )
+                  : Icon(
+                      Icons.check_box_outline_blank,
+                      color: Colors.transparent,
+                    ),
+              SizedBox(width: 7),
+              Expanded(
+                child: item,
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+                onPressed: () {
+                  deleteRequested = true;
+                  editableItems.removeWhere((element) => item == element);
+                  updateParent(selected ? null : NotGiven(), false);
+                  setState(() {});
+                },
+              ),
+            ])),
+          ));
+        },
+        dialogBox: false,
+        isExpanded: true,
+        doneButton: "Done",
+        menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
       ),
       "Multi dialog editable items": SearchChoices.multiple(
         items: editableItems,
