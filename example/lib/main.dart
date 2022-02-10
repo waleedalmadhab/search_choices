@@ -702,42 +702,36 @@ class _MyAppState extends State<MyApp> {
         },
         displayItem: (DropdownMenuItem item, selected, Function updateParent) {
           bool deleteRequested = false;
-          return (GestureDetector(
-            onTapUp: (tap) {
-              Future.delayed(Duration(milliseconds: 300)).whenComplete(() {
-                if (!deleteRequested) {
-                  updateParent(item.value, true);
-                }
-              });
+          return ListTile(
+            leading: selected
+                ? Icon(
+                    Icons.check,
+                    color: Colors.green,
+                  )
+                : Icon(
+                    Icons.check_box_outline_blank,
+                    color: Colors.transparent,
+                  ),
+            title: item,
+            trailing: IconButton(
+              icon: Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
+              onPressed: () {
+                deleteRequested = true;
+                editableItems.removeWhere((element) => item == element);
+                updateParent(selected ? null : NotGiven(), false);
+                setState(() {});
+              },
+            ),
+            onTap: () {
+              if (!deleteRequested) {
+                updateParent(item.value, true);
+              }
             },
-            child: (Row(children: [
-              selected
-                  ? Icon(
-                      Icons.check,
-                      color: Colors.green,
-                    )
-                  : Icon(
-                      Icons.check_box_outline_blank,
-                      color: Colors.transparent,
-                    ),
-              SizedBox(width: 7),
-              Expanded(
-                child: item,
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.delete,
-                  color: Colors.red,
-                ),
-                onPressed: () {
-                  deleteRequested = true;
-                  editableItems.removeWhere((element) => item == element);
-                  updateParent(selected ? null : NotGiven(), false);
-                  setState(() {});
-                },
-              ),
-            ])),
-          ));
+            horizontalTitleGap: 0,
+          );
         },
         dialogBox: false,
         isExpanded: true,
