@@ -13,7 +13,7 @@ const RESOURCES = {
 "version.json": "66049a6dd288834c2c8f78adc8d70791",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
-"main.dart.js": "c6403cd05a916b4b8c5a8f4ecafafef8",
+"main.dart.js": "a1d81c5866be9573216f5910e5215bcd",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "manifest.json": "962c0c9f48ce7b739f480352eafd2cf4",
 "canvaskit/profiling/canvaskit.js": "3783918f48ef691e230156c251169480",
