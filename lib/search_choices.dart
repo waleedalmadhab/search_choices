@@ -408,6 +408,11 @@ class SearchChoices<T> extends StatefulWidget {
   /// initiated. This applies to future and non-future searches.
   final int? searchDelay;
 
+  /// [fieldPresentationFn] [Function] returning a Widget to customize the
+  /// display of the field.
+  final Widget Function(Widget fieldWidget, {bool selectionIsValid})?
+      fieldPresentationFn;
+
   /// Search choices Widget with a single choice that opens a dialog or a menu
   /// to let the user do the selection conveniently with a search.
   ///
@@ -521,6 +526,8 @@ class SearchChoices<T> extends StatefulWidget {
   /// retry button displayed when there is an issue with the future search.
   /// * [searchDelay] [int] in milliseconds applied before the search is
   /// initiated. This applies to future and non-future searches.
+  /// * [fieldPresentationFn] [Function] returning a Widget to customize the
+  /// display of the field.
   factory SearchChoices.single({
     Key? key,
     List<DropdownMenuItem<T>>? items,
@@ -585,6 +592,8 @@ class SearchChoices<T> extends StatefulWidget {
     Function? onTap,
     Function? futureSearchRetryButton,
     int? searchDelay,
+    Widget Function(Widget fieldWidget, {bool selectionIsValid})?
+        fieldPresentationFn,
   }) {
     return (SearchChoices._(
       key: key,
@@ -635,6 +644,7 @@ class SearchChoices<T> extends StatefulWidget {
       onTap: onTap,
       futureSearchRetryButton: futureSearchRetryButton,
       searchDelay: searchDelay,
+      fieldPresentationFn: fieldPresentationFn,
     ));
   }
 
@@ -755,6 +765,8 @@ class SearchChoices<T> extends StatefulWidget {
   /// retry button displayed when there is an issue with the future search.
   /// * [searchDelay] [int] in milliseconds applied before the search is
   /// initiated. This applies to future and non-future searches.
+  /// * [fieldPresentationFn] [Function] returning a Widget to customize the
+  /// display of the field.
   factory SearchChoices.multiple({
     Key? key,
     List<DropdownMenuItem<T>>? items,
@@ -819,6 +831,8 @@ class SearchChoices<T> extends StatefulWidget {
     Function? onTap,
     Function? futureSearchRetryButton,
     int? searchDelay,
+    Widget Function(Widget fieldWidget, {bool selectionIsValid})?
+        fieldPresentationFn,
   }) {
     return (SearchChoices._(
       key: key,
@@ -870,6 +884,7 @@ class SearchChoices<T> extends StatefulWidget {
       onTap: onTap,
       futureSearchRetryButton: futureSearchRetryButton,
       searchDelay: searchDelay,
+      fieldPresentationFn: fieldPresentationFn,
     ));
   }
 
@@ -924,6 +939,7 @@ class SearchChoices<T> extends StatefulWidget {
     this.onTap,
     this.futureSearchRetryButton,
     this.searchDelay,
+    this.fieldPresentationFn,
   })  : assert(!multipleSelection || doneButton != null),
         assert(menuConstraints == null || !dialogBox),
         assert(itemsPerPage == null || currentPage != null,
@@ -1424,33 +1440,35 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         labelOutput ?? SizedBox.shrink(),
-        Stack(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(widget.padding),
-              child: result,
-            ),
-            widget.underline is NotGiven
-                ? SizedBox.shrink()
-                : Positioned(
-                    left: 0.0,
-                    right: 0.0,
-                    bottom: bottom,
-                    child: prepareWidget(widget.underline,
-                            parameter: selectedResult) ??
-                        Container(
-                          height: 1.0,
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: valid
-                                          ? Color(0xFFBDBDBD)
-                                          : Colors.red,
-                                      width: 0.0))),
-                        ),
+        widget.fieldPresentationFn == null
+            ? Stack(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(widget.padding),
+                    child: result,
                   ),
-          ],
-        ),
+                  widget.underline is NotGiven
+                      ? SizedBox.shrink()
+                      : Positioned(
+                          left: 0.0,
+                          right: 0.0,
+                          bottom: bottom,
+                          child: prepareWidget(widget.underline,
+                                  parameter: selectedResult) ??
+                              Container(
+                                height: 1.0,
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            color: valid
+                                                ? Color(0xFFBDBDBD)
+                                                : Colors.red,
+                                            width: 0.0))),
+                              ),
+                        ),
+                ],
+              )
+            : widget.fieldPresentationFn!(result, selectionIsValid: valid),
         valid
             ? SizedBox.shrink()
             : validatorOutput is String

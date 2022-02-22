@@ -147,6 +147,7 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
     Function? onTap,
     Function? futureSearchRetryButton,
     int? searchDelay,
+    Widget Function(Widget fieldWidget,{bool selectionIsValid})? fieldPresentationFn,
   })
 ```
 
@@ -197,6 +198,7 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
 * onTap Function called when the user clicks on the Widget before it opens the dialog or the menu. Note that this is not called in case the Widget is disabled.
 * futureSearchRetryButton Function called to customize the Error - retry button displayed when there is an issue with the future search.
 * searchDelay int in milliseconds applied before the search is initiated. This applies to future and non-future searches.
+* fieldPresentationFn Function returning a Widget to customize the display of the field.
 
 
 #### Multiple choice constructor
@@ -267,6 +269,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
     Function? onTap,
     Function? futureSearchRetryButton,
     int? searchDelay,
+    Widget Function(Widget fieldWidget,{bool selectionIsValid})? fieldPresentationFn,
   })
 ```
 
@@ -317,6 +320,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
 * onTap Function called when the user clicks on the Widget before it opens the dialog or the menu. Note that this is not called in case the Widget is disabled.
 * futureSearchRetryButton Function called to customize the Error - retry button displayed when there is an issue with the future search.
 * searchDelay int in milliseconds applied before the search is initiated. This applies to future and non-future searches.
+* fieldPresentationFn Function returning a Widget to customize the display of the field.
 
 #### Example app usage
 
@@ -988,42 +992,36 @@ SearchChoices.single(
         },
         displayItem: (DropdownMenuItem item, selected, Function updateParent) {
           bool deleteRequested = false;
-          return (GestureDetector(
-            onTapUp: (tap) {
-              Future.delayed(Duration(milliseconds: 300)).whenComplete(() {
-                if (!deleteRequested) {
-                  updateParent(item.value, true);
-                }
-              });
+          return ListTile(
+            leading: selected
+                ? Icon(
+                    Icons.check,
+                    color: Colors.green,
+                  )
+                : Icon(
+                    Icons.check_box_outline_blank,
+                    color: Colors.transparent,
+                  ),
+            title: item,
+            trailing: IconButton(
+              icon: Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
+              onPressed: () {
+                deleteRequested = true;
+                editableItems.removeWhere((element) => item == element);
+                updateParent(selected ? null : NotGiven(), false);
+                setState(() {});
+              },
+            ),
+            onTap: () {
+              if (!deleteRequested) {
+                updateParent(item.value, true);
+              }
             },
-            child: (Row(children: [
-              selected
-                  ? Icon(
-                      Icons.check,
-                      color: Colors.green,
-                    )
-                  : Icon(
-                      Icons.check_box_outline_blank,
-                      color: Colors.transparent,
-                    ),
-              SizedBox(width: 7),
-              Expanded(
-                child: item,
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.delete,
-                  color: Colors.red,
-                ),
-                onPressed: () {
-                  deleteRequested = true;
-                  editableItems.removeWhere((element) => item == element);
-                  updateParent(selected ? null : NotGiven(), false);
-                  setState(() {});
-                },
-              ),
-            ])),
-          ));
+            horizontalTitleGap: 0,
+          );
         },
         dialogBox: false,
         isExpanded: true,

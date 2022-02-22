@@ -2076,6 +2076,35 @@ class _MyAppState extends State<MyApp> {
         },
         searchDelay: 500,
       ),
+      "Single dialog custom field presentation": SearchChoices.single(
+        items: items,
+        value: selectedValueSingleDialog,
+        hint: "Select one",
+        searchHint: "Select one",
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialog = value;
+          });
+        },
+        isExpanded: true,
+        fieldPresentationFn: (Widget fieldWidget, {bool? selectionIsValid}) {
+          return Container(
+            padding: const EdgeInsets.all(12.0),
+            child: InputDecorator(
+              decoration: InputDecoration(
+                labelText: 'Label',
+                isDense: true,
+                filled: true,
+                fillColor: Colors.green.shade100,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+              ),
+              child: fieldWidget,
+            ),
+          );
+        },
+      ),
     };
 
     return MaterialApp(

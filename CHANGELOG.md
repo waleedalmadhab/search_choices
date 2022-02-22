@@ -1,3 +1,7 @@
+## 2.0.18
+
+* Added fieldPresentationFn for the needs of https://github.com/lcuis/search_choices/issues/69 . Thanks @sajiyabro98 .
+
 ## 2.0.17
 
 * Bug 63 1.1 Click on dropdown button while menu is opened doesn't close menu. Thanks @Macacoazul01 https://github.com/lcuis/search_choices/issues/63
