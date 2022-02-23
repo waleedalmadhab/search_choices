@@ -1,3 +1,8 @@
+## 2.0.19
+
+* ScrollBar parameter isAlwaysShown is back instead of thumbVisibility as it broke the build as shown in https://github.com/lcuis/search_choices/issues/70
+* Working with stable flutter channel on GitHub CI/CD instead of dev channel.
+
 ## 2.0.18
 
 * Added fieldPresentationFn for the needs of https://github.com/lcuis/search_choices/issues/69 . Thanks @sajiyabro98 .
