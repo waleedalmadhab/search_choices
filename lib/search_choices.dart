@@ -338,7 +338,8 @@ class SearchChoices<T> extends StatefulWidget {
     BuildContext dropDownContext,
   )? buildDropDownDialog;
 
-  /// [dropDownDialogPadding] [EdgeInsets] sets the padding between the screen and the dialog.
+  /// [dropDownDialogPadding] [EdgeInsets] sets the padding between the screen
+  /// and the dialog.
   final EdgeInsets? dropDownDialogPadding;
 
   /// [searchInputDecoration] [InputDecoration] sets the search bar decoration.
@@ -490,6 +491,8 @@ class SearchChoices<T> extends StatefulWidget {
   /// parameter, defaulted to null.
   /// * [buildDropDownDialog] [Function] controls the layout of the dropdown
   /// dialog.
+  /// * [dropDownDialogPadding] [EdgeInsets] sets the padding between the screen
+  /// and the dialog.
   /// * [searchInputDecoration] [InputDecoration] sets the search bar
   /// decoration.
   /// * [itemsPerPage] [int] if set, organizes the search list per page with the
@@ -729,6 +732,8 @@ class SearchChoices<T> extends StatefulWidget {
   /// parameter, defaulted to null.
   /// * [buildDropDownDialog] [Function] controls the layout of the dropdown
   /// dialog.
+  /// * [dropDownDialogPadding] [EdgeInsets] sets the padding between the screen
+  /// and the dialog.
   /// * [searchInputDecoration] [InputDecoration] sets the search bar
   /// decoration.
   /// * [itemsPerPage] [int] if set, organizes the search list per page with the
@@ -952,8 +957,15 @@ class SearchChoices<T> extends StatefulWidget {
         assert(menuConstraints == null || !dialogBox),
         assert(itemsPerPage == null || currentPage != null,
             "currentPage must be given if itemsPerPage is given"),
-        // assert((dropDownDialogPadding == null) != (buildDropDownDialog == null),
-        //     "must either have buildDropDownDialog or dropDownDialogPadding but not both"),
+        assert(
+            dropDownDialogPadding == null || buildDropDownDialog == null,
+            "buildDropDownDialog and dropDownDialogPadding cannot be set at" +
+                " the same time"),
+        assert(
+            dialogBox ||
+                (dropDownDialogPadding == null && buildDropDownDialog == null),
+            "buildDropDownDialog and dropDownDialogPadding must be null if" +
+                "dialogBox == false"),
         assert(
             futureSearchOrderOptions == null || futureSearchFn != null,
             "futureSearchOrderOptions is of no use if futureSearchFn is not " +

@@ -6,6 +6,14 @@ import 'package:http/http.dart';
 
 import 'package:search_choices/search_choices.dart';
 
+class MyProduct {
+  String title, id, amount;
+  MyProduct(this.title, this.id, this.amount);
+  toString() {
+    return (title);
+  }
+}
+
 class ExampleNumber {
   int number;
 
@@ -200,6 +208,15 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  MyProduct? x;
+  List<DropdownMenuItem<MyProduct>> myProductsDropDowns = [
+    DropdownMenuItem<MyProduct>(
+        value: MyProduct("A", "1", "99"), child: Text("A")),
+    DropdownMenuItem<MyProduct>(
+        value: MyProduct("B", "2", "199"), child: Text("B")),
+    DropdownMenuItem<MyProduct>(
+        value: MyProduct("C", "3", "1999"), child: Text("C"))
+  ];
   @override
   Widget build(BuildContext context) {
     Map<String, Widget> widgets;
@@ -215,19 +232,6 @@ class _MyAppState extends State<MyApp> {
           });
         },
         isExpanded: true,
-      ),
-      "Single dialog with reduced size": SearchChoices.single(
-        items: items,
-        value: selectedValueSingleDialog,
-        hint: "Select one",
-        searchHint: "Select one",
-        onChanged: (value) {
-          setState(() {
-            selectedValueSingleDialog = value;
-          });
-        },
-        isExpanded: true,
-        dropDownDialogPadding: EdgeInsets.symmetric(vertical:100,horizontal: 100),
       ),
       "Multi dialog": SearchChoices.multiple(
         items: items,
@@ -369,6 +373,10 @@ class _MyAppState extends State<MyApp> {
         ),
         iconDisabledColor: Colors.brown,
         iconEnabledColor: Colors.indigo,
+        dropDownDialogPadding: EdgeInsets.symmetric(
+          vertical: 80,
+          horizontal: 80,
+        ),
         isExpanded: true,
       ),
       "Multi select 3 dialog": SearchChoices.multiple(

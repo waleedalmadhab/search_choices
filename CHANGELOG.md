@@ -1,3 +1,7 @@
+## 2.0.20
+
+* Added dropDownDialogPadding parameter. Thanks @Macacoazul01 https://github.com/lcuis/search_choices/issues/77
+
 ## 2.0.19
 
 * ScrollBar parameter isAlwaysShown is back instead of thumbVisibility as it broke the build as shown in https://github.com/lcuis/search_choices/issues/70

@@ -122,6 +122,7 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
     double padding = 10.0,
     Function? setOpenDialog,
     Widget Function  (Widget titleBar,Widget searchBar, Widget list, Widget closeButton, BuildContext dropDownContext,)? buildDropDownDialog,
+    EdgeInsets? dropDownDialogPadding,
     InputDecoration searchInputDecoration = const InputDecoration(
       prefixIcon: Icon(
         Icons.search,
@@ -187,6 +188,7 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
 * padding double sets the padding around the DropdownButton, defaulted to 10.0.
 * setOpenDialog Function sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
 * buildDropDownDialog Function controls the layout of the dropdown dialog.
+* dropDownDialogPadding EdgeInsets sets the padding between the screen and the dialog.
 * searchInputDecoration InputDecoration sets the search bar decoration.
 * itemsPerPage int if set, organizes the search list per page with the given number of items displayed per page.
 * currentPage PointerThisPlease of an int if itemsPerPage is set, holds the page number for the search items to be displayed.
@@ -243,6 +245,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
     double padding = 10.0,
     Function? setOpenDialog,
     Widget Function  (Widget titleBar,Widget searchBar, Widget list, Widget closeButton, BuildContext dropDownContext,)? buildDropDownDialog,
+    EdgeInsets? dropDownDialogPadding,
     InputDecoration searchInputDecoration = const InputDecoration(
       prefixIcon: Icon(
         Icons.search,
@@ -308,6 +311,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
 * padding double sets the padding around the DropdownButton, defaulted to 10.0.
 * setOpenDialog Function sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
 * buildDropDownDialog Function controls the layout of the dropdown dialog.
+* dropDownDialogPadding EdgeInsets sets the padding between the screen and the dialog.
 * searchInputDecoration InputDecoration sets the search bar decoration.
 * itemsPerPage int if set, organizes the search list per page with the given number of items displayed per page.
 * currentPage PointerThisPlease<int> if itemsPerPage is set, holds the page number for the search items to be displayed.
@@ -548,6 +552,10 @@ SearchChoices.multiple(
         ),
         iconDisabledColor: Colors.brown,
         iconEnabledColor: Colors.indigo,
+        dropDownDialogPadding: EdgeInsets.symmetric(
+          vertical: 80,
+          horizontal: 80,
+        ),
         isExpanded: true,
       )
 ```
@@ -2544,6 +2552,7 @@ In your pull request, feel free to add your line in the contributors section bel
 * https://github.com/avalentic
 * https://github.com/luis-cruzt
 * https://github.com/develogo
+* https://github.com/Macacoazul01
 
 ## CI/CD
 
