@@ -216,6 +216,19 @@ class _MyAppState extends State<MyApp> {
         },
         isExpanded: true,
       ),
+      "Single dialog with reduced size": SearchChoices.single(
+        items: items,
+        value: selectedValueSingleDialog,
+        hint: "Select one",
+        searchHint: "Select one",
+        onChanged: (value) {
+          setState(() {
+            selectedValueSingleDialog = value;
+          });
+        },
+        isExpanded: true,
+        dropDownDialogPadding: EdgeInsets.symmetric(vertical:100,horizontal: 100),
+      ),
       "Multi dialog": SearchChoices.multiple(
         items: items,
         selectedItems: selectedItemsMultiDialog,
