@@ -338,6 +338,9 @@ class SearchChoices<T> extends StatefulWidget {
     BuildContext dropDownContext,
   )? buildDropDownDialog;
 
+  /// [dropDownDialogPadding] [EdgeInsets] sets the padding between the screen and the dialog.
+  final EdgeInsets? dropDownDialogPadding;
+
   /// [searchInputDecoration] [InputDecoration] sets the search bar decoration.
   final InputDecoration? searchInputDecoration;
 
@@ -573,6 +576,7 @@ class SearchChoices<T> extends StatefulWidget {
       BuildContext dropDownContext,
     )?
         buildDropDownDialog,
+    EdgeInsets? dropDownDialogPadding,
     InputDecoration? searchInputDecoration,
     int? itemsPerPage,
     PointerThisPlease<int>? currentPage,
@@ -633,6 +637,7 @@ class SearchChoices<T> extends StatefulWidget {
       padding: padding,
       setOpenDialog: setOpenDialog,
       buildDropDownDialog: buildDropDownDialog,
+      dropDownDialogPadding: dropDownDialogPadding,
       searchInputDecoration: searchInputDecoration,
       itemsPerPage: itemsPerPage,
       currentPage: currentPage,
@@ -811,6 +816,7 @@ class SearchChoices<T> extends StatefulWidget {
       BuildContext dropDownContext,
     )?
         buildDropDownDialog,
+    EdgeInsets? dropDownDialogPadding,
     InputDecoration? searchInputDecoration,
     int? itemsPerPage,
     PointerThisPlease<int>? currentPage,
@@ -872,6 +878,7 @@ class SearchChoices<T> extends StatefulWidget {
       padding: padding,
       setOpenDialog: setOpenDialog,
       buildDropDownDialog: buildDropDownDialog,
+      dropDownDialogPadding: dropDownDialogPadding,
       searchInputDecoration: searchInputDecoration,
       itemsPerPage: itemsPerPage,
       currentPage: currentPage,
@@ -927,6 +934,7 @@ class SearchChoices<T> extends StatefulWidget {
     this.padding = 10,
     this.setOpenDialog,
     this.buildDropDownDialog,
+    this.dropDownDialogPadding,
     this.searchInputDecoration,
     this.itemsPerPage,
     this.currentPage,
@@ -944,6 +952,8 @@ class SearchChoices<T> extends StatefulWidget {
         assert(menuConstraints == null || !dialogBox),
         assert(itemsPerPage == null || currentPage != null,
             "currentPage must be given if itemsPerPage is given"),
+        // assert((dropDownDialogPadding == null) != (buildDropDownDialog == null),
+        //     "must either have buildDropDownDialog or dropDownDialogPadding but not both"),
         assert(
             futureSearchOrderOptions == null || futureSearchFn != null,
             "futureSearchOrderOptions is of no use if futureSearchFn is not " +
@@ -1238,6 +1248,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         autofocus: widget.autofocus,
         initialSearchTerms: searchTerms,
         buildDropDownDialog: widget.buildDropDownDialog,
+        dropDownDialogPadding: widget.dropDownDialogPadding,
         searchInputDecoration: widget.searchInputDecoration,
         itemsPerPage: widget.itemsPerPage,
         currentPage: widget.currentPage,
@@ -1587,6 +1598,9 @@ class DropdownDialog<T> extends StatefulWidget {
   )? buildDropDownDialog;
 
   /// See SearchChoices class.
+  final EdgeInsets? dropDownDialogPadding;
+
+  /// See SearchChoices class.
   final InputDecoration? searchInputDecoration;
 
   /// See SearchChoices class.
@@ -1660,6 +1674,7 @@ class DropdownDialog<T> extends StatefulWidget {
     required this.autofocus,
     required this.initialSearchTerms,
     this.buildDropDownDialog,
+    this.dropDownDialogPadding,
     this.searchInputDecoration,
     this.itemsPerPage,
     this.currentPage,
@@ -2087,7 +2102,8 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
           listWithPagination(), closeButtonWrapper(), dropdownDialogContext));
     }
     return AnimatedContainer(
-      padding: MediaQuery.of(dropdownDialogContext).viewInsets,
+      padding: widget.dropDownDialogPadding ??
+          MediaQuery.of(dropdownDialogContext).viewInsets,
       duration: const Duration(milliseconds: 300),
       child: Card(
         color: widget.menuBackgroundColor,
