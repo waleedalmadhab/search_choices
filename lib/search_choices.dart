@@ -1311,13 +1311,12 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
             prepareWidget(widget.disabledHint,
                     parameter: updateParentWithOptionalPop) !=
                 null)) {
-      final Widget? positionedHint = _enabled
-          ? prepareWidget(widget.hint)
-          : DropdownMenuItem<Widget>(
-              child: prepareWidget(widget.disabledHint,
+      final Widget? positionedHint = (_enabled
+              ? prepareWidget(widget.hint)
+              : prepareWidget(widget.disabledHint,
                       parameter: updateParentWithOptionalPop) ??
-                  prepareWidget(widget.hint) ??
-                  SizedBox.shrink());
+                  prepareWidget(widget.hint)) ??
+          SizedBox.shrink();
       hintIndex = items.length;
       items.add(DefaultTextStyle(
         style: _textStyle.copyWith(color: Theme.of(context).hintColor),
