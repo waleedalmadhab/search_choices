@@ -1,3 +1,8 @@
+## 2.0.21
+
+* Updated license date. Fixed a deprecation warning in pub.dev with isAlwaysShown.
+* Fixed increasing or decreasing size between hint, enabled, disabled, selected states. Thanks @vaibhavjoshi247 https://github.com/lcuis/search_choices/issues/81
+
 ## 2.0.20
 
 * Added dropDownDialogPadding parameter. Thanks @Macacoazul01 https://github.com/lcuis/search_choices/issues/77

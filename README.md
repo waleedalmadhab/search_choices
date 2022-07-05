@@ -119,7 +119,7 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
     bool rightToLeft = false,
     bool autofocus = true,
     Function? selectedAggregateWidgetFn,
-    double padding = 10.0,
+    dynamic padding = 10.0,
     Function? setOpenDialog,
     Widget Function  (Widget titleBar,Widget searchBar, Widget list, Widget closeButton, BuildContext dropDownContext,)? buildDropDownDialog,
     EdgeInsets? dropDownDialogPadding,
@@ -185,7 +185,7 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
 * rightToLeft bool mirrors the widgets display for right to left languages defaulted to false.
 * autofocus bool automatically focuses on the search field bringing up the keyboard defaulted to true.
 * selectedAggregateWidgetFn Function with parameter: list of widgets presenting selected values, returning Widget to be displayed to present the selected items.
-* padding double sets the padding around the DropdownButton, defaulted to 10.0.
+* padding double or EdgeInsets sets the padding around the DropdownButton, defaulted to 10.0.
 * setOpenDialog Function sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
 * buildDropDownDialog Function controls the layout of the dropdown dialog.
 * dropDownDialogPadding EdgeInsets sets the padding between the screen and the dialog.
@@ -242,7 +242,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
     bool rightToLeft = false,
     bool autofocus = true,
     Function? selectedAggregateWidgetFn,
-    double padding = 10.0,
+    dynamic padding = 10.0,
     Function? setOpenDialog,
     Widget Function  (Widget titleBar,Widget searchBar, Widget list, Widget closeButton, BuildContext dropDownContext,)? buildDropDownDialog,
     EdgeInsets? dropDownDialogPadding,
@@ -308,7 +308,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
 * rightToLeft bool mirrors the widgets display for right to left languages defaulted to false.
 * autofocus bool automatically focuses on the search field bringing up the keyboard defaulted to true.
 * selectedAggregateWidgetFn Function with parameter: list of widgets presenting selected values, returning Widget to be displayed to present the selected items.
-* padding double sets the padding around the DropdownButton, defaulted to 10.0.
+* padding double or EdgeInsets sets the padding around the DropdownButton, defaulted to 10.0.
 * setOpenDialog Function sets the function to call to set the function to call in order to open the dialog with the search terms string as a parameter, defaulted to null.
 * buildDropDownDialog Function controls the layout of the dropdown dialog.
 * dropDownDialogPadding EdgeInsets sets the padding between the screen and the dialog.

@@ -288,9 +288,9 @@ class SearchChoices<T> extends StatefulWidget {
   /// present the selected items.
   final Function? selectedAggregateWidgetFn;
 
-  /// [padding] [double] sets the padding around the DropdownButton, defaulted
-  /// to 10.0.
-  final double padding;
+  /// [padding] [double] or [EdgeInsets] sets the padding around the
+  /// DropdownButton, defaulted to 10.0.
+  final dynamic padding;
 
   /// [setOpenDialog] [Function] sets the function to call to set the function
   /// to call in order to open the dialog with the search terms string as a
@@ -484,8 +484,8 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [selectedAggregateWidgetFn] [Function] with parameter: __list of widgets
   /// presenting selected values__ , returning [Widget] to be displayed to
   /// present the selected items.
-  /// * [padding] [double] sets the padding around the DropdownButton, defaulted
-  /// to 10.0.
+  /// * [padding] [double] or [EdgeInsets] sets the padding around the
+  /// DropdownButton, defaulted to 10.0.
   /// * [setOpenDialog] [Function] sets the function to call to set the function
   /// to call in order to open the dialog with the search terms string as a
   /// parameter, defaulted to null.
@@ -569,7 +569,7 @@ class SearchChoices<T> extends StatefulWidget {
     bool rightToLeft = false,
     bool autofocus = true,
     Function? selectedAggregateWidgetFn,
-    double padding = 10.0,
+    dynamic padding = 10.0,
     Function? setOpenDialog,
     Widget Function(
       Widget titleBar,
@@ -725,8 +725,8 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [selectedAggregateWidgetFn] [Function] with parameter: __list of widgets
   /// presenting selected values__ , returning [Widget] to be displayed to
   /// present the selected items.
-  /// * [padding] [double] sets the padding around the DropdownButton, defaulted
-  /// to 10.0.
+  /// * [padding] [double] or [EdgeInsets] sets the padding around the
+  /// DropdownButton, defaulted to 10.0.
   /// * [setOpenDialog] [Function] sets the function to call to set the function
   /// to call in order to open the dialog with the search terms string as a
   /// parameter, defaulted to null.
@@ -811,7 +811,7 @@ class SearchChoices<T> extends StatefulWidget {
     bool rightToLeft = false,
     bool autofocus = true,
     Function? selectedAggregateWidgetFn,
-    double padding = 10.0,
+    dynamic padding = 10.0,
     Function? setOpenDialog,
     Widget Function(
       Widget titleBar,
@@ -1466,7 +1466,9 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
             ? Stack(
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.all(widget.padding),
+                    padding: widget.padding is EdgeInsets
+                        ? widget.padding
+                        : EdgeInsets.all(widget.padding),
                     child: result,
                   ),
                   widget.underline is NotGiven
