@@ -1,18 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
 import 'package:search_choices/search_choices.dart';
-
-class MyProduct {
-  String title, id, amount;
-  MyProduct(this.title, this.id, this.amount);
-  toString() {
-    return (title);
-  }
-}
 
 class ExampleNumber {
   int number;
@@ -113,6 +104,10 @@ class _MyAppState extends State<MyApp> {
 
   bool noResult = false;
 
+  String widgetSearchString = "";
+
+  TextEditingController widgetSearchController = TextEditingController();
+
   @override
   void initState() {
     String wordPair = "";
@@ -208,15 +203,6 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  MyProduct? x;
-  List<DropdownMenuItem<MyProduct>> myProductsDropDowns = [
-    DropdownMenuItem<MyProduct>(
-        value: MyProduct("A", "1", "99"), child: Text("A")),
-    DropdownMenuItem<MyProduct>(
-        value: MyProduct("B", "2", "199"), child: Text("B")),
-    DropdownMenuItem<MyProduct>(
-        value: MyProduct("C", "3", "1999"), child: Text("C"))
-  ];
   @override
   Widget build(BuildContext context) {
     Map<String, Widget> widgets;
@@ -910,17 +896,25 @@ class _MyAppState extends State<MyApp> {
           });
         },
         selectedValueWidgetFn: (item) {
-          return (Text(
-            item,
-            overflow: TextOverflow.ellipsis,
-          ));
+          return DropdownMenuItem(
+            child: (Text(
+              item,
+              overflow: TextOverflow.ellipsis,
+            )),
+          );
         },
         dialogBox: true,
         isExpanded: true,
       ),
       "Single dialog right to left": SearchChoices.single(
-        items: ["طنجة", "فاس‎", "أكادير‎", "تزنيت‎", "آكــلــو", "سيدي بيبي"]
-            .map<DropdownMenuItem<String>>((string) {
+        items: [
+          "طنجة",
+          "فاس‎",
+          "أكادير‎",
+          "تزنيت‎",
+          "آكــلــو",
+          "سيدي بيبي",
+        ].map<DropdownMenuItem<String>>((string) {
           return (DropdownMenuItem<String>(
             child: Text(
               string,
@@ -930,9 +924,14 @@ class _MyAppState extends State<MyApp> {
           ));
         }).toList(),
         value: selectedValueSingleDialogRightToLeft,
-        hint: Text(
-          "ختار",
+        hint: Row(
           textDirection: TextDirection.rtl,
+          children: [
+            Text(
+              "ختار",
+              textDirection: TextDirection.rtl,
+            ),
+          ],
         ),
         searchHint: Text(
           "ختار",
@@ -943,9 +942,14 @@ class _MyAppState extends State<MyApp> {
             Navigator.pop(
                 MyApp.navKey.currentState?.overlay?.context ?? context);
           },
-          child: Text(
-            "سدّ",
-            textDirection: TextDirection.rtl,
+          child: SizedBox(
+            width: 50,
+            child: Text(
+              "سدّ",
+              maxLines: 1,
+              softWrap: false,
+              textDirection: TextDirection.rtl,
+            ),
           ),
         ),
         onChanged: (value) {
@@ -974,14 +978,16 @@ class _MyAppState extends State<MyApp> {
           ]));
         },
         selectedValueWidgetFn: (item) {
-          return Row(
-            textDirection: TextDirection.rtl,
-            children: <Widget>[
-              (Text(
-                item,
-                textDirection: TextDirection.rtl,
-              )),
-            ],
+          return DropdownMenuItem(
+            child: Row(
+              textDirection: TextDirection.rtl,
+              children: <Widget>[
+                (Text(
+                  item,
+                  textDirection: TextDirection.rtl,
+                )),
+              ],
+            ),
           );
         },
       ),
@@ -1180,8 +1186,14 @@ class _MyAppState extends State<MyApp> {
         currentPage: currentPage,
       ),
       "Multi dialog paged rtl": SearchChoices.multiple(
-        items: ["طنجة", "فاس‎", "أكادير‎", "تزنيت‎", "آكــلــو", "سيدي بيبي"]
-            .map<DropdownMenuItem<String>>((string) {
+        items: [
+          "طنجة",
+          "فاس‎",
+          "أكادير‎",
+          "تزنيت‎",
+          "آكــلــو",
+          "سيدي بيبي",
+        ].map<DropdownMenuItem<String>>((string) {
           return (DropdownMenuItem<String>(
             child: Text(
               string,
@@ -1191,9 +1203,14 @@ class _MyAppState extends State<MyApp> {
           ));
         }).toList(),
         selectedItems: selectedItemsMultiDialogPaged,
-        hint: Text(
-          "ختار",
+        hint: Row(
           textDirection: TextDirection.rtl,
+          children: [
+            Text(
+              "ختار",
+              textDirection: TextDirection.rtl,
+            ),
+          ],
         ),
         searchHint: Text(
           "ختار",
@@ -1204,9 +1221,14 @@ class _MyAppState extends State<MyApp> {
             Navigator.pop(
                 MyApp.navKey.currentState?.overlay?.context ?? context);
           },
-          child: Text(
-            "سدّ",
-            textDirection: TextDirection.rtl,
+          child: SizedBox(
+            width: 50,
+            child: Text(
+              "سدّ",
+              maxLines: 1,
+              softWrap: false,
+              textDirection: TextDirection.rtl,
+            ),
           ),
         ),
         onChanged: (value) {
@@ -1218,6 +1240,7 @@ class _MyAppState extends State<MyApp> {
         rightToLeft: true,
         displayItem: (item, selected) {
           return (Row(textDirection: TextDirection.rtl, children: [
+            SizedBox(width: 7),
             selected
                 ? Icon(
                     Icons.radio_button_checked,
@@ -1235,14 +1258,16 @@ class _MyAppState extends State<MyApp> {
           ]));
         },
         selectedValueWidgetFn: (item) {
-          return Row(
-            textDirection: TextDirection.rtl,
-            children: <Widget>[
-              (Text(
-                item,
-                textDirection: TextDirection.rtl,
-              )),
-            ],
+          return DropdownMenuItem(
+            child: Row(
+              textDirection: TextDirection.rtl,
+              children: <Widget>[
+                (Text(
+                  item,
+                  textDirection: TextDirection.rtl,
+                )),
+              ],
+            ),
           );
         },
         itemsPerPage: 5,
@@ -2207,25 +2232,28 @@ class _MyAppState extends State<MyApp> {
                       .map((k, v) {
                         return (MapEntry(
                             k,
-                            Center(
-                                child: Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      side: BorderSide(
-                                        color: Colors.grey,
-                                        width: 1.0,
-                                      ),
-                                    ),
-                                    margin: EdgeInsets.all(20),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(20.0),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Text("$k:"),
-                                          v,
-                                        ],
-                                      ),
-                                    )))));
+                            !k.toLowerCase().contains(widgetSearchString)
+                                ? SizedBox.shrink()
+                                : Center(
+                                    child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          side: BorderSide(
+                                            color: Colors.grey,
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                        margin: EdgeInsets.all(20),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20.0),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Text("$k:"),
+                                              v,
+                                            ],
+                                          ),
+                                        )))));
                       })
                       .values
                       .toList()
@@ -2235,10 +2263,54 @@ class _MyAppState extends State<MyApp> {
                           height: 500,
                         ),
                       ),
+                    )
+                    ..insert(
+                      0,
+                      Center(
+                        child: searchField(),
+                      ),
                     ), //prevents scrolling issues at the end of the list of Widgets
                 ),
               ),
             ),
+    );
+  }
+
+  Widget searchField() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: widgetSearchController,
+              decoration: InputDecoration(hintText: 'Search for an example'),
+              onChanged: (value) {
+                setState(() {
+                  widgetSearchString = value;
+                });
+              },
+            ),
+          ),
+          SizedBox(
+            width: 8,
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.clear,
+              color: widgetSearchString.isEmpty ? Colors.grey : Colors.black,
+            ),
+            onPressed: widgetSearchString.isEmpty
+                ? null
+                : () {
+                    setState(() {
+                      widgetSearchString = "";
+                      widgetSearchController.text = "";
+                    });
+                  },
+          ),
+        ],
+      ),
     );
   }
 }

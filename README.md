@@ -56,6 +56,7 @@ See code below.
 | [Single dialog future<br>custom error button](#Single-dialog-future-custom-error-button) | ![Single dialog future custom error button](https://searchchoices.jod.li/Single%20dialog%20future%20custom%20error%20button.gif) |
 | [Single dialog paged<br>delayed](#Single-dialog-paged-delayed) | ![Single dialog paged delayed](https://searchchoices.jod.li/Single%20dialog%20paged%20delayed.gif) |
 | [Single dialog paged<br>future delayed](#Single-dialog-paged-future-delayed) | ![Single dialog paged future delayed](https://searchchoices.jod.li/Single%20dialog%20paged%20future%20delayed.gif) |
+| [Single dialog custom<br>field presentation](#Single-dialog-custom-field-presentation) | ![Single dialog custom field presentation](https://searchchoices.jod.li/Single%20dialog%20custom%20field%20presentation.gif) |
 
 
 ### Code
@@ -1256,21 +1257,29 @@ SearchChoices.single(
           });
         },
         selectedValueWidgetFn: (item) {
-          return (Text(
-            item,
-            overflow: TextOverflow.ellipsis,
-          ));
+          return DropdownMenuItem(
+            child: (Text(
+              item,
+              overflow: TextOverflow.ellipsis,
+            )),
+          );
         },
         dialogBox: true,
         isExpanded: true,
       )
 ```
 ### Single dialog right to left
-In support for Arabic and Hebrew languages.
+In support for Arabic, Hebrew and other RTL languages.
 ```dart
 SearchChoices.single(
-        items: ["طنجة", "فاس‎", "أكادير‎", "تزنيت‎", "آكــلــو", "سيدي بيبي"]
-            .map<DropdownMenuItem<String>>((string) {
+        items: [
+          "طنجة",
+          "فاس‎",
+          "أكادير‎",
+          "تزنيت‎",
+          "آكــلــو",
+          "سيدي بيبي",
+        ].map<DropdownMenuItem<String>>((string) {
           return (DropdownMenuItem<String>(
             child: Text(
               string,
@@ -1280,9 +1289,14 @@ SearchChoices.single(
           ));
         }).toList(),
         value: selectedValueSingleDialogRightToLeft,
-        hint: Text(
-          "ختار",
+        hint: Row(
           textDirection: TextDirection.rtl,
+          children: [
+            Text(
+              "ختار",
+              textDirection: TextDirection.rtl,
+            ),
+          ],
         ),
         searchHint: Text(
           "ختار",
@@ -1293,9 +1307,14 @@ SearchChoices.single(
             Navigator.pop(
                 MyApp.navKey.currentState?.overlay?.context ?? context);
           },
-          child: Text(
-            "سدّ",
-            textDirection: TextDirection.rtl,
+          child: SizedBox(
+            width: 50,
+            child: Text(
+              "سدّ",
+              maxLines: 1,
+              softWrap: false,
+              textDirection: TextDirection.rtl,
+            ),
           ),
         ),
         onChanged: (value) {
@@ -1324,14 +1343,16 @@ SearchChoices.single(
           ]));
         },
         selectedValueWidgetFn: (item) {
-          return Row(
-            textDirection: TextDirection.rtl,
-            children: <Widget>[
-              (Text(
-                item,
-                textDirection: TextDirection.rtl,
-              )),
-            ],
+          return DropdownMenuItem(
+            child: Row(
+              textDirection: TextDirection.rtl,
+              children: <Widget>[
+                (Text(
+                  item,
+                  textDirection: TextDirection.rtl,
+                )),
+              ],
+            ),
           );
         },
       )
@@ -1561,8 +1582,14 @@ SearchChoices.single(
 Pagination also works on multiple selection and with right to left languages such as Arabic and Hebrew. Useful when displaying a huge amount of items.
 ```dart
 SearchChoices.multiple(
-        items: ["طنجة", "فاس‎", "أكادير‎", "تزنيت‎", "آكــلــو", "سيدي بيبي"]
-            .map<DropdownMenuItem<String>>((string) {
+        items: [
+          "طنجة",
+          "فاس‎",
+          "أكادير‎",
+          "تزنيت‎",
+          "آكــلــو",
+          "سيدي بيبي",
+        ].map<DropdownMenuItem<String>>((string) {
           return (DropdownMenuItem<String>(
             child: Text(
               string,
@@ -1572,9 +1599,14 @@ SearchChoices.multiple(
           ));
         }).toList(),
         selectedItems: selectedItemsMultiDialogPaged,
-        hint: Text(
-          "ختار",
+        hint: Row(
           textDirection: TextDirection.rtl,
+          children: [
+            Text(
+              "ختار",
+              textDirection: TextDirection.rtl,
+            ),
+          ],
         ),
         searchHint: Text(
           "ختار",
@@ -1585,9 +1617,14 @@ SearchChoices.multiple(
             Navigator.pop(
                 MyApp.navKey.currentState?.overlay?.context ?? context);
           },
-          child: Text(
-            "سدّ",
-            textDirection: TextDirection.rtl,
+          child: SizedBox(
+            width: 50,
+            child: Text(
+              "سدّ",
+              maxLines: 1,
+              softWrap: false,
+              textDirection: TextDirection.rtl,
+            ),
           ),
         ),
         onChanged: (value) {
@@ -1599,6 +1636,7 @@ SearchChoices.multiple(
         rightToLeft: true,
         displayItem: (item, selected) {
           return (Row(textDirection: TextDirection.rtl, children: [
+            SizedBox(width: 7),
             selected
                 ? Icon(
                     Icons.radio_button_checked,
@@ -1616,14 +1654,16 @@ SearchChoices.multiple(
           ]));
         },
         selectedValueWidgetFn: (item) {
-          return Row(
-            textDirection: TextDirection.rtl,
-            children: <Widget>[
-              (Text(
-                item,
-                textDirection: TextDirection.rtl,
-              )),
-            ],
+          return DropdownMenuItem(
+            child: Row(
+              textDirection: TextDirection.rtl,
+              children: <Widget>[
+                (Text(
+                  item,
+                  textDirection: TextDirection.rtl,
+                )),
+              ],
+            ),
           );
         },
         itemsPerPage: 5,
@@ -2546,6 +2586,39 @@ SearchChoices.single(
               );
             },
             searchDelay: 500,
+          )
+```
+### Single dialog custom field presentation
+Making use of `fieldPresentationFn` to display the result of the selection in a custom way.
+```dart
+SearchChoices.single(
+            items: items,
+            value: selectedValueSingleDialog,
+            hint: "Select one",
+            searchHint: "Select one",
+            onChanged: (value) {
+              setState(() {
+                selectedValueSingleDialog = value;
+              });
+            },
+            isExpanded: true,
+            fieldPresentationFn: (Widget fieldWidget, {bool? selectionIsValid}) {
+              return Container(
+                padding: const EdgeInsets.all(12.0),
+                child: InputDecorator(
+                  decoration: InputDecoration(
+                    labelText: 'Label',
+                    isDense: true,
+                    filled: true,
+                    fillColor: Colors.green.shade100,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                  ),
+                  child: fieldWidget,
+                ),
+              );
+            },
           )
 ```
 
