@@ -417,6 +417,11 @@ class SearchChoices<T> extends StatefulWidget {
   final Widget Function(Widget fieldWidget, {bool selectionIsValid})?
       fieldPresentationFn;
 
+  /// [fieldDecoration] [Decoration] is the decoration of the SearchChoices
+  /// Widget while displaying the hints or the selected values.
+  /// Should differ when selection is not valid.
+  final Decoration? fieldDecoration;
+
   /// Search choices Widget with a single choice that opens a dialog or a menu
   /// to let the user do the selection conveniently with a search.
   ///
@@ -534,6 +539,9 @@ class SearchChoices<T> extends StatefulWidget {
   /// initiated. This applies to future and non-future searches.
   /// * [fieldPresentationFn] [Function] returning a Widget to customize the
   /// display of the field.
+  /// * [fieldDecoration] [Decoration] is the decoration of the SearchChoices
+  /// Widget while displaying the hints or the selected values.
+  /// Should differ when selection is not valid.
   factory SearchChoices.single({
     Key? key,
     List<DropdownMenuItem<T>>? items,
@@ -569,7 +577,7 @@ class SearchChoices<T> extends StatefulWidget {
     bool rightToLeft = false,
     bool autofocus = true,
     Function? selectedAggregateWidgetFn,
-    dynamic padding = 10.0,
+    dynamic padding,
     Function? setOpenDialog,
     Widget Function(
       Widget titleBar,
@@ -601,6 +609,7 @@ class SearchChoices<T> extends StatefulWidget {
     int? searchDelay,
     Widget Function(Widget fieldWidget, {bool selectionIsValid})?
         fieldPresentationFn,
+    Decoration? fieldDecoration,
   }) {
     return (SearchChoices._(
       key: key,
@@ -653,6 +662,7 @@ class SearchChoices<T> extends StatefulWidget {
       futureSearchRetryButton: futureSearchRetryButton,
       searchDelay: searchDelay,
       fieldPresentationFn: fieldPresentationFn,
+      fieldDecoration: fieldDecoration,
     ));
   }
 
@@ -777,6 +787,9 @@ class SearchChoices<T> extends StatefulWidget {
   /// initiated. This applies to future and non-future searches.
   /// * [fieldPresentationFn] [Function] returning a Widget to customize the
   /// display of the field.
+  /// * [fieldDecoration] [Decoration] is the decoration of the SearchChoices
+  /// Widget while displaying the hints or the selected values.
+  /// Should differ when selection is not valid.
   factory SearchChoices.multiple({
     Key? key,
     List<DropdownMenuItem<T>>? items,
@@ -811,7 +824,7 @@ class SearchChoices<T> extends StatefulWidget {
     bool rightToLeft = false,
     bool autofocus = true,
     Function? selectedAggregateWidgetFn,
-    dynamic padding = 10.0,
+    dynamic padding,
     Function? setOpenDialog,
     Widget Function(
       Widget titleBar,
@@ -844,6 +857,7 @@ class SearchChoices<T> extends StatefulWidget {
     int? searchDelay,
     Widget Function(Widget fieldWidget, {bool selectionIsValid})?
         fieldPresentationFn,
+    Decoration? fieldDecoration,
   }) {
     return (SearchChoices._(
       key: key,
@@ -897,6 +911,7 @@ class SearchChoices<T> extends StatefulWidget {
       futureSearchRetryButton: futureSearchRetryButton,
       searchDelay: searchDelay,
       fieldPresentationFn: fieldPresentationFn,
+      fieldDecoration: fieldDecoration,
     ));
   }
 
@@ -936,7 +951,7 @@ class SearchChoices<T> extends StatefulWidget {
     required this.rightToLeft,
     required this.autofocus,
     this.selectedAggregateWidgetFn,
-    this.padding = 10,
+    this.padding,
     this.setOpenDialog,
     this.buildDropDownDialog,
     this.dropDownDialogPadding,
@@ -953,6 +968,7 @@ class SearchChoices<T> extends StatefulWidget {
     this.futureSearchRetryButton,
     this.searchDelay,
     this.fieldPresentationFn,
+    this.fieldDecoration,
   })  : assert(!multipleSelection || doneButton != null),
         assert(menuConstraints == null || !dialogBox),
         assert(itemsPerPage == null || currentPage != null,
@@ -989,6 +1005,16 @@ class SearchChoices<T> extends StatefulWidget {
                 "while " +
                 "${multipleSelection ? "value" : "futureSelectedValues"} " +
                 "must not be set"),
+        assert(fieldDecoration == null || underline == null,
+            "use either underline or fieldDecoration"),
+        assert(fieldPresentationFn == null || underline == null,
+            "use either underline or fieldPresentationFn"),
+        assert(fieldDecoration == null || padding == null,
+            "use either padding or fieldDecoration"),
+        assert(fieldPresentationFn == null || padding == null,
+            "use either padding or fieldPresentationFn"),
+        assert(fieldDecoration == null || validator == null,
+            "use either validator or fieldDecoration"),
         super(key: key);
 
   @override
@@ -1460,41 +1486,57 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
               widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
           style: TextStyle(color: Colors.blueAccent, fontSize: 13)));
     });
+    Widget? fieldPresentation;
+    if (widget.fieldPresentationFn != null) {
+      fieldPresentation = widget.fieldPresentationFn!(
+        result,
+        selectionIsValid: valid,
+      );
+    } else if (widget.fieldDecoration != null) {
+      fieldPresentation = Padding(
+        padding: widget.padding is EdgeInsets
+            ? widget.padding
+            : EdgeInsets.all(widget.padding ?? 10),
+        child: Container(
+          decoration: widget.fieldDecoration,
+          child: result,
+        ),
+      );
+    } else {
+      fieldPresentation = Stack(
+        children: <Widget>[
+          Padding(
+            padding: widget.padding is EdgeInsets
+                ? widget.padding
+                : EdgeInsets.all(widget.padding ?? 10),
+            child: result,
+          ),
+          widget.underline is NotGiven
+              ? SizedBox.shrink()
+              : Positioned(
+                  left: 0.0,
+                  right: 0.0,
+                  bottom: bottom,
+                  child: prepareWidget(widget.underline,
+                          parameter: selectedResult) ??
+                      Container(
+                        height: 1.0,
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color:
+                                        valid ? Color(0xFFBDBDBD) : Colors.red,
+                                    width: 0.0))),
+                      ),
+                ),
+        ],
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         labelOutput ?? SizedBox.shrink(),
-        widget.fieldPresentationFn == null
-            ? Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: widget.padding is EdgeInsets
-                        ? widget.padding
-                        : EdgeInsets.all(widget.padding),
-                    child: result,
-                  ),
-                  widget.underline is NotGiven
-                      ? SizedBox.shrink()
-                      : Positioned(
-                          left: 0.0,
-                          right: 0.0,
-                          bottom: bottom,
-                          child: prepareWidget(widget.underline,
-                                  parameter: selectedResult) ??
-                              Container(
-                                height: 1.0,
-                                decoration: BoxDecoration(
-                                    border: Border(
-                                        bottom: BorderSide(
-                                            color: valid
-                                                ? Color(0xFFBDBDBD)
-                                                : Colors.red,
-                                            width: 0.0))),
-                              ),
-                        ),
-                ],
-              )
-            : widget.fieldPresentationFn!(result, selectionIsValid: valid),
+        fieldPresentation,
         valid
             ? SizedBox.shrink()
             : validatorOutput is String

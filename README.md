@@ -42,7 +42,7 @@ See code below.
 | [Multi dialog with<br>count and wrap](#Multi-dialog-with-count-and-wrap) | ![Multi dialog with count and wrap](https://searchchoices.jod.li/Multi%20dialog%20with%20count%20and%20wrap.gif) |
 | [Single dialog open<br>and set search terms](#Single-dialog-open-and-set-search-terms) | ![Single dialog open and set search terms](https://searchchoices.jod.li/Single%20dialog%20open%20and%20set%20search%20terms.gif) |
 | [Single dialog custom<br>dialog](#Single-dialog-custom-dialog) | ![Single dialog custom dialog](https://searchchoices.jod.li/Single%20dialog%20custom%20dialog.gif) |
-| [Single dialog custom<br>searchInputDecoration](#Single-dialog-custom-searchInputDecoration) | ![Single dialog custom searchInputDecoration](https://searchchoices.jod.li/Single%20dialog%20custom%20searchInputDecoration.gif) |
+| [Single dialog custom<br>decorations](#Single-dialog-custom-decorations) | ![Single dialog custom decorations](https://searchchoices.jod.li/Single%20dialog%20custom%20decorations.gif) |
 | [Single dialog paged](#Single-dialog-paged) | ![Single dialog paged](https://searchchoices.jod.li/Single%20dialog%20paged.gif) |
 | [Multi dialog paged<br>rtl](#Multi-dialog-paged-rtl) | ![Multi dialog paged rtl](https://searchchoices.jod.li/Multi%20dialog%20paged%20rtl.gif) |
 | [Single dialog paged<br>custom pagination](#Single-dialog-paged-custom-pagination) | ![Single dialog paged custom pagination](https://searchchoices.jod.li/Single%20dialog%20paged%20custom%20pagination.gif) |
@@ -149,6 +149,7 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
     Function? futureSearchRetryButton,
     int? searchDelay,
     Widget Function(Widget fieldWidget,{bool selectionIsValid})? fieldPresentationFn,
+    Decoration? fieldDecoration,
   })
 ```
 
@@ -201,6 +202,7 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
 * futureSearchRetryButton Function called to customize the Error - retry button displayed when there is an issue with the future search.
 * searchDelay int in milliseconds applied before the search is initiated. This applies to future and non-future searches.
 * fieldPresentationFn Function returning a Widget to customize the display of the field.
+* fieldDecoration Decoration is the decoration of the SearchChoices Widget while displaying the hints or the selected values. Should differ when selection is not valid.
 
 
 #### Multiple choice constructor
@@ -273,6 +275,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
     Function? futureSearchRetryButton,
     int? searchDelay,
     Widget Function(Widget fieldWidget,{bool selectionIsValid})? fieldPresentationFn,
+    Decoration? fieldDecoration,
   })
 ```
 
@@ -325,6 +328,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
 * futureSearchRetryButton Function called to customize the Error - retry button displayed when there is an issue with the future search.
 * searchDelay int in milliseconds applied before the search is initiated. This applies to future and non-future searches.
 * fieldPresentationFn Function returning a Widget to customize the display of the field.
+* fieldDecoration Decoration is the decoration of the SearchChoices Widget while displaying the hints or the selected values. Should differ when selection is not valid.
 
 #### Example app usage
 
@@ -1496,13 +1500,16 @@ SearchChoices.single(
         },
       )
 ```
-### Single dialog custom searchInputDecoration
-Can customize the way the search bar is displayed.
+### Single dialog custom decorations
+Can customize the way the search bar and field are displayed.
 ```dart
-SearchChoices.single(
         items: items,
         value: selectedValueSingleDialog,
-        hint: "Select one",
+        hint: Padding(
+            padding: EdgeInsets.all(3),
+            child: DropdownMenuItem(
+              child: Text("Select one"),
+            )),
         searchHint: "Select one",
         onChanged: (value) {
           setState(() {
@@ -1511,7 +1518,25 @@ SearchChoices.single(
         },
         isExpanded: true,
         searchInputDecoration: InputDecoration(
-            icon: Icon(Icons.airline_seat_flat), border: OutlineInputBorder()),
+          icon: Icon(Icons.airline_seat_flat),
+          border: OutlineInputBorder(),
+        ),
+        fieldDecoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(5),
+          border: Border.all(
+            color: Colors.blueGrey,
+            width: 1,
+            style: BorderStyle.solid,
+          ),
+        ),
+        selectedValueWidgetFn: (selectedValue) {
+          return (Padding(
+            padding: EdgeInsets.all(3),
+            child: DropdownMenuItem(child: Text(selectedValue)),
+          ));
+        },
       )
 ```
 ### Single dialog paged

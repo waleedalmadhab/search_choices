@@ -1129,10 +1129,14 @@ class _MyAppState extends State<MyApp> {
           ));
         },
       ),
-      "Single dialog custom searchInputDecoration": SearchChoices.single(
+      "Single dialog custom decorations": SearchChoices.single(
         items: items,
         value: selectedValueSingleDialog,
-        hint: "Select one",
+        hint: Padding(
+            padding: EdgeInsets.all(3),
+            child: DropdownMenuItem(
+              child: Text("Select one"),
+            )),
         searchHint: "Select one",
         onChanged: (value) {
           setState(() {
@@ -1141,7 +1145,25 @@ class _MyAppState extends State<MyApp> {
         },
         isExpanded: true,
         searchInputDecoration: InputDecoration(
-            icon: Icon(Icons.airline_seat_flat), border: OutlineInputBorder()),
+          icon: Icon(Icons.airline_seat_flat),
+          border: OutlineInputBorder(),
+        ),
+        fieldDecoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(5),
+          border: Border.all(
+            color: Colors.blueGrey,
+            width: 1,
+            style: BorderStyle.solid,
+          ),
+        ),
+        selectedValueWidgetFn: (selectedValue) {
+          return (Padding(
+            padding: EdgeInsets.all(3),
+            child: DropdownMenuItem(child: Text(selectedValue)),
+          ));
+        },
       ),
       "Single dialog paged": SearchChoices.single(
         items: items,

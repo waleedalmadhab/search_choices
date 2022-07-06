@@ -2,6 +2,7 @@
 
 * Updated license date. Fixed a deprecation warning in pub.dev with isAlwaysShown.
 * Fixed increasing or decreasing size between hint, enabled, disabled, selected states. Thanks @vaibhavjoshi247 https://github.com/lcuis/search_choices/issues/81
+* Added fieldDecoration. Thanks @rhernandez-itemsoft https://github.com/lcuis/search_choices/issues/78
 
 ## 2.0.20
 
