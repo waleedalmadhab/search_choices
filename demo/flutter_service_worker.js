@@ -20,7 +20,7 @@ const RESOURCES = {
 "assets/AssetManifest.json": "2efbb41d7877d10aac9d091f58ccd7b9",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
 "assets/NOTICES": "a3322531a5857e82f314c70060d99aec",
-"main.dart.js": "311d354d05ece05593e801470b7d0338"
+"main.dart.js": "69b92a994e31077054083fdfed29ba70"
 };
 
 // The application shell files that are downloaded before a service worker can
