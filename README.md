@@ -204,6 +204,7 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
 * searchDelay int in milliseconds applied before the search is initiated. This applies to future and non-future searches.
 * fieldPresentationFn Function returning a Widget to customize the display of the field.
 * fieldDecoration Decoration is the decoration of the SearchChoices Widget while displaying the hints or the selected values. Should differ when selection is not valid.
+* clearSearchIcon Widget sets the icon to be used to clear the search.
 
 
 #### Multiple choice constructor
@@ -277,6 +278,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
     int? searchDelay,
     Widget Function(Widget fieldWidget,{bool selectionIsValid})? fieldPresentationFn,
     Decoration? fieldDecoration,
+    Widget? clearSearchIcon,
   })
 ```
 
@@ -330,6 +332,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
 * searchDelay int in milliseconds applied before the search is initiated. This applies to future and non-future searches.
 * fieldPresentationFn Function returning a Widget to customize the display of the field.
 * fieldDecoration Decoration is the decoration of the SearchChoices Widget while displaying the hints or the selected values. Should differ when selection is not valid.
+* clearSearchIcon Widget sets the icon to be used to clear the search.
 
 #### Example app usage
 

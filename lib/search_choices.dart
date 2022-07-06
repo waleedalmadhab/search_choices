@@ -422,6 +422,9 @@ class SearchChoices<T> extends StatefulWidget {
   /// Should differ when selection is not valid.
   final Decoration? fieldDecoration;
 
+  /// [clearSearchIcon] [Widget] sets the icon to be used to clear the search.
+  final Widget? clearSearchIcon;
+
   /// Search choices Widget with a single choice that opens a dialog or a menu
   /// to let the user do the selection conveniently with a search.
   ///
@@ -542,6 +545,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [fieldDecoration] [Decoration] is the decoration of the SearchChoices
   /// Widget while displaying the hints or the selected values.
   /// Should differ when selection is not valid.
+  /// * [clearSearchIcon] [Widget] sets the icon to be used to clear the search.
   factory SearchChoices.single({
     Key? key,
     List<DropdownMenuItem<T>>? items,
@@ -610,6 +614,7 @@ class SearchChoices<T> extends StatefulWidget {
     Widget Function(Widget fieldWidget, {bool selectionIsValid})?
         fieldPresentationFn,
     Decoration? fieldDecoration,
+    Widget? clearSearchIcon,
   }) {
     return (SearchChoices._(
       key: key,
@@ -663,6 +668,7 @@ class SearchChoices<T> extends StatefulWidget {
       searchDelay: searchDelay,
       fieldPresentationFn: fieldPresentationFn,
       fieldDecoration: fieldDecoration,
+      clearSearchIcon: clearSearchIcon,
     ));
   }
 
@@ -790,6 +796,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// * [fieldDecoration] [Decoration] is the decoration of the SearchChoices
   /// Widget while displaying the hints or the selected values.
   /// Should differ when selection is not valid.
+  /// * [clearSearchIcon] [Widget] sets the icon to be used to clear the search.
   factory SearchChoices.multiple({
     Key? key,
     List<DropdownMenuItem<T>>? items,
@@ -858,6 +865,7 @@ class SearchChoices<T> extends StatefulWidget {
     Widget Function(Widget fieldWidget, {bool selectionIsValid})?
         fieldPresentationFn,
     Decoration? fieldDecoration,
+    Widget? clearSearchIcon,
   }) {
     return (SearchChoices._(
       key: key,
@@ -912,6 +920,7 @@ class SearchChoices<T> extends StatefulWidget {
       searchDelay: searchDelay,
       fieldPresentationFn: fieldPresentationFn,
       fieldDecoration: fieldDecoration,
+      clearSearchIcon: clearSearchIcon,
     ));
   }
 
@@ -969,6 +978,7 @@ class SearchChoices<T> extends StatefulWidget {
     this.searchDelay,
     this.fieldPresentationFn,
     this.fieldDecoration,
+    this.clearSearchIcon,
   })  : assert(!multipleSelection || doneButton != null),
         assert(menuConstraints == null || !dialogBox),
         assert(itemsPerPage == null || currentPage != null,
@@ -1300,6 +1310,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
         futureSearchRetryButton: widget.futureSearchRetryButton,
         searchDelay: widget.searchDelay,
         giveMeThePop: giveMeThePop,
+        clearSearchIcon: widget.clearSearchIcon,
       ));
     });
   }
@@ -1705,6 +1716,9 @@ class DropdownDialog<T> extends StatefulWidget {
   /// Assigns the pop function.
   final Function giveMeThePop;
 
+  /// See SearchChoices class.
+  final Widget? clearSearchIcon;
+
   DropdownDialog({
     Key? key,
     this.items,
@@ -1745,6 +1759,7 @@ class DropdownDialog<T> extends StatefulWidget {
     this.futureSearchRetryButton,
     this.searchDelay,
     required this.giveMeThePop,
+    this.clearSearchIcon,
   }) : super(key: key);
 
   _DropdownDialogState<T> createState() => _DropdownDialogState<T>();
@@ -2155,8 +2170,13 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   @override
   Widget build(BuildContext dropdownDialogContext) {
     if (widget.buildDropDownDialog != null) {
-      return (widget.buildDropDownDialog!(titleBar(), searchBar(),
-          listWithPagination(), closeButtonWrapper(), dropdownDialogContext));
+      return (widget.buildDropDownDialog!(
+        titleBar(),
+        searchBar(),
+        listWithPagination(),
+        closeButtonWrapper(),
+        dropdownDialogContext,
+      ));
     }
     return AnimatedContainer(
       padding: widget.dropDownDialogPadding ??
@@ -2437,19 +2457,18 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                         });
                       },
                       borderRadius: BorderRadius.all(Radius.circular(32)),
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        child: Center(
-                          child: Icon(
-                            Icons.close,
-                            size: 24,
-                            color: txtSearch.text.isEmpty
-                                ? widget.iconDisabledColor
-                                : widget.iconEnabledColor,
+                      child: widget.clearSearchIcon ??
+                          Container(
+                            width: 32,
+                            height: 32,
+                            child: Center(
+                              child: Icon(
+                                Icons.close,
+                                size: 24,
+                                color: widget.iconEnabledColor,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
                     ),
                   ),
                 )

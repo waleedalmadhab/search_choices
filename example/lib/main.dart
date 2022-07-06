@@ -364,6 +364,10 @@ class _MyAppState extends State<MyApp> {
           horizontal: 80,
         ),
         isExpanded: true,
+        clearSearchIcon: Icon(
+          Icons.backspace,
+          color: Colors.teal,
+        ),
       ),
       "Multi select 3 dialog": SearchChoices.multiple(
         items: items,
