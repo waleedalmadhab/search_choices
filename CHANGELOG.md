@@ -1,3 +1,8 @@
+## 2.1.0
+
+* Added Flutster integration testing.
+* Customize the call to showDialog with showDialogFn. Thanks @slavap https://github.com/lcuis/search_choices/issues/84
+
 ## 2.0.21
 
 * Updated license date. Fixed a deprecation warning in pub.dev with isAlwaysShown.

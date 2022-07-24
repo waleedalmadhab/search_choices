@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="example/lib/main.dart" type="FlutterRunConfigurationType" factoryName="Flutter" singleton="false">
+    <option name="additionalArgs" value="--dart-define=&quot;flutsterKey=$SEARCHCHOICESFLUTSTERKEY&quot; --dart-define=&quot;flutsterUser=$SEARCHCHOICESFLUTSTERUSER&quot; --dart-define=&quot;flutsterUrl=$SEARCHCHOICESFLUTSTERURL&quot;" />
     <option name="filePath" value="$PROJECT_DIR$/example/lib/main.dart" />
     <method v="2" />
   </configuration>

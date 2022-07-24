@@ -57,7 +57,7 @@ See code below.
 | [Single dialog paged<br>delayed](#Single-dialog-paged-delayed) | ![Single dialog paged delayed](https://searchchoices.jod.li/Single%20dialog%20paged%20delayed.gif) |
 | [Single dialog paged<br>future delayed](#Single-dialog-paged-future-delayed) | ![Single dialog paged future delayed](https://searchchoices.jod.li/Single%20dialog%20paged%20future%20delayed.gif) |
 | [Single dialog custom<br>field presentation](#Single-dialog-custom-field-presentation) | ![Single dialog custom field presentation](https://searchchoices.jod.li/Single%20dialog%20custom%20field%20presentation.gif) |
-
+| [Single custom showDialogFn](#Single-custom-showDialogFn) | ![Single custom showDialogFn](https://searchchoices.jod.li/Single%20custom%20showDialogFn.gif) |
 
 ### Code
 
@@ -151,6 +151,16 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
     int? searchDelay,
     Widget Function(Widget fieldWidget,{bool selectionIsValid})? fieldPresentationFn,
     Decoration? fieldDecoration,
+    Widget? clearSearchIcon,
+    Future<void> Function(
+      BuildContext context,
+      Widget Function({
+        String searchTerms,
+      })
+          menuWidget,
+      String searchTerms,
+    )?
+        showDialogFn,
   })
 ```
 
@@ -205,6 +215,7 @@ Search choices Widget with a single choice that opens a dialog or a menu to let 
 * fieldPresentationFn Function returning a Widget to customize the display of the field.
 * fieldDecoration Decoration is the decoration of the SearchChoices Widget while displaying the hints or the selected values. Should differ when selection is not valid.
 * clearSearchIcon Widget sets the icon to be used to clear the search.
+* showDialogFn Function allows the control of the dialog display.
 
 
 #### Multiple choice constructor
@@ -279,6 +290,15 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
     Widget Function(Widget fieldWidget,{bool selectionIsValid})? fieldPresentationFn,
     Decoration? fieldDecoration,
     Widget? clearSearchIcon,
+    Future<void> Function(
+      BuildContext context,
+      Widget Function({
+        String searchTerms,
+      })
+          menuWidget,
+      String searchTerms,
+    )?
+        showDialogFn,
   })
 ```
 
@@ -333,6 +353,7 @@ Search choices Widget with a multiple choice that opens a dialog or a menu to le
 * fieldPresentationFn Function returning a Widget to customize the display of the field.
 * fieldDecoration Decoration is the decoration of the SearchChoices Widget while displaying the hints or the selected values. Should differ when selection is not valid.
 * clearSearchIcon Widget sets the icon to be used to clear the search.
+* showDialogFn Function allows the control of the dialog display.
 
 #### Example app usage
 
@@ -2621,6 +2642,34 @@ SearchChoices.single(
                   child: fieldWidget,
                 ),
               );
+            },
+          )
+```
+### Single custom showDialogFn
+Customizing the call to showDialog.
+```dart
+SearchChoices.single(
+            items: items,
+            value: selectedValueSingleDialog,
+            onChanged: (value) {
+              setState(() {
+                selectedValueSingleDialog = value;
+              });
+            },
+            hint: "Select one",
+            isExpanded: true,
+            showDialogFn: (
+              BuildContext context,
+              Widget Function({String searchTerms}) menuWidget,
+              String searchTerms,
+            ) async {
+              await showDialog(
+                  barrierColor: Colors.pinkAccent,
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext dialogContext) {
+                    return (menuWidget(searchTerms: searchTerms));
+                  });
             },
           )
 ```

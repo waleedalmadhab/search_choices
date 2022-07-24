@@ -8,8 +8,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-# publishing to pub.dev is only possible from Linux apparently
-#        os: [macos-latest]
+        # publishing to pub.dev is only possible from Linux apparently
+        #        os: [macos-latest]
         os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v2
@@ -25,6 +25,28 @@ jobs:
       - run: flutter config --enable-web
       - run: flutter config --enable-linux-desktop
       - run: flutter test
+      - run: pushd example&&flutter build web
+      - run: sed -i 's/<base href="\/">/<base href="\/search_choices\/demo\/">/g' example/build/web/index.html
+      - run: mkdir -p emptyRoot
+      - run: mv example/build/web/ emptyRoot/demo
+      -
+        name: Deploy to GitHub Pages
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: master
+          build_dir: emptyRoot
+          jekyll: false
+          keep_history: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+
+  integration_test:
+    name: CI-CD integration test
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v1
+      - run: cd example&&flutter test integration_test/example_test.dart --dart-define="flutsterKey=${{ secrets.FLUTSTERAPIKEY }}" --dart-define="flutsterUser=${{ secrets.FLUTSTERAPIUSER }}" --dart-define="flutsterUrl=${{ secrets.FLUTSTERAPIURL }}"
 
 #      - name: Publish
 #        uses: sakebook/actions-flutter-pub-publisher@v1.2.1
@@ -95,18 +117,4 @@ jobs:
 #          skipTests: true
 
 
-      - run: pushd example&&flutter build web
-      - run: sed -i 's/<base href="\/">/<base href="\/search_choices\/demo\/">/g' example/build/web/index.html
-      - run: mkdir -p emptyRoot
-      - run: mv example/build/web/ emptyRoot/demo
-      -
-        name: Deploy to GitHub Pages
-        if: success()
-        uses: crazy-max/ghaction-github-pages@v2
-        with:
-          target_branch: master
-          build_dir: emptyRoot
-          jekyll: false
-          keep_history: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+

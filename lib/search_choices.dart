@@ -157,6 +157,10 @@ Widget? prepareWidget(dynamic object,
 /// Use the [SearchChoices.multiple] factory if user must be able to select
 /// multiple items at once.
 class SearchChoices<T> extends StatefulWidget {
+  /// [dialogBoxMenuWrapper] [Function] called to wrap the menu widget when
+  /// in dialog box mode. This is useful for testing mainly.
+  static Widget Function(Widget)? dialogBoxMenuWrapper;
+
   /// [items] with __child__: [Widget] displayed ; __value__: any object with
   /// .toString() used to match search keyword.
   final List<DropdownMenuItem<T>>? items;
@@ -425,6 +429,16 @@ class SearchChoices<T> extends StatefulWidget {
   /// [clearSearchIcon] [Widget] sets the icon to be used to clear the search.
   final Widget? clearSearchIcon;
 
+  /// [showDialogFn] [Function] allows the control of the dialog display.
+  final Future<void> Function(
+    BuildContext context,
+    Widget Function({
+      String searchTerms,
+    })
+        menuWidget,
+    String searchTerms,
+  )? showDialogFn;
+
   /// Search choices Widget with a single choice that opens a dialog or a menu
   /// to let the user do the selection conveniently with a search.
   ///
@@ -546,6 +560,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// Widget while displaying the hints or the selected values.
   /// Should differ when selection is not valid.
   /// * [clearSearchIcon] [Widget] sets the icon to be used to clear the search.
+  /// * [showDialogFn] [Function] allows the control of the dialog display.
   factory SearchChoices.single({
     Key? key,
     List<DropdownMenuItem<T>>? items,
@@ -615,6 +630,15 @@ class SearchChoices<T> extends StatefulWidget {
         fieldPresentationFn,
     Decoration? fieldDecoration,
     Widget? clearSearchIcon,
+    Future<void> Function(
+      BuildContext context,
+      Widget Function({
+        String searchTerms,
+      })
+          menuWidget,
+      String searchTerms,
+    )?
+        showDialogFn,
   }) {
     return (SearchChoices._(
       key: key,
@@ -669,6 +693,7 @@ class SearchChoices<T> extends StatefulWidget {
       fieldPresentationFn: fieldPresentationFn,
       fieldDecoration: fieldDecoration,
       clearSearchIcon: clearSearchIcon,
+      showDialogFn: showDialogFn,
     ));
   }
 
@@ -797,6 +822,7 @@ class SearchChoices<T> extends StatefulWidget {
   /// Widget while displaying the hints or the selected values.
   /// Should differ when selection is not valid.
   /// * [clearSearchIcon] [Widget] sets the icon to be used to clear the search.
+  /// [showDialogFn] [Function] allows the control of the dialog display.
   factory SearchChoices.multiple({
     Key? key,
     List<DropdownMenuItem<T>>? items,
@@ -866,6 +892,15 @@ class SearchChoices<T> extends StatefulWidget {
         fieldPresentationFn,
     Decoration? fieldDecoration,
     Widget? clearSearchIcon,
+    Future<void> Function(
+      BuildContext context,
+      Widget Function({
+        String searchTerms,
+      })
+          menuWidget,
+      String searchTerms,
+    )?
+        showDialogFn,
   }) {
     return (SearchChoices._(
       key: key,
@@ -921,6 +956,7 @@ class SearchChoices<T> extends StatefulWidget {
       fieldPresentationFn: fieldPresentationFn,
       fieldDecoration: fieldDecoration,
       clearSearchIcon: clearSearchIcon,
+      showDialogFn: showDialogFn,
     ));
   }
 
@@ -979,6 +1015,7 @@ class SearchChoices<T> extends StatefulWidget {
     this.fieldPresentationFn,
     this.fieldDecoration,
     this.clearSearchIcon,
+    this.showDialogFn,
   })  : assert(!multipleSelection || doneButton != null),
         assert(menuConstraints == null || !dialogBox),
         assert(itemsPerPage == null || currentPage != null,
@@ -1025,6 +1062,8 @@ class SearchChoices<T> extends StatefulWidget {
             "use either padding or fieldPresentationFn"),
         assert(fieldDecoration == null || validator == null,
             "use either validator or fieldDecoration"),
+        assert(dialogBox || showDialogFn == null,
+            "use showDialogFn only with dialogBox"),
         super(key: key);
 
   @override
@@ -1317,12 +1356,20 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
 
   showDialogOrMenu(String searchTerms, {bool closeMenu = false}) async {
     if (widget.dialogBox) {
-      await showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext dialogContext) {
-            return (menuWidget(searchTerms: searchTerms));
-          });
+      if (widget.showDialogFn != null) {
+        await widget.showDialogFn!(
+          context,
+          menuWidget,
+          searchTerms,
+        );
+      } else {
+        await showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext dialogContext) {
+              return (menuWidget(searchTerms: searchTerms));
+            });
+      }
       if (widget.onChanged != null && selectedResult != null) {
         try {
           sendSelection(selectedResult, context);
@@ -1340,6 +1387,9 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.setOpenDialog != null) {
+      widget.setOpenDialog!(showDialogOrMenu);
+    }
     final List<Widget> items =
         _enabled ? List<Widget>.from(widget.items ?? []) : <Widget>[];
     int? hintIndex;
@@ -2167,18 +2217,25 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     super.initState();
   }
 
+  Widget wrapMenuIfDialogBox(Widget menuWidget) {
+    if (!widget.dialogBox || SearchChoices.dialogBoxMenuWrapper == null) {
+      return (menuWidget);
+    }
+    return (SearchChoices.dialogBoxMenuWrapper!(menuWidget));
+  }
+
   @override
   Widget build(BuildContext dropdownDialogContext) {
     if (widget.buildDropDownDialog != null) {
-      return (widget.buildDropDownDialog!(
+      return (wrapMenuIfDialogBox(widget.buildDropDownDialog!(
         titleBar(),
         searchBar(),
         listWithPagination(),
         closeButtonWrapper(),
         dropdownDialogContext,
-      ));
+      )));
     }
-    return AnimatedContainer(
+    return wrapMenuIfDialogBox(AnimatedContainer(
       padding: widget.dropDownDialogPadding ??
           MediaQuery.of(dropdownDialogContext).viewInsets,
       duration: const Duration(milliseconds: 300),
@@ -2203,7 +2260,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   bool get valid {
