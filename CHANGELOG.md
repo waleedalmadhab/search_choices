@@ -1,3 +1,7 @@
+## 2.1.1
+
+* Preventing a breaking change when projects older than 2.0.21 set an int padding. Thanks @MikeAndrson https://github.com/lcuis/search_choices/commit/6c05345c0144b82034f98997ba7067f51f950ee3#commitcomment-79884226
+
 ## 2.1.0
 
 * Added Flutster integration testing.

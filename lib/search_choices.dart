@@ -1548,6 +1548,11 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
           style: TextStyle(color: Colors.blueAccent, fontSize: 13)));
     });
     Widget? fieldPresentation;
+    var treatedPadding = widget.padding is EdgeInsets
+        ? widget.padding
+        : EdgeInsets.all(widget.padding is int
+            ? widget.padding.toDouble()
+            : widget.padding ?? 10.0);
     if (widget.fieldPresentationFn != null) {
       fieldPresentation = widget.fieldPresentationFn!(
         result,
@@ -1555,9 +1560,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
       );
     } else if (widget.fieldDecoration != null) {
       fieldPresentation = Padding(
-        padding: widget.padding is EdgeInsets
-            ? widget.padding
-            : EdgeInsets.all(widget.padding ?? 10),
+        padding: treatedPadding,
         child: Container(
           decoration: widget.fieldDecoration,
           child: result,
@@ -1567,9 +1570,7 @@ class _SearchChoicesState<T> extends State<SearchChoices<T>> {
       fieldPresentation = Stack(
         children: <Widget>[
           Padding(
-            padding: widget.padding is EdgeInsets
-                ? widget.padding
-                : EdgeInsets.all(widget.padding ?? 10),
+            padding: treatedPadding,
             child: result,
           ),
           widget.underline is NotGiven
