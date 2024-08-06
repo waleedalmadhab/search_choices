@@ -1,6 +1,6 @@
 name: search_choices
 description: Highly versatile Widget to search through a single or multiple choices list in a dialog box or a menu. Supports pagination and future/API/webservice searches with sort and filter.
-version: 2.1.1
+version: 2.1.2
 homepage: https://github.com/lcuis/search_choices
 repository: https://github.com/lcuis/search_choices
 issue_tracker: https://github.com/lcuis/search_choices/issues
