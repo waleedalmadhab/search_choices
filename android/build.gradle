@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android'
 
 android {
     namespace "li.jod.search_choices"
-    compileSdkVersion 28
+    compileSdkVersion 34
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
